@@ -1,15 +1,14 @@
-import Footer from "./components/Footer";
 
+import Footer from "./components/Footer"
+import Nav from './components/Nav'
+import Hero from './components/Hero'
 function App() {
   return (
-    <div className="min-h-screen flex flex-col">
-      <main className="flex-grow">
-        {/* Page content */}
-      </main>
-
+<>    
+      <Nav></Nav>
+      <Hero/>
       <Footer />
-    </div>
-  );
+    </>
+  )
 }
-
 export default App;
