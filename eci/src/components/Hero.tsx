@@ -12,7 +12,7 @@ export default function HeroSection() {
           <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
             <span className="text-blue-400">Empowering Innovation</span>
             <br className="hidden sm:block" />
-            Delivering Solutions
+            &nbsp;Delivering Solutions
           </h1>
 
           <p className="mt-6 text-base sm:text-lg text-zinc-300 w-full">
