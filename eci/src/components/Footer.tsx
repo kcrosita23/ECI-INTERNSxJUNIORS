@@ -1,36 +1,33 @@
 const Footer = () => {
   return (
-    <footer className="footer">
-      <div className="footer-container">
+    <footer className="max w-full bg-gradient-to-r from-[#071a33] via-[#06122a] to-[#040c20] text-white">
+      <div className="max w-full mx-auto px-6 py-6 flex flex-col md:flex-row items-center justify-between gap-6 text-sm">
 
-        <div className="footer-section">
-          <h3>ECI Interns</h3>
-          <p>
-            Empowering juniors through hands-on experience and modern web
-            development.
+        {/* Left */}
+        <div className="text-center md:text-left">
+          <p className="text-slate-300">Developed by Student of</p>
+          <p className="font-semibold">
+            Batangas State University JPLPC – Malvar Campus
           </p>
         </div>
 
-        <div className="footer-section">
-          <h4>Quick Links</h4>
-          <ul>
-            <li><a href="#">Home</a></li>
-            <li><a href="#">About</a></li>
-            <li><a href="#">Programs</a></li>
-            <li><a href="#">Contact</a></li>
-          </ul>
+        {/* Center */}
+        <div className="flex justify-center">
+          <img
+            src="/logo.png"
+            alt="ECI Logo"
+            className="h-10"
+          />
         </div>
 
-        <div className="footer-section">
-          <h4>Contact</h4>
-          <p>Email: info@eci.com</p>
-          <p>Phone: +63 900 000 0000</p>
+        {/* Right */}
+        <div className="text-center md:text-right">
+          <p className="text-slate-300">
+            All rights reserved {new Date().getFullYear()}
+          </p>
+          <p className="font-semibold">Everywhere Consulting Inc.</p>
         </div>
 
-      </div>
-
-      <div className="footer-bottom">
-        <p>© {new Date().getFullYear()} ECI Interns. All rights reserved.</p>
       </div>
     </footer>
   );
