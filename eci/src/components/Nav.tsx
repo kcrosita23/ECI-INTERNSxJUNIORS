@@ -23,7 +23,7 @@ const navigation: NavItem[] = [
     ],
   },
   { name: 'Partners', href: '#' },
-  { name: 'Contact', href: '#' },
+  { name: 'Contacts', href: '#' },
 ]
 
 function classNames(...classes: (string | false | undefined)[]) {
@@ -35,7 +35,8 @@ export default function Nav() {
   const menuRef = useRef<HTMLDivElement | null>(null)
 
   return (
-    <Disclosure as="nav" className="fixed inset-x-0 top-0 z-50 bg-gray-900/80 backdrop-blur">
+    <Disclosure as="nav" className="fixed inset-x-0 top-0 z-50 bg-white/5 backdrop-blur-md">
+
       {({ open, close }) => {
 
         useEffect(() => {
