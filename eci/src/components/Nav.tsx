@@ -38,21 +38,29 @@ export default function Nav() {
     <Disclosure as="nav" className="fixed inset-x-0 top-0 z-50 bg-white/5 backdrop-blur-md">
 
       {({ open, close }) => {
-
-        useEffect(() => {
-          function handleClickOutside(event: MouseEvent) {
-            if (
-              open &&
-              menuRef.current &&
-              !menuRef.current.contains(event.target as Node)
-            ) {
-              close()
+          useEffect(() => {
+            function handleClickOutside(event: MouseEvent) {
+              if (
+                open &&
+                menuRef.current &&
+                !menuRef.current.contains(event.target as Node)
+              ) {
+                close()
+              }
             }
-          }
+            if (open) {
+              document.body.style.overflow = 'hidden'
+            } else {
+              document.body.style.overflow = ''
+            }
 
-          document.addEventListener('mousedown', handleClickOutside)
-          return () => document.removeEventListener('mousedown', handleClickOutside)
-        }, [open, close])
+            document.addEventListener('mousedown', handleClickOutside)
+
+            return () => {
+              document.removeEventListener('mousedown', handleClickOutside)
+              document.body.style.overflow = ''
+            }
+          }, [open, close])
 
         return (
           <>
@@ -60,7 +68,6 @@ export default function Nav() {
             <div className="mx-auto w-full px-4 sm:px-6 lg:px-8">
               <div className="flex h-16 items-center justify-between">
 
-                {/* LEFT: Logo + Company Name */}
                 <div className="flex items-center space-x-2">
                   <img src="logo1.webp" alt="ECI logo" className="h-8 w-auto" />
                   <span className="text-white font-semibold text-lg hidden sm:inline">
@@ -105,7 +112,7 @@ export default function Nav() {
                   )}
                 </div>
 
-                {/* Mobile hamburger */}
+                {/*hamburger */}
                 <div className="sm:hidden">
                   <DisclosureButton className="p-2 text-gray-300 hover:text-white">
                     {open ? <X className="size-6" /> : <MenuIcon className="size-6" />}
@@ -139,7 +146,6 @@ export default function Nav() {
                     className="fixed right-0 top-16 z-50 h-[calc(100vh-4rem)] w-[70%] bg-gray-900/95 backdrop-blur sm:hidden"
                   >
                     <div className="flex flex-col p-6 space-y-4">
-                      {/* Company name in mobile menu */}
                       <span className="text-white font-semibold text-lg mb-4">
                         EVERYWHERE CONSULTING INC.
                       </span>
