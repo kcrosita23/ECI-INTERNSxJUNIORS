@@ -1,6 +1,6 @@
 const Footer = () => {
   return (
-    <footer className="w-full bg-gradient-to-r from-[#071a33] via-[#06122a] to-[#040c20] text-white">
+    <footer className="w-full px-10 bg-gradient-to-r from-[#071a33] via-[#06122a] to-[#040c20] text-white">
 
       {/* Divider */}
       <div className="h-px w-full bg-gradient-to-r from-transparent via-slate-500/40 to-transparent" />
