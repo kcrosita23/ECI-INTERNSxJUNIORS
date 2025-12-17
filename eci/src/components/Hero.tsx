@@ -1,4 +1,5 @@
 import { motion, easeInOut } from "framer-motion";
+import Base from "./Base";
 
 
 export default function HeroSection() {
@@ -17,7 +18,7 @@ export default function HeroSection() {
 
 
   return (
-
+<Base>
     <section className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-black via-zinc-900 to-zinc-800 text-white overflow-hidden">
       {/* Background effects */}
       <div className="absolute -top-24 -left-24 w-72 h-72 sm:w-96 sm:h-96 bg-blue-600/30 rounded-full blur-3xl" />
@@ -93,5 +94,6 @@ export default function HeroSection() {
       </div>
 
     </section>
+    </Base>
   );
 }

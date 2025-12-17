@@ -5,6 +5,7 @@ import {
 } from '@headlessui/react'
 import { Menu as MenuIcon, X, ChevronDown } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
+import Base from './Base'
 
 type NavItem =
   | { name: string; href: string }
@@ -63,7 +64,7 @@ export default function Nav() {
           }, [open, close])
 
         return (
-          <>
+          <Base>
             {/* TOP BAR */}
             <div className="mx-auto w-full px-4 sm:px-6 lg:px-8">
               <div className="flex h-16 items-center justify-between">
@@ -198,7 +199,7 @@ export default function Nav() {
                 </>
               )}
             </AnimatePresence>
-          </>
+          </Base>
         )
       }}
     </Disclosure>
