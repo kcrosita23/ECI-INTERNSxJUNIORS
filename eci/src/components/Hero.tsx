@@ -22,7 +22,7 @@ export default function HeroSection() {
     show: {
       opacity: 1,
       y: 0,
-      transition: { duration: 1, ease: easeOut, delay: 1 } // delay after text
+      transition: { duration: 1, ease: easeOut, delay: 1 }
     },
   };
 
@@ -55,9 +55,9 @@ export default function HeroSection() {
         <div className="absolute top-1/3 -right-24 w-72 h-72 sm:w-96 sm:h-96 bg-cyan-500/20 rounded-full blur-3xl" />
 
         {/* Content wrapper */}
-        <div className="relative z-10 max-w-7xl md:w-4/6 mx-auto px-6 sm:px-10 md:px-10 lg:px-15 xl:p-20 pt-20">
+        <div className="relative z-10 max-w-full md:w-4/6 px-6 mx-auto pr-6 sm:pl-10 md:pl-10 lg:pl-15 xl:pl-20 pt-20">
           {/* Text content */}
-          <div className="p-10"></div>
+    
           <motion.div
             className="text-center md:text-left"
             variants={containerVariants}
@@ -65,7 +65,7 @@ export default function HeroSection() {
             animate="show"
           >
             <motion.h1
-              className="text-3xl sm:text-4xl md:text-5xl lg:text-5xl xl:text-6xl font-bold leading-tight"
+              className="text-4xl md:text-4xl lg:text-[3rem] xl:text-6xl font-bold leading-tight"
               variants={fadeUp}
             >
               <span className="text-blue-400">Empowering Innovation&nbsp;</span>
@@ -74,7 +74,7 @@ export default function HeroSection() {
             </motion.h1>
 
             <motion.p
-              className="mt-6 text-base sm:text-lg text-zinc-300"
+              className="mt-6 text-base sm:text-lg text-zinc-300 font-light"
               variants={fadeUp}
             >
               Everywhere Consulting Inc. (ECI) is a recognized system integrator and software
