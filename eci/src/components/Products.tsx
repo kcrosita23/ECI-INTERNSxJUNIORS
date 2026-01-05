@@ -104,6 +104,28 @@ export default function Products() {
         ref={sectionRef}
         className="relative bg-zinc-900 text-white overflow-hidden"
       >
+        {/* Gradient background */}
+
+
+
+        <div className="pointer-events-none absolute inset-0">
+
+
+          <div className="absolute top-0 left-0 w-[500px] h-[500px] md:w-[800px] md:h-[800px] bg-blue-500/20 blur-3xl rounded-full -translate-x-1/2 -translate-y-1/2" />
+
+
+          <div className="absolute bottom-0 right-0 w-[500px] h-[500px] md:w-[800px] md:h-[800px] bg-blue-600/20 blur-3xl rounded-full translate-x-1/2 translate-y-1/2" />
+
+
+          <div className="absolute top-1/2 left-1/2 w-[400px] h-[400px] md:w-[600px] md:h-[600px] bg-blue-600/10 blur-3xl rounded-full -translate-x-1/2 -translate-y-1/2" />
+
+
+          <div className="absolute inset-0 bg-gradient-to-b from-zinc-900 via-transparent to-zinc-900" />
+
+
+        </div>
+
+
         <div className="relative z-10 px-6 py-20 md:px-12 lg:px-20">
           {/* Header */}
           <div className="text-center mb-12">

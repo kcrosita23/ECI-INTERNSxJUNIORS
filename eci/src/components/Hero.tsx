@@ -1,6 +1,7 @@
 import { motion, easeInOut, easeOut } from "framer-motion";
 import Base from "./Base";
 import type { Variants } from "framer-motion";
+import MagicImageParticles from "./MagicImageParticles";
 
 export default function HeroSection() {
 
@@ -50,6 +51,7 @@ export default function HeroSection() {
   return (
     <Base>
       <section id="home" className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-black via-zinc-900 to-zinc-800 text-white overflow-hidden scroll-mt-16">
+       <MagicImageParticles />
         {/* Background effects */}
         <div className="absolute -top-24 -left-24 w-72 h-72 sm:w-96 sm:h-96 bg-blue-600/30 rounded-full blur-3xl" />
         <div className="absolute top-1/3 -right-24 w-72 h-72 sm:w-96 sm:h-96 bg-cyan-500/20 rounded-full blur-3xl" />
