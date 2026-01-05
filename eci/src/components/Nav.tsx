@@ -10,21 +10,23 @@ import Base from './Base'
 type NavItem =
   | { name: string; href: string }
   | {
-      name: string
-      children: { name: string; href: string }[]
-    }
+    name: string
+    href: string
+    children: { name: string; href: string }[]
+  }
 
 const navigation: NavItem[] = [
   { name: 'Home', href: '#home' },
   {
     name: 'Products',
+    href: '#products',
     children: [
       { name: 'Solutions', href: '#solutions' },
       { name: 'Services', href: '#services' },
     ],
   },
-  { name: 'Partners', href: '#' },
-  { name: 'Contacts', href: '#' },
+  { name: 'Partners', href: '#partners' },
+  { name: 'Contacts', href: '#contacts' },
 ]
 
 function classNames(...classes: (string | false | undefined)[]) {
@@ -39,29 +41,29 @@ export default function Nav() {
     <Disclosure as="nav" className="fixed inset-x-0 top-0 z-50 bg-white/5 backdrop-blur-md">
 
       {({ open, close }) => {
-          useEffect(() => {
-            function handleClickOutside(event: MouseEvent) {
-              if (
-                open &&
-                menuRef.current &&
-                !menuRef.current.contains(event.target as Node)
-              ) {
-                close()
-              }
+        useEffect(() => {
+          function handleClickOutside(event: MouseEvent) {
+            if (
+              open &&
+              menuRef.current &&
+              !menuRef.current.contains(event.target as Node)
+            ) {
+              close()
             }
-            if (open) {
-              document.body.style.overflow = 'hidden'
-            } else {
-              document.body.style.overflow = ''
-            }
+          }
+          if (open) {
+            document.body.style.overflow = 'hidden'
+          } else {
+            document.body.style.overflow = ''
+          }
 
-            document.addEventListener('mousedown', handleClickOutside)
+          document.addEventListener('mousedown', handleClickOutside)
 
-            return () => {
-              document.removeEventListener('mousedown', handleClickOutside)
-              document.body.style.overflow = ''
-            }
-          }, [open, close])
+          return () => {
+            document.removeEventListener('mousedown', handleClickOutside)
+            document.body.style.overflow = ''
+          }
+        }, [open, close])
 
         return (
           <Base>
@@ -81,13 +83,14 @@ export default function Nav() {
                   {navigation.map((item) =>
                     'children' in item ? (
                       <div key={item.name} className="relative group">
-                        <button
-                          type="button"
+                        <a
+                          href={item.href}
                           className="flex items-center gap-1 text-gray-300 hover:text-white"
                         >
+
                           {item.name}
                           <ChevronDown className="size-4" />
-                        </button>
+                        </a>
 
                         <div className="absolute left-0 mt-2 w-40 rounded-md bg-gray-800 shadow-lg opacity-0 group-hover:opacity-100 transition">
                           {item.children.map((child) => (
