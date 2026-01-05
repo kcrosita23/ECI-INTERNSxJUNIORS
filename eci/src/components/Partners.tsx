@@ -38,13 +38,13 @@ const partners_util = [
   { name: "utility Partner 15", logo: "/partners/utility/samelco.webp" },
   { name: "utility Partner 16", logo: "/partners/utility/satelco.webp" },
   { name: "utility Partner 17", logo: "/partners/utility/surneco.webp" },
-  { name: "utility Partner 18", logo: "/partners/utility/taraelco.webp" },
+  { name: "utility Partner 18", logo: "/partners/utility/tarelco.webp" },
   { name: "utility Partner 19", logo: "/partners/utility/zambeco.webp" },
 ];
 
 const Partners: React.FC = () => {
   return (
-    <section className="bg-white py-16">
+    <section id="partners" className="bg-white py-16">
       <div className="max-w-7xl mx-auto px-6 text-center">
         <h2 className="text-3xl font-bold text-gray-900">
           Our Trusted Partners
