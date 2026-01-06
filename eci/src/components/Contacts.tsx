@@ -1,7 +1,7 @@
 import { Mail, Phone, MapPin, Send } from "lucide-react";
 import { motion } from "framer-motion";
 
-export default function Contacts() {
+export function Contacts() {
   return (
     <section id="contacts" className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-black flex items-center justify-center px-6 py-20">
       <motion.div
