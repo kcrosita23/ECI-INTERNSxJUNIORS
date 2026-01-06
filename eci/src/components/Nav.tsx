@@ -149,6 +149,9 @@ export default function Nav() {
                     className="fixed right-0 top-16 z-50 h-[calc(100vh-4rem)] w-[70%] bg-gray-900/95 backdrop-blur sm:hidden"
                   >
                     <div className="flex flex-col p-6 space-y-4">
+                         <span className="text-white font-semibold text-lg mb-4">
+                        EVERYWHERE CONSULTING INC.
+                      </span>
                       {navigation.map((item) =>
                         "children" in item ? (
                           <div key={item.name}>
