@@ -75,9 +75,9 @@ export default function Services() {
 
   return (
     <Base>
-      <section id="services" className="relative min-h-screen bg-gradient-to-br from-black via-zinc-900 to-zinc-800 text-white overflow-hidden scroll-mt-16">
+      <section id="services" className="relative min-h-screen text-white overflow-hidden scroll-mt-16">
         {/* Background effects */}
-        <div className="absolute -top-24 -left-24 w-72 h-72 sm:w-96 sm:h-96 bg-blue-600/30 rounded-full blur-3xl" />
+        <div className="absolute -top-0 -left-24 w-72 h-72 sm:w-96 sm:h-96 bg-blue-600/30 rounded-full blur-3xl" />
         <div className="absolute bottom-1/3 -right-24 w-72 h-72 sm:w-96 sm:h-96 bg-cyan-500/20 rounded-full blur-3xl" />
 
         {/* Content */}
@@ -163,33 +163,8 @@ export default function Services() {
               </a>
             </div>
 
-            {/* Secondary Navigation */}
-            <div className="flex flex-wrap justify-center gap-4">
-              <a
-                href="#home"
-                className="px-6 py-3 rounded-xl border border-white/20 hover:bg-white/10 transition-all font-light text-sm"
-              >
-                Back to Home
-              </a>
-              <a
-                href="#products"
-                className="px-6 py-3 rounded-xl border border-white/20 hover:bg-white/10 transition-all font-light text-sm"
-              >
-                View Products
-              </a>
-              <a
-                href="#solutions"
-                className="px-6 py-3 rounded-xl border border-white/20 hover:bg-white/10 transition-all font-light text-sm"
-              >
-                Our Solutions
-              </a>
-              <a
-                href="#partners"
-                className="px-6 py-3 rounded-xl border border-white/20 hover:bg-white/10 transition-all font-light text-sm"
-              >
-                Partners
-              </a>
-            </div>
+            
+           
           </div>
         </div>
 
