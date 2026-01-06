@@ -51,31 +51,30 @@ const PartnerGroup = ({ title, items }: { title: string; items: { name: string; 
     <div className="mt-20">
       {/* Section Divider & Title */}
       <div className="relative flex py-5 items-center mb-8">
-        <div className="flex-grow border-t border-slate-800"></div>
+        {/* Updated border color to match Zinc theme */}
+        <div className="flex-grow border-t border-zinc-800"></div>
         <span className="flex-shrink-0 mx-4 text-lg font-bold text-blue-400 uppercase tracking-widest">
           {title}
         </span>
-        <div className="flex-grow border-t border-slate-800"></div>
+        <div className="flex-grow border-t border-zinc-800"></div>
       </div>
 
-      {/* Grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-8 lg:gap-10 justify-items-center items-center">
+      {/* Flex container for centering */}
+      <div className="flex flex-wrap justify-center gap-8 lg:gap-12 items-center">
         {items.map((partner, index) => (
           <div
             key={index}
-            className="group flex items-center justify-center w-full"
+            className="group flex items-center justify-center w-32 md:w-40"
           >
             <div className="h-20 w-full flex items-center justify-center relative">
               <img
                 src={partner.logo}
                 alt={partner.name}
-                // KEY CHANGE: Removed 'bg-white'
-                // ADDED: drop-shadow-[0_0_2px_#fff] -> This creates the white outline/stroke effect
                 className="max-h-full max-w-full object-contain 
-                  grayscale opacity-80 
-                  drop-shadow-[0_0_2px_#fff] 
-                  group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-110 
-                  transition-all duration-300 ease-in-out"
+                   opacity-100 
+                   drop-shadow-[0_0_0.5px_#fff] 
+                   group-hover:opacity-100 group-hover:scale-110 
+                   transition-all duration-300 ease-in-out bg-transparent bg-white rounded-lg md:bg-transparent"
               />
             </div>
           </div>
@@ -87,10 +86,24 @@ const PartnerGroup = ({ title, items }: { title: string; items: { name: string; 
 
 const Partners: React.FC = () => {
   return (
-    <section id="partners" className="bg-slate-950 py-20 lg:py-28 relative overflow-hidden">
+    // Changed main BG to zinc-900 to match Products
+    <section id="partners" className=" py-20 lg:py-28 relative overflow-hidden">
       
-      {/* Background Decorative Glow */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-96 bg-blue-900/10 blur-[120px] rounded-full pointer-events-none" />
+      {/* --- BACKGROUND FROM PRODUCTS COMPONENT --- */}
+      <div className="pointer-events-none absolute inset-0">
+         {/* Top Left Orb */}
+         <div className="absolute top-0 left-0 w-[500px] h-[500px] md:w-[800px] md:h-[800px] bg-blue-500/20 blur-3xl rounded-full -translate-x-1/2 -translate-y-1/2" />
+         
+         {/* Bottom Right Orb */}
+         <div className="absolute bottom-0 right-0 w-[500px] h-[500px] md:w-[800px] md:h-[800px] bg-blue-600/20 blur-3xl rounded-full translate-x-1/2 translate-y-1/2" />
+         
+         {/* Center Orb */}
+         <div className="absolute top-1/2 left-1/2 w-[400px] h-[400px] md:w-[600px] md:h-[600px] bg-blue-600/10 blur-3xl rounded-full -translate-x-1/2 -translate-y-1/2" />
+         
+         {/* Gradient Overlay to blend edges */}
+         <div className="absolute inset-0 bg-gradient-to-b from-zinc-900 via-transparent to-zinc-900" />
+      </div>
+      {/* ------------------------------------------ */}
 
       <div className="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
         
@@ -99,7 +112,8 @@ const Partners: React.FC = () => {
           <h2 className="text-4xl md:text-5xl font-extrabold text-white tracking-tight">
             Our Trusted <span className="text-blue-500">Partners</span>
           </h2>
-          <p className="mt-4 text-lg text-slate-400 leading-relaxed">
+          {/* Updated text color to zinc-400 */}
+          <p className="mt-4 text-lg text-zinc-400 leading-relaxed">
             We collaborate with industry leaders to deliver exceptional solutions. 
             Together, we innovate and drive success for our clients nationwide.
           </p>
