@@ -89,7 +89,7 @@ const OrbitingCarouselDark = () => {
     const opacity = 0.5 + ((depth + 1) / 2) * 0.5;
 
     // 6. Z-INDEX
-    const zIndex = Math.round((depth + 1) * 50);
+    const zIndex = Math.round((depth + 1) * 20);
 
     // 7. BLUR
     const blur = depth < 0.2 ? `blur(${Math.abs(depth - 0.2) * 5}px)` : "blur(0px)";
@@ -99,7 +99,7 @@ const OrbitingCarouselDark = () => {
 
   return (
     // Main container changed to dark slate background and white text
-    <div className="w-full min-h-[600px] bg-slate-950 text-white flex flex-col items-center justify-center overflow-hidden py-20 relative">
+    <div id="services" className="w-full min-h-[600px] bg-slate-950 text-white flex flex-col items-center justify-center overflow-hidden py-20 relative">
       
       {/* Background Decor - Dark Blue/Cyan blobs */}
       <div className="absolute top-10 left-10 w-32 h-32 bg-blue-900/30 rounded-full blur-3xl pointer-events-none" />
