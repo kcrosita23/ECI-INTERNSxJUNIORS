@@ -1,9 +1,9 @@
-import { Mail, Phone, MapPin, Send } from "lucide-react";
+import {    Send } from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function Contacts() {
   return (
-    <>
+    <>  
       {/* ================= ABOUT US ================= */}
       <section
         id="about"
@@ -198,35 +198,8 @@ export default function Contacts() {
         >
           <div className="grid md:grid-cols-2">
             {/* Left Info Panel */}
-            <div className="p-10 bg-gradient-to-br from-indigo-600 to-purple-700 text-white flex flex-col justify-between">
-              <div>
-                <h2 className="text-4xl font-bold mb-4">Let’s Connect</h2>
-                <p className="text-white/80 mb-10">
-                  Have a project in mind or require professional consultation?
-                  Fill in the form and our team will get back to you.
-                </p>
-
-                <div className="space-y-6">
-                  <div className="flex items-center gap-4">
-                    <Mail className="w-6 h-6" />
-                    <span>kimterrence.dev@gmail.com</span>
-                  </div>
-
-                  <div className="flex items-center gap-4">
-                    <Phone className="w-6 h-6" />
-                    <span>+63 9XX XXX XXXX</span>
-                  </div>
-
-                  <div className="flex items-center gap-4">
-                    <MapPin className="w-6 h-6" />
-                    <span>Philippines</span>
-                  </div>
-                </div>
-              </div>
-
-              <p className="text-sm text-white/60 mt-10">
-                © {new Date().getFullYear()} Everywhere Consulting Inc.
-              </p>
+            <div className="bg-gradient-to-br from-indigo-600 to-purple-700 text-white flex flex-col justify-between">
+              <iframe className="h-full" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1604.6209261494116!2d121.0109533794569!3d14.550722225337761!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3397c95fce6140a1%3A0xb4dd46c13f812c2f!2sEverywhere%20Consulting%2C%20Inc.!5e0!3m2!1sen!2sph!4v1767671311605!5m2!1sen!2sph" width="600" height="450"  loading="lazy" ></iframe>
             </div>
 
             {/* Right Form */}
