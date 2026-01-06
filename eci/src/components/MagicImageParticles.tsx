@@ -12,7 +12,7 @@ export default function MagicImageParticles() {
 
   const options = useMemo<ISourceOptions>(
     () => ({
-      fullScreen: { enable: false },
+      fullScreen: { enable: false }, // Keep false so we control it via CSS below
       background: { color: "transparent" },
       fpsLimit: 60,
       particles: {
@@ -40,17 +40,17 @@ export default function MagicImageParticles() {
           outModes: { default: "out" as const },
         },
         opacity: {
-          value: 0.3, // 🔹 lower opacity for more subtle particles
+          value: 0.3, 
           animation: {
             enable: true,
-            speed: 0.5, // slow opacity changes for shimmer effect
+            speed: 0.5,
             minimumValue: 0.1,
             sync: false,
           },
         },
       },
       interactivity: {
-        detectsOn: "canvas",
+        detectsOn: "window", // Changed to window for better fixed detection
         events: {
           onHover: { enable: true, mode: "repulse" },
           onClick: { enable: true, mode: "push" },
@@ -69,7 +69,11 @@ export default function MagicImageParticles() {
     <Particles
       id="magicParticles"
       options={options}
-      className="absolute inset-0 z-0"
+      // Changed 'absolute' to 'fixed' so it stays on screen while scrolling
+      // Ensure z-index is low (z-0 or -1) so it doesn't block content
+      className="fixed inset-0 z-0 pointer-events-none" 
+      // Note: Added pointer-events-none so you can click buttons UNDER the particles. 
+      // If you want to interact with particles (repulse/click), remove 'pointer-events-none'.
     />
   );
 }
