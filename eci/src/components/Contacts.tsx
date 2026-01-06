@@ -1,93 +1,280 @@
 import { Mail, Phone, MapPin, Send } from "lucide-react";
 import { motion } from "framer-motion";
 
-export function Contacts() {
+export default function Contacts() {
   return (
-    <section id="contacts" className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-black flex items-center justify-center px-6 py-20">
-      <motion.div
-        initial={{ opacity: 0, y: 40 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8 }}
-        className="w-full max-w-6xl bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl shadow-2xl overflow-hidden"
+    <>
+      {/* ================= ABOUT US ================= */}
+      <section
+        id="about"
+        className="min-h-screen bg-gradient-to-br from-black via-slate-950 to-slate-900 flex items-center justify-center px-6 py-20"
       >
-        <div className="grid md:grid-cols-2">
-          {/* Left Info Panel */}
-          <div className="p-10 bg-gradient-to-br from-indigo-600 to-purple-700 text-white flex flex-col justify-between">
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+          className="w-full max-w-6xl bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl shadow-2xl p-12"
+        >
+          <h2 className="text-4xl font-bold text-white mb-10">
+            About Everywhere Consulting Inc.
+          </h2>
+
+          <div className="grid md:grid-cols-2 gap-10">
+            {/* Company Overview */}
             <div>
-              <h2 className="text-4xl font-bold mb-4">Let’s Connect</h2>
-              <p className="text-white/80 mb-10">
-                Have a project in mind or just want to say hi?  
-                Fill in the form and I’ll get back to you.
+              <h3 className="text-xl font-semibold text-indigo-400 mb-3">
+                Company Overview
+              </h3>
+              <p className="text-slate-300 leading-relaxed">
+                Everywhere Consulting Inc. is a professional Information
+                Technology consulting and solutions firm headquartered in Makati
+                City, Metro Manila, Philippines. We deliver strategic,
+                technology-driven services to organizations seeking to enhance
+                operational efficiency, security, and digital capability.
               </p>
-
-              <div className="space-y-6">
-                <div className="flex items-center gap-4">
-                  <Mail className="w-6 h-6" />
-                  <span>kimterrence.dev@gmail.com</span>
-                </div>
-
-                <div className="flex items-center gap-4">
-                  <Phone className="w-6 h-6" />
-                  <span>+63 9XX XXX XXXX</span>
-                </div>
-
-                <div className="flex items-center gap-4">
-                  <MapPin className="w-6 h-6" />
-                  <span>Philippines</span>
-                </div>
-              </div>
             </div>
 
-            <p className="text-sm text-white/60 mt-10">
-              © {new Date().getFullYear()} Kim Terrence
+            {/* Services */}
+            <div>
+              <h3 className="text-xl font-semibold text-indigo-400 mb-3">
+                Our Services
+              </h3>
+              <p className="text-slate-300 leading-relaxed">
+                We provide IT consulting, custom software development, system
+                integration, cybersecurity support, and technology
+                implementation services aligned with business objectives and
+                industry best practices.
+              </p>
+            </div>
+
+            {/* Mission */}
+            <div>
+              <h3 className="text-xl font-semibold text-indigo-400 mb-3">
+                Our Mission
+              </h3>
+              <p className="text-slate-300 leading-relaxed">
+                To deliver reliable, scalable, and secure technology solutions
+                that enable organizations to adapt, innovate, and sustain
+                long-term success in an increasingly digital environment.
+              </p>
+            </div>
+
+            {/* Values */}
+            <div>
+              <h3 className="text-xl font-semibold text-indigo-400 mb-3">
+                Core Values
+              </h3>
+              <ul className="text-slate-300 space-y-2 list-disc list-inside">
+                <li>Client-Centric Engagement</li>
+                <li>Integrity, Transparency, and Accountability</li>
+                <li>Excellence through Innovation</li>
+                <li>Reliability, Quality, and Continuous Improvement</li>
+              </ul>
+            </div>
+          </div>
+
+          {/* Vision */}
+          <div className="mt-12 border-t border-white/10 pt-8">
+            <h3 className="text-2xl font-semibold text-white mb-4">
+              Corporate Vision
+            </h3>
+            <p className="text-slate-300 leading-relaxed">
+              To be a trusted and respected technology consulting partner,
+              recognized for delivering impactful digital solutions that support
+              sustainable growth and operational excellence across industries.
             </p>
           </div>
 
-          {/* Right Form */}
-          <div className="p-10 bg-slate-900">
-            <h3 className="text-3xl font-semibold text-white mb-8">
-              Send a Message
+          {/* Timeline */}
+          <div className="mt-10">
+            <h3 className="text-2xl font-semibold text-white mb-6">
+              Company Milestones
             </h3>
 
-            <form className="space-y-6">
+            <div className="space-y-4 text-slate-300">
               <div>
-                <label className="block text-slate-400 mb-2">Full Name</label>
-                <input
-                  type="text"
-                  placeholder="Your name"
-                  className="w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none text-white"
-                />
+                <span className="font-semibold text-white">Establishment</span> –
+                Founded to provide professional IT consulting and advisory
+                services.
               </div>
-
               <div>
-                <label className="block text-slate-400 mb-2">Email</label>
-                <input
-                  type="email"
-                  placeholder="you@example.com"
-                  className="w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none text-white"
-                />
+                <span className="font-semibold text-white">
+                  Service Expansion
+                </span>{" "}
+                – Expanded capabilities to include software development, system
+                integration, and cybersecurity solutions.
               </div>
-
               <div>
-                <label className="block text-slate-400 mb-2">Message</label>
-                <textarea
-                  rows={4}
-                  placeholder="Tell me about your project..."
-                  className="w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none text-white resize-none"
-                />
+                <span className="font-semibold text-white">Present Day</span> –
+                Supporting organizations with secure, scalable, and future-ready
+                technology solutions.
               </div>
-
-              <button
-                type="submit"
-                className="w-full flex items-center justify-center gap-3 bg-indigo-600 hover:bg-indigo-700 transition rounded-xl py-4 text-white font-semibold shadow-lg"
-              >
-                <Send className="w-5 h-5" />
-                Send Message
-              </button>
-            </form>
+            </div>
           </div>
-        </div>
-      </motion.div>
-    </section>
+
+          {/* ================= KEY SERVICES ================= */}
+<div className="mt-12">
+  <h3 className="text-2xl font-semibold text-white mb-6">
+    Key Services
+  </h3>
+
+  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
+      <h4 className="text-lg font-semibold text-indigo-400 mb-2">
+        IT Consulting
+      </h4>
+      <p className="text-slate-300 text-sm leading-relaxed">
+        Strategic technology consulting to align IT solutions with business
+        goals and operational requirements.
+      </p>
+    </div>
+
+    <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
+      <h4 className="text-lg font-semibold text-indigo-400 mb-2">
+        Software Development
+      </h4>
+      <p className="text-slate-300 text-sm leading-relaxed">
+        Custom web and application development using modern, scalable, and
+        secure technologies.
+      </p>
+    </div>
+
+    <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
+      <h4 className="text-lg font-semibold text-indigo-400 mb-2">
+        System Integration
+      </h4>
+      <p className="text-slate-300 text-sm leading-relaxed">
+        Seamless integration of systems and platforms to improve efficiency
+        and data consistency.
+      </p>
+    </div>
+
+    <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
+      <h4 className="text-lg font-semibold text-indigo-400 mb-2">
+        Cybersecurity Solutions
+      </h4>
+      <p className="text-slate-300 text-sm leading-relaxed">
+        Security assessments, implementation, and support to protect systems,
+        data, and infrastructure.
+      </p>
+    </div>
+
+    <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
+      <h4 className="text-lg font-semibold text-indigo-400 mb-2">
+        Technology Implementation
+      </h4>
+      <p className="text-slate-300 text-sm leading-relaxed">
+        End-to-end deployment and configuration of enterprise technology
+        solutions.
+      </p>
+    </div>
+
+    <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
+      <h4 className="text-lg font-semibold text-indigo-400 mb-2">
+        Ongoing Support & Maintenance
+      </h4>
+      <p className="text-slate-300 text-sm leading-relaxed">
+        Continuous system monitoring, maintenance, and technical support for
+        long-term reliability.
+      </p>
+    </div>
+  </div>
+</div>
+
+        </motion.div>
+      </section>
+
+      {/* ================= CONTACTS ================= */}
+      <section
+        id="contacts"
+        className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-black flex items-center justify-center px-6 py-20"
+      >
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="w-full max-w-6xl bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl shadow-2xl overflow-hidden"
+        >
+          <div className="grid md:grid-cols-2">
+            {/* Left Info Panel */}
+            <div className="p-10 bg-gradient-to-br from-indigo-600 to-purple-700 text-white flex flex-col justify-between">
+              <div>
+                <h2 className="text-4xl font-bold mb-4">Let’s Connect</h2>
+                <p className="text-white/80 mb-10">
+                  Have a project in mind or require professional consultation?
+                  Fill in the form and our team will get back to you.
+                </p>
+
+                <div className="space-y-6">
+                  <div className="flex items-center gap-4">
+                    <Mail className="w-6 h-6" />
+                    <span>kimterrence.dev@gmail.com</span>
+                  </div>
+
+                  <div className="flex items-center gap-4">
+                    <Phone className="w-6 h-6" />
+                    <span>+63 9XX XXX XXXX</span>
+                  </div>
+
+                  <div className="flex items-center gap-4">
+                    <MapPin className="w-6 h-6" />
+                    <span>Philippines</span>
+                  </div>
+                </div>
+              </div>
+
+              <p className="text-sm text-white/60 mt-10">
+                © {new Date().getFullYear()} Everywhere Consulting Inc.
+              </p>
+            </div>
+
+            {/* Right Form */}
+            <div className="p-10 bg-slate-900">
+              <h3 className="text-3xl font-semibold text-white mb-8">
+                Send a Message
+              </h3>
+
+              <form className="space-y-6">
+                <div>
+                  <label className="block text-slate-400 mb-2">Full Name</label>
+                  <input
+                    type="text"
+                    placeholder="Your name"
+                    className="w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none text-white"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-slate-400 mb-2">Email</label>
+                  <input
+                    type="email"
+                    placeholder="you@example.com"
+                    className="w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none text-white"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-slate-400 mb-2">Message</label>
+                  <textarea
+                    rows={4}
+                    placeholder="Describe your inquiry or project requirements..."
+                    className="w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none text-white resize-none"
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  className="w-full flex items-center justify-center gap-3 bg-indigo-600 hover:bg-indigo-700 transition rounded-xl py-4 text-white font-semibold shadow-lg"
+                >
+                  <Send className="w-5 h-5" />
+                  Send Message
+                </button>
+              </form>
+            </div>
+          </div>
+        </motion.div>
+      </section>
+    </>
   );
 }
