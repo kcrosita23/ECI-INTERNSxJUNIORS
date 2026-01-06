@@ -2,6 +2,7 @@ import { motion, easeInOut, easeOut } from "framer-motion";
 import Base from "./Base";
 import type { Variants } from "framer-motion";
 import MagicImageParticles from "./MagicImageParticles";
+import { Link } from "react-router-dom";
 
 export default function HeroSection() {
 
@@ -88,16 +89,21 @@ export default function HeroSection() {
               className="mt-8 flex flex-col sm:flex-row gap-4 justify-center md:justify-start"
               variants={fadeUp}
             >
+              <Link to={'/contacts'}>
               <motion.button
                 className="px-6 py-3 rounded-xl bg-blue-500 hover:bg-blue-600 transition shadow-lg"
               >
                 About Us
               </motion.button>
+              </Link>
+              
+              <a href="/#services">
               <motion.button
                 className="px-6 py-3 rounded-xl border border-white/20 hover:bg-white/10 transition"
               >
                 View Services
               </motion.button>
+              </a>
             </motion.div>
           </motion.div>
         </div>
