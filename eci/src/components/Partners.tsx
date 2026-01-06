@@ -120,9 +120,9 @@ const Partners: React.FC = () => {
         </div>
 
         {/* Partner Sections */}
-        <PartnerGroup title="Corporate Partners" items={partners} />
-        <PartnerGroup title="Public-Sector Partners" items={partners_pub} />
-        <PartnerGroup title="Utility Partners" items={partners_util} />
+        <PartnerGroup title="Corporate" items={partners} />
+        <PartnerGroup title="Utility" items={partners_util} />
+        <PartnerGroup title="Public-Sector" items={partners_pub} />
 
       </div>
     </section>
