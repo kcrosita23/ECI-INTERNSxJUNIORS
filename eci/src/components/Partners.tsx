@@ -1,5 +1,6 @@
 import React from "react";
 
+// --- Data ---
 const partners = [
   { name: "corporate Partner 1", logo: "/partners/corporate/baguio.webp" },
   { name: "corporate Partner 2", logo: "/partners/corporate/denso.webp" },
@@ -42,74 +43,72 @@ const partners_util = [
   { name: "utility Partner 19", logo: "/partners/utility/zambeco.webp" },
 ];
 
+// --- Reusable Component for Section Rendering ---
+const PartnerGroup = ({ title, items }: { title: string; items: { name: string; logo: string }[] }) => {
+  if (items.length === 0) return null;
+
+  return (
+    <div className="mt-20">
+      {/* Section Divider & Title */}
+      <div className="relative flex py-5 items-center mb-8">
+        <div className="flex-grow border-t border-slate-800"></div>
+        <span className="flex-shrink-0 mx-4 text-lg font-bold text-blue-400 uppercase tracking-widest">
+          {title}
+        </span>
+        <div className="flex-grow border-t border-slate-800"></div>
+      </div>
+
+      {/* Grid */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-8 lg:gap-10 justify-items-center items-center">
+        {items.map((partner, index) => (
+          <div
+            key={index}
+            className="group flex items-center justify-center w-full"
+          >
+            <div className="h-20 w-full flex items-center justify-center relative">
+              <img
+                src={partner.logo}
+                alt={partner.name}
+                // KEY CHANGE: Removed 'bg-white'
+                // ADDED: drop-shadow-[0_0_2px_#fff] -> This creates the white outline/stroke effect
+                className="max-h-full max-w-full object-contain 
+                  grayscale opacity-80 
+                  drop-shadow-[0_0_2px_#fff] 
+                  group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-110 
+                  transition-all duration-300 ease-in-out"
+              />
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
 const Partners: React.FC = () => {
   return (
-    <section id="partners" className="bg-white py-16">
-      <div className="max-w-7xl mx-auto px-6 text-center">
-        <h2 className="text-3xl font-bold text-gray-900">
-          Our Trusted Partners
-        </h2>
-        <p className="mt-3 text-gray-500">
-          We collaborate with industry leaders to deliver exceptional solutions. Together, we innovate and drive success for our clients nationwide
-        </p>
+    <section id="partners" className="bg-slate-950 py-20 lg:py-28 relative overflow-hidden">
+      
+      {/* Background Decorative Glow */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-96 bg-blue-900/10 blur-[120px] rounded-full pointer-events-none" />
 
-        <h2 className="text-3xl font-bold text-gray-900">
-          Corporate Partners
-        </h2>
-
-        <div className="mt-10 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-8 items-center">
-          {partners.map((partner, index) => (
-            <div
-              key={index}
-              className="flex items-center justify-center"
-            >
-              <img
-                src={partner.logo}
-                alt={partner.name}
-                className="h-14 object-contain grayscale hover:grayscale-0 transition duration-300"
-              />
-            </div>
-          ))}
+      <div className="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
+        
+        {/* Main Header */}
+        <div className="text-center max-w-2xl mx-auto mb-16">
+          <h2 className="text-4xl md:text-5xl font-extrabold text-white tracking-tight">
+            Our Trusted <span className="text-blue-500">Partners</span>
+          </h2>
+          <p className="mt-4 text-lg text-slate-400 leading-relaxed">
+            We collaborate with industry leaders to deliver exceptional solutions. 
+            Together, we innovate and drive success for our clients nationwide.
+          </p>
         </div>
 
-        <h2 className="text-3xl font-bold text-gray-900">
-          Public-Sector Partners
-        </h2>
-
-        <div className="mt-10 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-8 items-center">
-          {partners_pub.map((partner, index) => (
-            <div
-              key={index}
-              className="flex items-center justify-center"
-            >
-              <img
-                src={partner.logo}
-                alt={partner.name}
-                className="h-14 object-contain grayscale hover:grayscale-0 transition duration-300"
-              />
-            </div>
-          ))}
-        </div>
-
-
-        <h2 className="text-3xl font-bold text-gray-900">
-          Utility Partners
-        </h2>
-
-        <div className="mt-10 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-8 items-center">
-          {partners_util.map((partner, index) => (
-            <div
-              key={index}
-              className="flex items-center justify-center"
-            >
-              <img
-                src={partner.logo}
-                alt={partner.name}
-                className="h-14 object-contain grayscale hover:grayscale-0 transition duration-300"
-              />
-            </div>
-          ))}
-        </div>
+        {/* Partner Sections */}
+        <PartnerGroup title="Corporate Partners" items={partners} />
+        <PartnerGroup title="Public-Sector Partners" items={partners_pub} />
+        <PartnerGroup title="Utility Partners" items={partners_util} />
 
       </div>
     </section>
