@@ -147,7 +147,7 @@ export default function Solutions() {
                 />
               </div>
               <div className="mt-4 text-center text-blue-400 font-semibold">
-                DFS2000
+                DFS200
               </div>
             </div>
 
