@@ -120,7 +120,7 @@ export default function Solutions() {
                 />
               </div>
               <div className="mt-4 text-center text-blue-400 font-semibold">
-                IMS2000
+                IMS200
               </div>
             </div>
 
