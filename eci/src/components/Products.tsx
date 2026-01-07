@@ -59,7 +59,7 @@ export default function Products() {
         id="products"
         className="relative bg-zinc-900 text-white overflow-hidden"
       >
-        {/* Gradient background */}
+        {/*background*/}
         <div className="pointer-events-none absolute inset-0">
           <div className="absolute top-0 left-0 w-[500px] h-[500px] md:w-[800px] md:h-[800px] bg-blue-500/20 blur-3xl rounded-full -translate-x-1/2 -translate-y-1/2" />
           <div className="absolute bottom-0 right-0 w-[500px] h-[500px] md:w-[800px] md:h-[800px] bg-blue-600/20 blur-3xl rounded-full translate-x-1/2 translate-y-1/2" />
@@ -68,7 +68,7 @@ export default function Products() {
         </div>
 
         <div className="relative z-10 min-h-90 px-6 py-20 md:px-12 lg:px-20 mb-auto">
-          {/* Header */}
+          {/*header*/}
           <div className="text-center">
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-5xl xl:text-6xl font-bold leading-tight text-blue-500 ">
               Our Products
@@ -78,9 +78,9 @@ export default function Products() {
             </h2>
           </div>
 
-          {/* Carousel Container */}
+          {/*container*/}
           <div className="max-w-7xl mx-auto">
-            {/* Main Carousel */}
+            {/*carousel*/}
             <div className="relative mb-12">
               <div className="overflow-hidden rounded-3xl">
                 <div
@@ -90,7 +90,7 @@ export default function Products() {
                   {products.map((product, index) => (
                     <div key={index} className="w-full flex-shrink-0">
                       <div className="grid md:grid-cols-2 gap-8 items-center bg-zinc-800/50 backdrop-blur-sm border border-zinc-700/50 rounded-3xl p-8 md:p-12">
-                        {/* Image Side */}
+                        {/*image*/}
                         <div className="relative group">
                           <div className="absolute inset-0 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-500" />
                           <img
@@ -100,7 +100,7 @@ export default function Products() {
                           />
                         </div>
 
-                        {/* Content Side */}
+                        {/*content*/}
                         <div className="space-y-6">
                           <div>
                             <h3 className="text-3xl md:text-4xl font-bold text-white mb-4 leading-tight">
@@ -120,7 +120,7 @@ export default function Products() {
                 </div>
               </div>
 
-              {/* Navigation Arrows */}
+              {/*arrows*/}
               <button
                 onClick={prevSlide}
                 className="absolute left-4 top-1/2 -translate-y-1/2 p-4 rounded-full transition-all duration-300 hover:bg-zinc-700 hover:scale-110 hover:shadow-lg hover:shadow-blue-500/30"
@@ -137,19 +137,20 @@ export default function Products() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                 </svg>
               </button>
-                          {/* Dots Indicator */}
-            <div className="flex justify-center gap-3 mb-4 mt-2">
-              {products.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => goToSlide(index)}
-                  className={`transition-all duration-300 rounded-full ${index === currentSlide
-                      ? 'w-8 h-3 bg-blue-500'
-                      : 'w-3 h-3 bg-zinc-600 hover:bg-zinc-500'
-                    }`}
-                />
-              ))}
-            </div>
+
+              {/*dots*/}
+              <div className="flex justify-center gap-3 mb-4 mt-2">
+                {products.map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => goToSlide(index)}
+                    className={`transition-all duration-300 rounded-full ${index === currentSlide
+                        ? 'w-8 h-3 bg-blue-500'
+                        : 'w-3 h-3 bg-zinc-600 hover:bg-zinc-500'
+                      }`}
+                  />
+                ))}
+              </div>
             </div>
           </div>
         </div>
