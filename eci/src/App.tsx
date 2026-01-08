@@ -9,6 +9,7 @@ import Solutions from "./components/Solutions";
 import Services from "./components/Services";
 import Partners from "./components/Partners";
 import Contacts from "./components/Contacts";
+import ContactsDashboard from "./components/ContactsDashboard"; // <-- import here
 
 function Home() {
   return (
@@ -25,9 +26,7 @@ function Home() {
 export default function App() {
   const { pathname, hash, key } = useLocation();
 
-  // FIX: Scroll to hash element when location changes
   useEffect(() => {
-    // If there is a hash, scroll to it
     if (hash) {
       const id = hash.replace("#", "");
       const element = document.getElementById(id);
@@ -35,7 +34,6 @@ export default function App() {
         element.scrollIntoView({ behavior: "smooth" });
       }
     } else {
-      // If no hash (e.g. clicking "Home"), scroll to top
       window.scrollTo(0, 0);
     }
   }, [pathname, hash, key]);
@@ -46,6 +44,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/contacts" element={<Contacts />} />
+        <Route path="/contacts-dashboard" element={<ContactsDashboard />} /> {/* <-- new route */}
       </Routes>
       <Footer />
     </>

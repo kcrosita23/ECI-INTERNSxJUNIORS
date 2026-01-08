@@ -155,9 +155,7 @@ export default function HeroSection() {
         </motion.div>
 
         {/* bottom transition */}
-        <div className="pointer-events-none absolute bottom-0 left-0 h-48 w-full bg-gradient-to-b from-transparent via-zinc-900/60 to-zinc-900" />
-
-
+        <div className="pointer-events-none absolute bottom-0 left-0 h-32 w-full bg-gradient-to-b from-transparent via-zinc-900/60 to-zinc-900" />
       </section>
     </Base>
   );
