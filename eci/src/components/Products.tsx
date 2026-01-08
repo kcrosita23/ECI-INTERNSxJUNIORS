@@ -2,6 +2,12 @@ import Base from "./Base";
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { ArrowRightToLine, ArrowLeftToLine } from "lucide-react";
+import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
+
+function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+} 
 
 type Product = {
   image: string;
@@ -11,10 +17,9 @@ type Product = {
 };
 
 export default function Products() {
-  const [currentSlide, setCurrentSlide] = useState(0);
+  const [activeIndex, setActiveIndex] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
   const sectionRef = useRef<HTMLElement | null>(null);
-  const mobileScrollRef = useRef<HTMLDivElement | null>(null);
 
   const products: Product[] = [
     {
@@ -63,7 +68,7 @@ export default function Products() {
     if (!isAutoPlaying) return;
 
     const interval = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % products.length);
+      setActiveIndex((prev) => (prev + 1) % products.length);
     }, 5000);
 
     return () => clearInterval(interval);
@@ -88,14 +93,14 @@ export default function Products() {
   };
 
   const nextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % products.length);
+    setActiveIndex((prev) => (prev + 1) % products.length);
     setIsAutoPlaying(false);
   };
 
   const prevSlide = () => {
-    setCurrentSlide((prev) => (prev - 1 + products.length) % products.length);
+    setActiveIndex((prev) => (prev - 1 + products.length) % products.length);
     setIsAutoPlaying(false);
-  };
+  }; 
 
   return (
     <Base>
@@ -137,10 +142,15 @@ export default function Products() {
             </p>
           </div>
 
-          {/* Carousel Wrapper */}
-          <div className="max-w-7xl mx-auto relative flex items-center gap-6">
+          {/* 3D Orbiting Carousel */}
 
-            {/* LEFT ARROW (OUTSIDE CARD) */}
+          {/* 3D configuration */}
+          {/* placed just before the markup so it's easy to tweak */}
+          
+          {/* helper to compute 3D transform values */}
+          {/* Note: we compute these in the render map below using getCardStyle */}
+
+          <div className="max-w-7xl mx-auto relative flex items-center gap-6">
             <button
               onClick={prevSlide}
               className="hidden md:flex items-center justify-center
@@ -152,40 +162,45 @@ export default function Products() {
               <ArrowLeftToLine />
             </button>
 
-            {/* SLIDER */}
-            <div className="flex-1 overflow-hidden rounded-3xl">
+            <div className="flex-1 flex items-center justify-center relative">
+              <div className="relative w-full h-[320px] md:h-[440px] flex items-center justify-center perspective-1000">
+                {products.map((product, index) => {
+                  const theta = ((index - activeIndex) * (2 * Math.PI)) / products.length;
+                  const depth = Math.cos(theta);
+                  const x = Math.sin(theta) * 260;
+                  const y = depth * 28;
+                  const scale = 0.6 + ((depth + 1) / 2) * 0.4;
+                  const opacity = 0.5 + ((depth + 1) / 2) * 0.5;
+                  const zIndex = Math.round((depth + 1) * 50);
+                  const blur = depth < 0.2 ? `blur(${Math.abs(depth - 0.2) * 4}px)` : "blur(0px)";
 
-              {/* MOBILE */}
-              <div
-                ref={mobileScrollRef}
-                onScroll={handleMobileScroll}
-                className="flex md:hidden overflow-x-auto snap-x snap-mandatory scrollbar-hide"
-              >
-                {products.map((product, index) => (
-                  <div
-                    key={index}
-                    className="w-full flex-shrink-0 snap-center px-2"
-                  >
-                    <ProductCard product={product} />
-                  </div>
-                ))}
+                  const style = { x, y, scale, opacity, zIndex, filter: blur } as any;
+                  const isFront = zIndex > 40;
+
+                  return (
+                    <motion.div
+                      key={index}
+                      animate={style}
+                      transition={{ type: "spring", stiffness: 140, damping: 20 }}
+                      className={cn(
+                        "absolute w-[320px] md:w-[520px] h-[220px] md:h-[300px] rounded-3xl p-4 md:p-6 flex flex-col md:flex-row items-center text-left select-none cursor-pointer transition-colors duration-300",
+                        "bg-zinc-800/50 border border-zinc-700/50 shadow-2xl",
+                        isFront ? "border-blue-500/50 border-b-4 border-b-blue-500" : "border-zinc-700"
+                      )}
+                      onClick={() => setActiveIndex(index)}
+                    >
+                      <img src={product.image} alt={product.title} className="w-full md:w-1/2 h-28 md:h-full object-cover rounded-2xl" />
+                      <div className="w-full md:w-1/2 mt-4 md:mt-0 md:pl-6">
+                        <h3 className={cn("text-xl md:text-2xl font-bold", isFront ? "text-white" : "text-zinc-400")}>{product.title}</h3>
+                        <p className="text-blue-400 font-semibold mt-1">{product.tagline}</p>
+                        <p className={cn("text-zinc-300 mt-2 text-sm md:text-base", isFront ? "opacity-100" : "opacity-70")}>{product.description}</p>
+                      </div>
+                    </motion.div>
+                  );
+                })}
               </div>
-
-              {/* DESKTOP */}
-              <motion.div
-                className="hidden md:flex"
-                animate={{ x: `-${currentSlide * 100}%` }}
-                transition={{ duration: 0.8, ease: "easeInOut" }}
-              >
-                {products.map((product, index) => (
-                  <div key={index} className="w-full flex-shrink-0">
-                    <ProductCard product={product} />
-                  </div>
-                ))}
-              </motion.div>
             </div>
 
-            {/* RIGHT ARROW (OUTSIDE CARD) */}
             <button
               onClick={nextSlide}
               className="hidden md:flex items-center justify-center
@@ -203,9 +218,9 @@ export default function Products() {
             {products.map((_, index) => (
               <button
                 key={index}
-                onClick={() => setCurrentSlide(index)}
+                onClick={() => setActiveIndex(index)}
                 className={`rounded-full transition-all ${
-                  index === currentSlide
+                  index === activeIndex
                     ? "w-8 h-3 bg-blue-500"
                     : "w-3 h-3 bg-zinc-600"
                 }`}
