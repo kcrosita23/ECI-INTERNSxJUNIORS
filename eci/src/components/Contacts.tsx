@@ -7,6 +7,7 @@ import {
   getCountries,
   getCountryCallingCode,
 } from "libphonenumber-js";
+import type { CountryCode } from "libphonenumber-js";
 
 /* ================= GLOBAL COUNTRIES ================= */
 const COUNTRIES = getCountries().map((c) => ({
@@ -17,7 +18,7 @@ const COUNTRIES = getCountries().map((c) => ({
 const EMAIL_MAX_LENGTH = 254;
 
 export default function Contacts() {
-  const [countryISO, setCountryISO] = useState<string>("PH");
+  const [countryISO, setCountryISO] = useState<CountryCode>("PH");
   const [phone, setPhone] = useState("");
   const [phoneError, setPhoneError] = useState("");
 
@@ -219,7 +220,7 @@ export default function Contacts() {
                 <div className="flex gap-2">
                   <select
                     value={countryISO}
-                    onChange={(e) => setCountryISO(e.target.value)}
+                    onChange={(e) => setCountryISO(e.target.value as CountryCode)}
                     className="px-3 bg-slate-800 rounded-xl text-white"
                   >
                     {COUNTRIES.map((c) => (
