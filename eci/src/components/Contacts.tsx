@@ -8,12 +8,24 @@ import {
   getCountryCallingCode,
   type CountryCode,
 } from "libphonenumber-js";
+<<<<<<< HEAD
+import type { CountryCode } from "libphonenumber-js";
+import { createClient } from "@supabase/supabase-js";
+import process from "process";
+=======
+>>>>>>> d77d734e3b0a86a64f74409a8974c3f0dd6a7622
 
 /* ================= GLOBAL COUNTRIES ================= */
 const COUNTRIES = getCountries().map((c) => ({
   iso: c,
   code: `+${getCountryCallingCode(c)}`,
 }));
+
+/* ================= SUPABASE CLIENT ================= */
+const supabase = createClient(
+  process.env.REACT_APP_SUPABASE_URL || "",
+  process.env.REACT_APP_SUPABASE_ANON_KEY || ""
+);
 
 const EMAIL_MAX_LENGTH = 254;
 
