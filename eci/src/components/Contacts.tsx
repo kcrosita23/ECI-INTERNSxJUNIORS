@@ -10,11 +10,14 @@ const COUNTRIES = [
   { name: "Japan", code: "+81", max: 10 },
 ];
 
+const EMAIL_MAX_LENGTH = 254;
+
 export default function Contacts() {
   const [country, setCountry] = useState(COUNTRIES[0]);
   const [fullName, setFullName] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
+  const [emailError, setEmailError] = useState("");
   const [message, setMessage] = useState("");
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -29,8 +32,48 @@ export default function Contacts() {
     setPhone(digitsOnly.slice(0, country.max));
   };
 
+  const validateEmail = (value: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+    if (!emailRegex.test(value)) {
+      return "Please enter a valid email address.";
+    }
+    return "";
+  };
+
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.slice(0, EMAIL_MAX_LENGTH);
+    setEmail(value);
+
+    if (!value) {
+      setEmailError("");
+      return;
+    }
+
+    setEmailError(validateEmail(value));
+  };
+
+  const handleMessageChange = (
+    e: React.ChangeEvent<HTMLTextAreaElement>
+  ) => {
+    const value = e.target.value;
+
+    const capitalized = value.replace(
+      /(^\s*\w|[.!?]\s*\w)/g,
+      (char) => char.toUpperCase()
+    );
+
+    setMessage(capitalized);
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
+    const emailValidationResult = validateEmail(email);
+    if (emailValidationResult) {
+      setEmailError(emailValidationResult);
+      return;
+    }
+
     alert("Form submitted!");
     // TODO: send form data to backend
   };
@@ -188,10 +231,18 @@ export default function Contacts() {
                   <input
                     type="email"
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="you@example.com"
-                    className="w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none text-white"
+                    maxLength={EMAIL_MAX_LENGTH}
+                    onChange={handleEmailChange}
+                    placeholder="delacruzjuan@example.com"
+                    className={`w-full px-4 py-3 bg-slate-800 border rounded-xl focus:ring-2 focus:outline-none text-white ${
+                      emailError
+                        ? "border-red-500 focus:ring-red-500"
+                        : "border-slate-700 focus:ring-indigo-500"
+                    }`}
                   />
+                  {emailError && (
+                    <p className="mt-2 text-sm text-red-400">{emailError}</p>
+                  )}
                 </div>
 
                 <div>
@@ -199,7 +250,7 @@ export default function Contacts() {
                   <textarea
                     rows={4}
                     value={message}
-                    onChange={(e) => setMessage(e.target.value)}
+                    onChange={handleMessageChange}
                     placeholder="Describe your inquiry or project requirements..."
                     className="w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none text-white resize-none"
                   />
