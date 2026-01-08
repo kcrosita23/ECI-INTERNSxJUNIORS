@@ -15,12 +15,6 @@ const COUNTRIES = getCountries().map((c) => ({
   code: `+${getCountryCallingCode(c)}`,
 }));
 
-/* ================= SUPABASE CLIENT ================= */
-const supabase = createClient(
-  process.env.REACT_APP_SUPABASE_URL || "",
-  process.env.REACT_APP_SUPABASE_ANON_KEY || ""
-);
-
 const EMAIL_MAX_LENGTH = 254;
 
 export default function Contacts() {

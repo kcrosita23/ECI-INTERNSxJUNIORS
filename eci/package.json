@@ -14,13 +14,9 @@
     "@supabase-js/source": "github:supabase/supabase-js",
     "@supabase/supabase-js": "^2.90.0",
     "@tailwindcss/vite": "^4.1.18",
-<<<<<<< HEAD
-    "framer-motion": "^12.24.10",
-=======
     "@tsparticles/react": "^3.0.0",
     "@tsparticles/slim": "^3.9.1",
-    "framer-motion": "^12.23.26",
->>>>>>> fb6b6724d1fefefc9ad93d96717a3d1c68f05ebe
+    "framer-motion": "^12.24.10",
     "libphonenumber-js": "^1.12.33",
     "lucide-react": "^0.561.0",
     "react": "^19.2.0",

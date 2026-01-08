@@ -1,19 +1,13 @@
-import Base from "./Base";
-import { useEffect, useRef, useState } from "react";
-import { motion } from "framer-motion";
-import { ArrowRightToLine, ArrowLeftToLine } from "lucide-react";
-import { clsx, type ClassValue } from "clsx";
-import { twMerge } from "tailwind-merge";
+import { useState, useEffect } from 'react';
+import type { ReactNode } from 'react';
 
-function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs));
+function Base({ children }: { children: ReactNode }) {
+  return <div>{children}</div>;
 }
 
-
 export default function Products() {
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
-  const sectionRef = useRef<HTMLElement | null>(null);
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [isAutoPlaying] = useState(true);
 
   const products = [
     {
@@ -43,20 +37,22 @@ export default function Products() {
     if (!isAutoPlaying) return;
     
     const interval = setInterval(() => {
-      setActiveIndex((prev) => (prev + 1) % products.length);
+      setCurrentSlide((prev) => (prev + 1) % products.length);
     }, 5000);
 
     return () => clearInterval(interval);
   }, [isAutoPlaying, products.length]);
 
   const nextSlide = () => {
-    setActiveIndex((prev) => (prev + 1) % products.length);
-    setIsAutoPlaying(false);
+    setCurrentSlide((prev) => (prev + 1) % products.length);
   };
 
   const prevSlide = () => {
-    setActiveIndex((prev) => (prev - 1 + products.length) % products.length);
-    setIsAutoPlaying(false);
+    setCurrentSlide((prev) => (prev - 1 + products.length) % products.length);
+  };
+
+  const goToSlide = (index: number) => {
+    setCurrentSlide(index);
   };
 
   return (
@@ -83,90 +79,6 @@ export default function Products() {
             </h2>
           </div>
 
-          {/* 3D Orbiting Carousel */}
-
-          {/* 3D configuration */}
-          {/* placed just before the markup so it's easy to tweak */}
-          
-          {/* helper to compute 3D transform values */}
-          {/* Note: we compute these in the render map below using getCardStyle */}
-
-          <div className="max-w-7xl mx-auto relative flex items-center gap-6">
-            <button
-              onClick={prevSlide}
-              className="hidden md:flex items-center justify-center
-                w-14 h-14 rounded-full
-                bg-blue-600 text-white text-2xl
-                hover:bg-blue-500 active:scale-95
-                shadow-lg transition"
-            >
-              <ArrowLeftToLine />
-            </button>
-
-            <div className="flex-1 flex items-center justify-center relative">
-              <div className="relative w-full h-[320px] md:h-[440px] flex items-center justify-center perspective-1000">
-                {products.map((product, index) => {
-                  const theta = ((index - activeIndex) * (2 * Math.PI)) / products.length;
-                  const depth = Math.cos(theta);
-                  const x = Math.sin(theta) * 260;
-                  const y = depth * 28;
-                  const scale = 0.6 + ((depth + 1) / 2) * 0.4;
-                  const opacity = 0.5 + ((depth + 1) / 2) * 0.5;
-                  const zIndex = Math.round((depth + 1) * 50);
-                  const blur = depth < 0.2 ? `blur(${Math.abs(depth - 0.2) * 4}px)` : "blur(0px)";
-
-                  const style = { x, y, scale, opacity, zIndex, filter: blur } as any;
-                  const isFront = zIndex > 40;
-
-                  return (
-                    <motion.div
-                      key={index}
-                      animate={style}
-                      transition={{ type: "spring", stiffness: 140, damping: 20 }}
-                      className={cn(
-                        "absolute w-[320px] md:w-[520px] h-[220px] md:h-[300px] rounded-3xl p-4 md:p-6 flex flex-col md:flex-row items-center text-left select-none cursor-pointer transition-colors duration-300",
-                        "bg-zinc-800/50 border border-zinc-700/50 shadow-2xl",
-                        isFront ? "border-blue-500/50 border-b-4 border-b-blue-500" : "border-zinc-700"
-                      )}
-                      onClick={() => setActiveIndex(index)}
-                    >
-                      <img src={product.image} alt={product.title} className="w-full md:w-1/2 h-28 md:h-full object-cover rounded-2xl" />
-                      <div className="w-full md:w-1/2 mt-4 md:mt-0 md:pl-6">
-                        <h3 className={cn("text-xl md:text-2xl font-bold", isFront ? "text-white" : "text-zinc-400")}>{product.title}</h3>
-                        <p className="text-blue-400 font-semibold mt-1">{product.tagline}</p>
-                        <p className={cn("text-zinc-300 mt-2 text-sm md:text-base", isFront ? "opacity-100" : "opacity-70")}>{product.description}</p>
-                      </div>
-                    </motion.div>
-                  );
-                })}
-              </div>
-            </div>
-
-            <button
-              onClick={nextSlide}
-              className="hidden md:flex items-center justify-center
-                w-14 h-14 rounded-full
-                bg-blue-600 text-white text-2xl
-                hover:bg-blue-500 active:scale-95
-                shadow-lg transition"
-            >
-              <ArrowRightToLine />
-            </button>
-          </div>
-
-          {/* Dots */}
-          <div className="flex justify-center gap-3 mt-8">
-            {products.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => setActiveIndex(index)}
-                className={`rounded-full transition-all ${
-                  index === activeIndex
-                    ? "w-8 h-3 bg-blue-500"
-                    : "w-3 h-3 bg-zinc-600"
-                }`}
-              />
-            ))}
           {/* Carousel Container */}
           <div className="max-w-7xl mx-auto">
             {/* Main Carousel */}
@@ -213,7 +125,7 @@ export default function Products() {
                           <p 
                             className={`text-xl text-blue-400 font-semibold mb-4 transition-all duration-700 ${
                               index === currentSlide 
-                                ? 'opacity-100 translate-y-0'
+                                ? 'opacity-100 translate-y-0' 
                                 : 'opacity-0 translate-y-8'
                             }`}
                             style={{ transitionDelay: index === currentSlide ? '300ms' : '0ms' }}
@@ -270,7 +182,6 @@ export default function Products() {
                 />
               ))}
             </div>
-
           </div>
         </div>
       </section>
