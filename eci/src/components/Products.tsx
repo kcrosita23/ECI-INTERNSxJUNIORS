@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import Base from "./Base";
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
@@ -8,25 +7,13 @@ import { twMerge } from "tailwind-merge";
 
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
-} 
-=======
-import { useState, useEffect } from 'react';
-import type { ReactNode } from 'react';
->>>>>>> 8535f02d8f4d9e8c506d09028e68eb3787019eee
-
-function Base({ children }: { children: ReactNode }) {
-  return <div>{children}</div>;
 }
 
+
 export default function Products() {
-<<<<<<< HEAD
   const [activeIndex, setActiveIndex] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
   const sectionRef = useRef<HTMLElement | null>(null);
-=======
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const [isAutoPlaying] = useState(true);
->>>>>>> 8535f02d8f4d9e8c506d09028e68eb3787019eee
 
   const products = [
     {
@@ -63,7 +50,6 @@ export default function Products() {
   }, [isAutoPlaying, products.length]);
 
   const nextSlide = () => {
-<<<<<<< HEAD
     setActiveIndex((prev) => (prev + 1) % products.length);
     setIsAutoPlaying(false);
   };
@@ -71,19 +57,7 @@ export default function Products() {
   const prevSlide = () => {
     setActiveIndex((prev) => (prev - 1 + products.length) % products.length);
     setIsAutoPlaying(false);
-  }; 
-=======
-    setCurrentSlide((prev) => (prev + 1) % products.length);
   };
-
-  const prevSlide = () => {
-    setCurrentSlide((prev) => (prev - 1 + products.length) % products.length);
-  };
-
-  const goToSlide = (index: number) => {
-    setCurrentSlide(index);
-  };
->>>>>>> 8535f02d8f4d9e8c506d09028e68eb3787019eee
 
   return (
     <Base>
@@ -109,7 +83,6 @@ export default function Products() {
             </h2>
           </div>
 
-<<<<<<< HEAD
           {/* 3D Orbiting Carousel */}
 
           {/* 3D configuration */}
@@ -194,7 +167,6 @@ export default function Products() {
                 }`}
               />
             ))}
-=======
           {/* Carousel Container */}
           <div className="max-w-7xl mx-auto">
             {/* Main Carousel */}
@@ -298,7 +270,7 @@ export default function Products() {
                 />
               ))}
             </div>
->>>>>>> 8535f02d8f4d9e8c506d09028e68eb3787019eee
+
           </div>
         </div>
       </section>
