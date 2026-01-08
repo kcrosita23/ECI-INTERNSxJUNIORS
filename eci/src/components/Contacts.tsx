@@ -7,6 +7,12 @@ import {
   getCountries,
   getCountryCallingCode,
 } from "libphonenumber-js";
+import { createClient } from "@supabase/supabase-js";
+
+/* ================= SUPABASE SETUP ================= */
+const SUPABASE_URL = "https://your-project-url.supabase.co"; // replace with your Supabase URL
+const SUPABASE_ANON_KEY = "your-anon-key"; // replace with your anon key
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 /* ================= GLOBAL COUNTRIES ================= */
 const COUNTRIES = getCountries().map((c) => ({
@@ -25,6 +31,7 @@ export default function Contacts() {
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState("");
   const [message, setMessage] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   /* ================= NAME ================= */
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -34,20 +41,16 @@ export default function Contacts() {
     setFullName(value);
   };
 
-  /* ================= PHONE (ENTERPRISE-GRADE) ================= */
+  /* ================= PHONE ================= */
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const raw = e.target.value;
     const formatter = new AsYouType(countryISO);
     const formatted = formatter.input(raw);
-
     setPhone(formatted);
 
     const parsed = parsePhoneNumberFromString(formatted, countryISO);
-    if (parsed && parsed.isValid()) {
-      setPhoneError("");
-    } else {
-      setPhoneError("Invalid phone number for selected country.");
-    }
+    if (parsed && parsed.isValid()) setPhoneError("");
+    else setPhoneError("Invalid phone number for selected country.");
   };
 
   /* ================= EMAIL ================= */
@@ -57,7 +60,6 @@ export default function Contacts() {
       ? ""
       : "Please enter a valid email address.";
   };
-
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.slice(0, EMAIL_MAX_LENGTH);
     setEmail(value);
@@ -65,9 +67,7 @@ export default function Contacts() {
   };
 
   /* ================= MESSAGE ================= */
-  const handleMessageChange = (
-    e: React.ChangeEvent<HTMLTextAreaElement>
-  ) => {
+  const handleMessageChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const capitalized = e.target.value.replace(
       /(^\s*\w|[.!?]\s*\w)/g,
       (c) => c.toUpperCase()
@@ -76,20 +76,37 @@ export default function Contacts() {
   };
 
   /* ================= SUBMIT ================= */
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     const emailCheck = validateEmail(email);
-    if (emailCheck) {
-      setEmailError(emailCheck);
-      return;
-    }
+    if (emailCheck) return setEmailError(emailCheck);
+    if (phoneError) return;
 
-    if (phoneError) {
-      return;
-    }
+    setIsSubmitting(true);
 
-    alert("Form submitted!");
+    const { error } = await supabase.from("contacts").insert([
+      {
+        full_name: fullName,
+        phone: phone,
+        country_iso: countryISO,
+        email: email,
+        message: message,
+      },
+    ]);
+
+    setIsSubmitting(false);
+
+    if (error) {
+      alert("Failed to submit. Please try again.");
+      console.error(error);
+    } else {
+      alert("Form submitted successfully!");
+      setFullName("");
+      setPhone("");
+      setEmail("");
+      setMessage("");
+    }
   };
 
   return (
@@ -109,19 +126,17 @@ export default function Contacts() {
           <h2 className="text-4xl font-bold text-white mb-10">
             About Everywhere Consulting Inc.
           </h2>
-
           <div className="grid md:grid-cols-2 gap-10">
             <div>
               <h3 className="text-xl font-semibold text-indigo-400 mb-3">
                 Company Overview
               </h3>
               <p className="text-slate-300 leading-relaxed">
-                Everywhere Consulting Inc. is a professional Information
-                Technology consulting and solutions firm headquartered in Makati
-                City, Metro Manila, Philippines.
+                Everywhere Consulting Inc. is a professional IT consulting and
+                solutions firm headquartered in Makati City, Metro Manila,
+                Philippines.
               </p>
             </div>
-
             <div>
               <h3 className="text-xl font-semibold text-indigo-400 mb-3">
                 Our Services
@@ -131,7 +146,6 @@ export default function Contacts() {
                 cybersecurity support, and technology implementation services.
               </p>
             </div>
-
             <div>
               <h3 className="text-xl font-semibold text-indigo-400 mb-3">
                 Our Mission
@@ -140,7 +154,6 @@ export default function Contacts() {
                 To deliver reliable, scalable, and secure technology solutions.
               </p>
             </div>
-
             <div>
               <h3 className="text-xl font-semibold text-indigo-400 mb-3">
                 Core Values
@@ -168,9 +181,8 @@ export default function Contacts() {
           className="w-full max-w-6xl bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl shadow-2xl overflow-hidden"
         >
           <div className="grid md:grid-cols-2">
-            {/* ================= LOCATION (INTERACTIVE RESPONSIVE MAP) ================= */}
+            {/* LOCATION */}
             <div className="relative bg-gradient-to-br from-indigo-600 to-purple-700">
-              {/* Responsive Map Wrapper */}
               <div className="relative w-full aspect-[4/3] md:aspect-square">
                 <iframe
                   title="Everywhere Consulting Inc Location"
@@ -178,36 +190,29 @@ export default function Contacts() {
                   referrerPolicy="no-referrer-when-downgrade"
                   className="absolute inset-0 w-full h-full border-0"
                   src="https://www.google.com/maps?q=Everywhere+Consulting+Inc+Makati&output=embed"
-                  allowFullScreen
                 />
               </div>
-
-              {/* Overlay Info (click-through safe) */}
-              <div className="absolute bottom-0 left-0 right-0 p-4 pointer-events-none">
-                <div className="bg-black/60 backdrop-blur-md p-3 rounded-md text-white max-w-xs pointer-events-auto">
-                  <div className="flex items-center gap-2 text-sm">
-                    <MapPin className="w-4 h-4" />
-                    Makati City, Metro Manila, Philippines
-                  </div>
-
-                  <a
-                    href="https://www.google.com/maps?q=Everywhere+Consulting+Inc+Makati"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="mt-2 inline-flex items-center gap-1 text-xs underline"
-                  >
-                    Open in Google Maps <ExternalLink className="w-3 h-3" />
-                  </a>
+              <div className="absolute bottom-0 left-0 right-0 bg-black/60 backdrop-blur-md p-4 text-white">
+                <div className="flex items-center gap-2 text-sm">
+                  <MapPin className="w-4 h-4" />
+                  Makati City, Metro Manila, Philippines
                 </div>
+                <a
+                  href="https://www.google.com/maps?q=Everywhere+Consulting+Inc+Makati"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-2 inline-flex items-center gap-1 text-xs underline"
+                >
+                  Open in Google Maps <ExternalLink className="w-3 h-3" />
+                </a>
               </div>
             </div>
 
-            {/* ================= FORM ================= */}
+            {/* FORM */}
             <div className="p-10 bg-slate-900">
               <h3 className="text-3xl font-semibold text-white mb-8">
                 Send a Message
               </h3>
-
               <form className="space-y-6" onSubmit={handleSubmit}>
                 <input
                   value={fullName}
@@ -237,7 +242,6 @@ export default function Contacts() {
                     className="flex-1 px-4 py-3 bg-slate-800 rounded-xl text-white"
                   />
                 </div>
-
                 {phoneError && (
                   <p className="text-sm text-red-400">{phoneError}</p>
                 )}
@@ -264,10 +268,11 @@ export default function Contacts() {
 
                 <button
                   type="submit"
-                  className="w-full flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 py-4 rounded-xl text-white"
+                  disabled={isSubmitting}
+                  className="w-full flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 py-4 rounded-xl text-white disabled:opacity-50"
                 >
                   <Send className="w-5 h-5" />
-                  Send Message
+                  {isSubmitting ? "Submitting..." : "Send Message"}
                 </button>
               </form>
             </div>
