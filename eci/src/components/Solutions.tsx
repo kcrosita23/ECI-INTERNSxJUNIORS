@@ -2,32 +2,30 @@ export default function Solutions() {
   return (
     <section
       id="solutions"
-      className="relative bg-zinc-900 text-white overflow-hidden py-20"
+      className="relative text-white overflow-hidden py-20"
     >
-      {/* Background Effects */}
+      {/* Gradient background*/}
       <div className="pointer-events-none absolute inset-0">
-        <div className="absolute top-0 left-0 w-[500px] h-[500px] md:w-[800px] md:h-[800px] bg-blue-500/20 blur-3xl rounded-full -translate-x-1/2 -translate-y-1/2" />
-        <div className="absolute bottom-0 right-0 w-[500px] h-[500px] md:w-[800px] md:h-[800px] bg-blue-600/20 blur-3xl rounded-full translate-x-1/2 translate-y-1/2" />
-        <div className="absolute top-1/2 left-1/2 w-[400px] h-[400px] md:w-[600px] md:h-[600px] bg-blue-600/10 blur-3xl rounded-full -translate-x-1/2 -translate-y-1/2" />
+        <div className="absolute top-0 left-0 w-[800px] h-[800px] bg-blue-500/20 blur-3xl rounded-full -translate-x-1/2 -translate-y-1/2" />
+        <div className="absolute bottom-0 right-0 w-[800px] h-[800px] bg-blue-600/20 blur-3xl rounded-full translate-x-1/2 translate-y-1/2" />
         <div className="absolute inset-0 bg-gradient-to-b from-zinc-900 via-transparent to-zinc-900" />
       </div>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-20">
+      <div className="relative z-10 min-h-screen max-w-7xl mx-auto px-6 py-20 md:px-12 lg:px-20">
         {/* Header */}
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-6xl font-bold text-blue-500">
-            Solutions
+          <h1 className="text-4xl md:text-4xl lg:text-[3rem] xl:text-6xl font-bold leading-tight">
+            OUR <span className="text-blue-500">SOLUTIONS</span>
+          </h1>
+          <h2 className="text-xl md:text-1xl text-zinc-400 font-light mt-4 max-w-3xl mx-auto">
+            Powerful software solutions designed to streamline operations and drive business growth.
           </h2>
-          <p className="text-lg text-zinc-400 mt-4 max-w-3xl mx-auto">
-            Powerful software solutions designed to streamline operations and
-            drive business growth.
-          </p>
         </div>
 
         <div className="grid grid-cols-1 gap-10">
 
           {/* ================= Solution 1 ================= */}
-          <div className="bg-zinc-800/30 border border-blue-500/30 border-b-4 rounded-3xl p-6 md:p-12 grid grid-cols-1 md:grid-cols-2 gap-8 items-center shadow-2xl ring-1 ring-blue-500/10 transition-shadow duration-300">
+          <div className="bg-zinc-800/50 backdrop-blur-sm border border-zinc-700/50 rounded-3xl p-6 md:p-12 grid grid-cols-1 md:grid-cols-2 gap-8 items-center shadow-2xl transition-shadow duration-300">
             <div>
               <div className="w-full rounded-3xl overflow-hidden aspect-video">
                 <iframe
@@ -55,7 +53,7 @@ export default function Solutions() {
           </div>
 
           {/* ================= Solution 2 (Reversed) ================= */}
-          <div className="bg-zinc-800/30 border border-blue-500/30 border-b-4 rounded-3xl p-6 md:p-12 grid grid-cols-1 md:grid-cols-2 gap-8 items-center shadow-2xl ring-1 ring-blue-500/10 transition-shadow duration-300">
+          <div className="bg-zinc-800/50 backdrop-blur-sm border border-zinc-700/50 rounded-3xl p-6 md:p-12 grid grid-cols-1 md:grid-cols-2 gap-8 items-center shadow-2xl transition-shadow duration-300">
             <div className="md:order-2">
               <div className="w-full rounded-3xl overflow-hidden aspect-video">
                 <iframe
@@ -82,7 +80,7 @@ export default function Solutions() {
           </div>
 
           {/* ================= Solution 3 ================= */}
-          <div className="bg-zinc-800/30 border border-blue-500/30 border-b-4 rounded-3xl p-6 md:p-12 grid grid-cols-1 md:grid-cols-2 gap-8 items-center shadow-2xl ring-1 ring-blue-500/10 transition-shadow duration-300">
+          <div className="bg-zinc-800/50 backdrop-blur-sm border border-zinc-700/50 rounded-3xl p-6 md:p-12 grid grid-cols-1 md:grid-cols-2 gap-8 items-center shadow-2xl transition-shadow duration-300">
             <div>
               <div className="w-full rounded-3xl overflow-hidden aspect-video">
                 <iframe
@@ -109,7 +107,7 @@ export default function Solutions() {
           </div> 
 
           {/* ================= Solution 4 (Reversed) ================= */}
-          <div className="bg-zinc-800/30 border border-blue-500/30 border-b-4 rounded-3xl p-6 md:p-12 grid grid-cols-1 md:grid-cols-2 gap-8 items-center shadow-2xl ring-1 ring-blue-500/10 transition-shadow duration-300">
+          <div className="bg-zinc-800/50 backdrop-blur-sm border border-zinc-700/50 rounded-3xl p-6 md:p-12 grid grid-cols-1 md:grid-cols-2 gap-8 items-center shadow-2xl transition-shadow duration-300">
             <div className="md:order-2">
               <div className="w-full rounded-3xl overflow-hidden aspect-video">
                 <iframe
@@ -136,7 +134,7 @@ export default function Solutions() {
           </div> 
 
           {/* ================= Solution 5 ================= */}
-          <div className="bg-zinc-800/30 border border-blue-500/30 border-b-4 rounded-3xl p-6 md:p-12 grid grid-cols-1 md:grid-cols-2 gap-8 items-center shadow-2xl ring-1 ring-blue-500/10 transition-shadow duration-300">
+          <div className="bg-zinc-800/50 backdrop-blur-sm border border-zinc-700/50 rounded-3xl p-6 md:p-12 grid grid-cols-1 md:grid-cols-2 gap-8 items-center shadow-2xl transition-shadow duration-300">
             <div>
               <div className="w-full rounded-3xl overflow-hidden aspect-video">
                 <iframe
