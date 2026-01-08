@@ -61,7 +61,7 @@ export default function Products() {
         id="products"
         className="relative text-white overflow-hidden"
       >
-        {/* Gradient background */}
+        {/* Gradient background*/}
         <div className="pointer-events-none absolute inset-0">
           <div className="absolute top-0 left-0 w-[800px] h-[800px] bg-blue-500/20 blur-3xl rounded-full -translate-x-1/2 -translate-y-1/2" />
           <div className="absolute bottom-0 right-0 w-[800px] h-[800px] bg-blue-600/20 blur-3xl rounded-full translate-x-1/2 translate-y-1/2" />
