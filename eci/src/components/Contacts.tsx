@@ -6,17 +6,8 @@ import {
   parsePhoneNumberFromString,
   getCountries,
   getCountryCallingCode,
+  type CountryCode,
 } from "libphonenumber-js";
-<<<<<<< HEAD
-import type { CountryCode } from "libphonenumber-js";
-import { createClient } from "@supabase/supabase-js";
-
-/* ================= SUPABASE SETUP ================= */
-const SUPABASE_URL = "https://your-project-url.supabase.co"; // replace with your Supabase URL
-const SUPABASE_ANON_KEY = "your-anon-key"; // replace with your anon key
-const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-=======
->>>>>>> d77d734e3b0a86a64f74409a8974c3f0dd6a7622
 
 /* ================= GLOBAL COUNTRIES ================= */
 const COUNTRIES = getCountries().map((c) => ({
