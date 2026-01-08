@@ -1,6 +1,8 @@
 import { motion, easeInOut, easeOut } from "framer-motion";
 import Base from "./Base";
 import type { Variants } from "framer-motion";
+import MagicImageParticles from "./MagicImageParticles";
+import { Link } from "react-router-dom";
 
 export default function HeroSection() {
 
@@ -50,6 +52,7 @@ export default function HeroSection() {
   return (
     <Base>
       <section id="home" className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-black via-zinc-900 to-zinc-800 text-white overflow-hidden scroll-mt-16">
+       <MagicImageParticles />
         {/* Background effects */}
         <div className="absolute -top-24 -left-24 w-72 h-72 sm:w-96 sm:h-96 bg-blue-600/30 rounded-full blur-3xl" />
         <div className="absolute top-1/3 -right-24 w-72 h-72 sm:w-96 sm:h-96 bg-cyan-500/20 rounded-full blur-3xl" />
@@ -86,16 +89,21 @@ export default function HeroSection() {
               className="mt-8 flex flex-col sm:flex-row gap-4 justify-center md:justify-start"
               variants={fadeUp}
             >
+              <Link to={'/contacts'}>
               <motion.button
                 className="px-6 py-3 rounded-xl bg-blue-500 hover:bg-blue-600 transition shadow-lg"
               >
                 About Us
               </motion.button>
+              </Link>
+              
+              <a href="/#services">
               <motion.button
                 className="px-6 py-3 rounded-xl border border-white/20 hover:bg-white/10 transition"
               >
                 View Services
               </motion.button>
+              </a>
             </motion.div>
           </motion.div>
         </div>
@@ -147,9 +155,7 @@ export default function HeroSection() {
         </motion.div>
 
         {/* bottom transition */}
-        <div className="pointer-events-none absolute bottom-0 left-0 h-48 w-full bg-gradient-to-b from-transparent via-zinc-900/60 to-zinc-900" />
-
-
+        <div className="pointer-events-none absolute bottom-0 left-0 h-32 w-full bg-gradient-to-b from-transparent via-zinc-900/60 to-zinc-900" />
       </section>
     </Base>
   );
