@@ -21,21 +21,21 @@ export default function Products() {
       title: "MAGIC XPA - LOW CODE PLATFORM",
       tagline: "Single Business Logic, Deploy Everywhere.",
       description:
-        "Our Magic XPA solution enables rapid creation of cross-platform business applications for desktop, web and mobile.",
+        "Our Magic XPA solution enables rapid creation of cross-platform business applications for desktop, web and mobile. To take advantage of new business opportunities quickly and on-demand.",
     },
     {
       image: "Magic-xpi.webp",
       title: "MAGIC XPI - INTEGRATION PLATFORM",
       tagline: "Sync. Streamline. Scale.",
       description:
-        "Magic XPI offers a new standard in system integration across cloud, on-prem, and hybrid deployments.",
+        "Magic XPI offers a new standard in system integration. With a code-free, low maintenance approach, Magic xpi integrates all of your business systems on the cloud, on-premises or in hybrid deployments so your company can maximize its opportunities.",
     },
     {
       image: "actian.webp",
       title: "ACTIAN ZEN (PSQL)",
       tagline: "Reliable, Fast, and Scalable DBMS",
       description:
-        "Actian Zen is a high-performance DBMS purpose-built for Edge, Mobile, and IoT environments.",
+        "Actian Zen database family is the most reliable, small-footprint, low-maintenance, high-performance database management system (DBMS) in the world. Purpose-built for Edge data management whether in the Cloud, remote and branch offices or in Mobile and IoT settings.",
     },
   ];
 
@@ -58,7 +58,6 @@ export default function Products() {
   observer.observe(sectionRef.current);
   return () => observer.disconnect();
 }, []);
-
 
   /* Desktop autoplay */
   useEffect(() => {
@@ -98,32 +97,6 @@ export default function Products() {
     setCurrentSlide((prev) => (prev - 1 + products.length) % products.length);
     setIsAutoPlaying(false);
   };
-
-  /* Product Card */
-  function ProductCard({ product }: { product: Product }) {
-    return (
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        viewport={{ once: true }}
-        className="grid md:grid-cols-2 gap-8
-          bg-zinc-800/50 border border-zinc-700/50
-          rounded-3xl p-6 md:p-12"
-      >
-        <img
-          src={product.image}
-          alt={product.title}
-          className="w-full h-48 sm:h-56 md:h-96 object-cover rounded-2xl"
-        />
-        <div className="space-y-4 text-center md:text-left">
-          <h3 className="text-2xl md:text-4xl font-bold">{product.title}</h3>
-          <p className="text-blue-400 font-semibold">{product.tagline}</p>
-          <p className="text-zinc-300">{product.description}</p>
-        </div>
-      </motion.div>
-    );
-  }
   return (
     <Base>
       <section
@@ -139,21 +112,20 @@ export default function Products() {
           <div className="absolute inset-0 bg-gradient-to-b from-zinc-900 via-transparent to-zinc-900" />
         </div>
 
-        <div className="relative z-10 px-6 py-20 md:px-12 lg:px-20">
+        <div className="relative z-10 min-h-screen px-6 py-20 md:px-12 lg:px-20">
           {/* Header */}
           <div className="text-center mb-12">
-            <h1 className="text-4xl md:text-6xl font-bold text-blue-500">
-              Our Products
+            <h1 className="text-4xl md:text-4xl lg:text-[3rem] xl:text-6xl font-bold leading-tight">
+              Our<span className="text-blue-500">Products</span>
             </h1>
             <p className="text-lg text-zinc-400">
               Build, Connect, and Manage with Ease
             </p>
-          </div>
+        </div>
 
           {/* Carousel Wrapper */}
           <div className="max-w-7xl mx-auto relative flex items-center gap-6">
 
-<<<<<<< HEAD
             {/* LEFT ARROW (OUTSIDE CARD) */}
             <button
               onClick={prevSlide}
@@ -175,7 +147,9 @@ export default function Products() {
               <div
                 ref={mobileScrollRef}
                 onScroll={handleMobileScroll}
-                className="flex md:hidden overflow-x-auto snap-x snap-mandatory scrollbar-hide"
+                className="flex md:hidden overflow-x-auto snap-x snap-mandatory
+                [-ms-overflow-style:none] [scrollbar-width:none]
+                [&::-webkit-scrollbar]:hidden"
               >
                 {products.map((product, index) => (
                   <div
@@ -183,44 +157,6 @@ export default function Products() {
                     className="w-full flex-shrink-0 snap-center px-2"
                   >
                     <ProductCard product={product} />
-=======
-                      {/* Content Side */}
-                      <div className="space-y-6">
-                        <div>
-                          <h3 
-                            className={`text-3xl md:text-4xl font-bold text-white mb-4 leading-tight transition-all duration-700 ${
-                              index === currentSlide 
-                                ? 'opacity-100 translate-y-0' 
-                                : 'opacity-0 translate-y-8'
-                            }`}
-                            style={{ transitionDelay: index === currentSlide ? '200ms' : '0ms' }}
-                          >
-                            {product.title}
-                          </h3>
-                          <p 
-                            className={`text-xl text-blue-400 font-semibold mb-4 transition-all duration-700 ${
-                              index === currentSlide 
-                                ? 'opacity-100 translate-y-0' 
-                                : 'opacity-0 translate-y-8'
-                            }`}
-                            style={{ transitionDelay: index === currentSlide ? '300ms' : '0ms' }}
-                          >
-                            {product.tagline}
-                          </p>
-                        </div>
-                        <p 
-                          className={`text-zinc-300 text-lg leading-relaxed transition-all duration-700 ${
-                            index === currentSlide 
-                              ? 'opacity-100 translate-y-0' 
-                              : 'opacity-0 translate-y-8'
-                          }`}
-                          style={{ transitionDelay: index === currentSlide ? '400ms' : '0ms' }}
-                        >
-                          {product.description}
-                        </p>
-                      </div>
-                    </div>
->>>>>>> 1287f53cf5a5a6cb757f7036927e9ed1f678e562
                   </div>
                 ))}
               </div>
@@ -239,7 +175,7 @@ export default function Products() {
               </motion.div>
             </div>
 
-            {/* RIGHT ARROW (OUTSIDE CARD) */}
+            {/* RIGHT ARROW */}
             <button
               onClick={nextSlide}
               className="hidden md:flex items-center justify-center
@@ -273,3 +209,28 @@ export default function Products() {
     </Base>
   );
 }
+  /* Product Card */
+  function ProductCard({ product }: { product: Product }) {
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        viewport={{ once: true }}
+        className="grid md:grid-cols-2 gap-8
+          bg-zinc-800/50 border border-zinc-700/50
+          rounded-3xl p-6 md:p-12"
+      >
+        <img
+          src={product.image}
+          alt={product.title}
+          className="relative w-full h-64 md:h-96 object-cover rounded-2xl shadow-2xl transform group-hover:scale-105 transition-transform duration-500"
+        />
+        <div className="space-y-6 text-center md:text-left flex flex-col justify-center">
+          <h3 className="text-2xl md:text-4xl font-bold text-white mb-4 leading-tight">{product.title}</h3>
+          <p className="text-xl text-blue-400 font-semibold mb-4">{product.tagline}</p>
+          <p className="text-zinc-300 text-lg leading-relaxed text-justify">{product.description}</p>
+        </div>
+      </motion.div>
+    );
+  }
