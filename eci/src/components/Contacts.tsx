@@ -1,4 +1,4 @@
-import { Send, MapPin, ExternalLink } from "lucide-react";
+import { Send, MapPin, ExternalLink } from "lucide-react"; 
 import { motion } from "framer-motion";
 import { useState } from "react";
 import {
@@ -6,15 +6,29 @@ import {
   parsePhoneNumberFromString,
   getCountries,
   getCountryCallingCode,
+  isValidNumberForRegion
 } from "libphonenumber-js";
 
 /* ================= GLOBAL COUNTRIES ================= */
 const COUNTRIES = getCountries().map((c) => ({
   iso: c,
+  name: new Intl.DisplayNames(["en"], { type: "region" }).of(c), // Full country name
   code: `+${getCountryCallingCode(c)}`,
 }));
 
 const EMAIL_MAX_LENGTH = 254;
+
+/* ================= GLOBAL AUTO-CORRECT ================= */
+const autoCorrectPhone = (countryISO: string, input: string) => {
+  let digitsOnly = input.replace(/\D/g, "");
+
+  // Remove leading national prefix if present (commonly 0)
+  if (digitsOnly.startsWith("0")) {
+    digitsOnly = digitsOnly.slice(1);
+  }
+
+  return digitsOnly;
+};
 
 export default function Contacts() {
   const [countryISO, setCountryISO] = useState<string>("PH");
@@ -34,16 +48,38 @@ export default function Contacts() {
     setFullName(value);
   };
 
-  /* ================= PHONE (ENTERPRISE-GRADE) ================= */
+  /* ================= PHONE (GLOBAL AUTO + COUNTRY VALIDATION) ================= */
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const raw = e.target.value;
+    let raw = e.target.value;
+
+    // Auto-correct leading national prefix
+    let digitsOnly = autoCorrectPhone(countryISO, raw);
+
+    // Auto-detect country if user types with "+"
+    if (raw.startsWith("+")) {
+      try {
+        const parsed = parsePhoneNumberFromString(raw);
+        if (parsed?.country) {
+          setCountryISO(parsed.country);
+        }
+      } catch {
+        // ignore invalid intermediate input
+      }
+    }
+
+    // Dynamic max length (typical max 15 digits)
+    const maxLength = 15;
+    let limitedDigits = digitsOnly.slice(0, maxLength);
+
+    // Format live
     const formatter = new AsYouType(countryISO);
-    const formatted = formatter.input(raw);
+    const formatted = formatter.input(limitedDigits);
 
     setPhone(formatted);
 
-    const parsed = parsePhoneNumberFromString(formatted, countryISO);
-    if (parsed && parsed.isValid()) {
+    // Validate against country rules
+    const parsedCheck = parsePhoneNumberFromString(formatted, countryISO);
+    if (parsedCheck && parsedCheck.isValid() && isValidNumberForRegion(parsedCheck.number, countryISO)) {
       setPhoneError("");
     } else {
       setPhoneError("Invalid phone number for selected country.");
@@ -170,7 +206,6 @@ export default function Contacts() {
           <div className="grid md:grid-cols-2">
             {/* ================= LOCATION (INTERACTIVE RESPONSIVE MAP) ================= */}
             <div className="relative bg-gradient-to-br from-indigo-600 to-purple-700">
-              {/* Responsive Map Wrapper */}
               <div className="relative w-full aspect-[4/3] md:aspect-square">
                 <iframe
                   title="Everywhere Consulting Inc Location"
@@ -182,7 +217,6 @@ export default function Contacts() {
                 />
               </div>
 
-              {/* Overlay Info (click-through safe) */}
               <div className="absolute bottom-0 left-0 right-0 p-4 pointer-events-none">
                 <div className="bg-black/60 backdrop-blur-md p-3 rounded-md text-white max-w-xs pointer-events-auto">
                   <div className="flex items-center gap-2 text-sm">
@@ -224,7 +258,7 @@ export default function Contacts() {
                   >
                     {COUNTRIES.map((c) => (
                       <option key={c.iso} value={c.iso}>
-                        {c.iso} ({c.code})
+                        {c.name} ({c.code})
                       </option>
                     ))}
                   </select>
