@@ -153,6 +153,7 @@ export default function Products() {
           {/* Carousel Wrapper */}
           <div className="max-w-7xl mx-auto relative flex items-center gap-6">
 
+<<<<<<< HEAD
             {/* LEFT ARROW (OUTSIDE CARD) */}
             <button
               onClick={prevSlide}
@@ -182,6 +183,44 @@ export default function Products() {
                     className="w-full flex-shrink-0 snap-center px-2"
                   >
                     <ProductCard product={product} />
+=======
+                      {/* Content Side */}
+                      <div className="space-y-6">
+                        <div>
+                          <h3 
+                            className={`text-3xl md:text-4xl font-bold text-white mb-4 leading-tight transition-all duration-700 ${
+                              index === currentSlide 
+                                ? 'opacity-100 translate-y-0' 
+                                : 'opacity-0 translate-y-8'
+                            }`}
+                            style={{ transitionDelay: index === currentSlide ? '200ms' : '0ms' }}
+                          >
+                            {product.title}
+                          </h3>
+                          <p 
+                            className={`text-xl text-blue-400 font-semibold mb-4 transition-all duration-700 ${
+                              index === currentSlide 
+                                ? 'opacity-100 translate-y-0' 
+                                : 'opacity-0 translate-y-8'
+                            }`}
+                            style={{ transitionDelay: index === currentSlide ? '300ms' : '0ms' }}
+                          >
+                            {product.tagline}
+                          </p>
+                        </div>
+                        <p 
+                          className={`text-zinc-300 text-lg leading-relaxed transition-all duration-700 ${
+                            index === currentSlide 
+                              ? 'opacity-100 translate-y-0' 
+                              : 'opacity-0 translate-y-8'
+                          }`}
+                          style={{ transitionDelay: index === currentSlide ? '400ms' : '0ms' }}
+                        >
+                          {product.description}
+                        </p>
+                      </div>
+                    </div>
+>>>>>>> 1287f53cf5a5a6cb757f7036927e9ed1f678e562
                   </div>
                 ))}
               </div>
