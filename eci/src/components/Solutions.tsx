@@ -47,7 +47,7 @@ export default function Solutions() {
     return () => clearTimeout(timer);
   }, [showSwipeHint]);
 
-  // Autoplay logic
+  // Autoplay logic 
   useEffect(() => {
     if (!isAutoPlaying) return;
 
