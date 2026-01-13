@@ -1,41 +1,68 @@
-import { useState, useEffect } from 'react';
-import type { ReactNode } from 'react';
+import Base from "./Base";
+import { useEffect, useRef, useState } from "react";
+import { motion } from "framer-motion";
 
-function Base({ children }: { children: ReactNode }) {
-  return <div>{children}</div>;
-}
+type Product = {
+  image: string;
+  title: string;
+  tagline: string;
+  description: string;
+};
 
 export default function Products() {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [isAutoPlaying] = useState(true);
+  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+  const sectionRef = useRef<HTMLElement | null>(null);
+  const mobileScrollRef = useRef<HTMLDivElement | null>(null);
 
-  const products = [
+  const products: Product[] = [
     {
       image: "low-code.webp",
       title: "MAGIC XPA - LOW CODE PLATFORM",
       tagline: "Single Business Logic, Deploy Everywhere.",
-      description: "Our Magic XPA solution enables rapid creation of cross-platform business applications for desktop, web and mobile. To take advantage of new business opportunities quickly and on-demand.",
-      color: "cyan"
+      description:
+        "Our Magic XPA solution enables rapid creation of cross-platform business applications for desktop, web and mobile. To take advantage of new business opportunities quickly and on-demand.",
     },
     {
       image: "Magic-xpi.webp",
       title: "MAGIC XPI - INTEGRATION PLATFORM",
       tagline: "Sync. Streamline. Scale.",
-      description: "Magic XPI offers a new standard in system integration. With a code-free, low maintenance approach, Magic xpi integrates all of your business systems on the cloud, on-premises or in hybrid deployments so your company can maximize its opportunities.",
-      color: "blue"
+      description:
+        "Magic XPI offers a new standard in system integration. With a code-free, low maintenance approach, Magic xpi integrates all of your business systems on the cloud, on-premises or in hybrid deployments so your company can maximize its opportunities.",
     },
     {
       image: "actian.webp",
       title: "ACTIAN ZEN (PSQL)",
       tagline: "Reliable, Fast, and Scalable DBMS",
-      description: "Actian Zen database family is the most reliable, small-footprint, low-maintenance, high-performance database management system (DBMS) in the world. Purpose-built for Edge data management whether in the Cloud, remote and branch offices or in Mobile and IoT settings.",
-      color: "purple"
-    }
+      description:
+        "Actian Zen database family is the most reliable, small-footprint, low-maintenance, high-performance database management system (DBMS) in the world. Purpose-built for Edge data management whether in the Cloud, remote and branch offices or in Mobile and IoT settings.",
+    },
   ];
 
+  /* Disable autoplay on mobile */
+  useEffect(() => {
+    if (window.innerWidth < 768) setIsAutoPlaying(false);
+  }, []);
+
+  useEffect(() => {
+  if (!sectionRef.current) return;
+
+  const observer = new IntersectionObserver(
+    ([entry]) => {
+      if (window.innerWidth < 768) return;
+      setIsAutoPlaying(entry.isIntersecting);
+    },
+    { threshold: 0.5 }
+  );
+
+  observer.observe(sectionRef.current);
+  return () => observer.disconnect();
+}, []);
+
+  /* Desktop autoplay */
   useEffect(() => {
     if (!isAutoPlaying) return;
-    
+
     const interval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % products.length);
     }, 5000);
@@ -43,25 +70,42 @@ export default function Products() {
     return () => clearInterval(interval);
   }, [isAutoPlaying, products.length]);
 
+  /* Keyboard navigation */
+  useEffect(() => {
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === "ArrowRight") nextSlide();
+      if (e.key === "ArrowLeft") prevSlide();
+    };
+    window.addEventListener("keydown", handleKey);
+    return () => window.removeEventListener("keydown", handleKey);
+  }, []);
+
+  /* Mobile swipe → update dots */
+  const handleMobileScroll = () => {
+    if (!mobileScrollRef.current) return;
+    const scrollX = mobileScrollRef.current.scrollLeft;
+    const width = mobileScrollRef.current.offsetWidth;
+    setCurrentSlide(Math.round(scrollX / width));
+  };
+
   const nextSlide = () => {
     setCurrentSlide((prev) => (prev + 1) % products.length);
+    setIsAutoPlaying(false);
   };
 
   const prevSlide = () => {
     setCurrentSlide((prev) => (prev - 1 + products.length) % products.length);
+    setIsAutoPlaying(false);
   };
-
-  const goToSlide = (index: number) => {
-    setCurrentSlide(index);
-  };
-
   return (
     <Base>
       <section
         id="products"
+        ref={sectionRef}
         className="relative text-white overflow-hidden"
       >
-        {/* Gradient background*/}
+
+        {/* Gradient background */}
         <div className="pointer-events-none absolute inset-0">
           <div className="absolute top-0 left-0 w-[800px] h-[800px] bg-blue-500/20 blur-3xl rounded-full -translate-x-1/2 -translate-y-1/2" />
           <div className="absolute bottom-0 right-0 w-[800px] h-[800px] bg-blue-600/20 blur-3xl rounded-full translate-x-1/2 translate-y-1/2" />
@@ -70,121 +114,123 @@ export default function Products() {
 
         <div className="relative z-10 min-h-screen px-6 py-20 md:px-12 lg:px-20">
           {/* Header */}
-          <div className="text-center mb-16">
+          <div className="text-center mb-12">
             <h1 className="text-4xl md:text-4xl lg:text-[3rem] xl:text-6xl font-bold leading-tight">
-              OUR <span className="text-blue-500">PRODUCTS</span>
+              Our<span className="text-blue-500">Products</span>
             </h1>
-            <h2 className="text-xl md:text-1xl text-zinc-400 font-light">
+            <p className="text-lg text-zinc-400">
               Build, Connect, and Manage with Ease
-            </h2>
-          </div>
+            </p>
+        </div>
 
-          {/* Carousel Container */}
-          <div className="max-w-7xl mx-auto">
-            {/* Main Carousel */}
-            <div className="relative mb-12 px-12 md:px-16">
-              <div className="rounded-3xl relative">
+          {/* Carousel Wrapper */}
+          <div className="max-w-7xl mx-auto relative flex items-center gap-6">
+
+            {/* LEFT ARROW (OUTSIDE CARD) */}
+            <button
+              onClick={prevSlide}
+              className="hidden md:flex items-center justify-center
+                w-14 h-14 rounded-full
+                bg-zinc-800/80 text-white text-2xl
+                hover:bg-zinc-700 backdrop-blur-sm active:scale-95 p-3
+                shadow-lg transition"
+            >
+                <svg className="w-5 h-5 md:w-6 md:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
+            </button>
+
+            {/* SLIDER */}
+             <div className="flex-1 overflow-hidden rounded-3xl">
+
+              {/* MOBILE */}
+              <div
+                ref={mobileScrollRef}
+                onScroll={handleMobileScroll}
+                className="flex md:hidden overflow-x-auto snap-x snap-mandatory
+                [-ms-overflow-style:none] [scrollbar-width:none]
+                [&::-webkit-scrollbar]:hidden"
+              >
                 {products.map((product, index) => (
-                  <div 
-                    key={index} 
-                    className={`w-full transition-opacity duration-500 ${
-                      index === currentSlide ? 'opacity-100' : 'opacity-0 absolute inset-0 pointer-events-none'
-                    }`}
+                  <div
+                    key={index}
+                    className="w-full flex-shrink-0 snap-center px-2"
                   >
-                    <div className="grid md:grid-cols-2 gap-8 items-center bg-zinc-800/50 backdrop-blur-sm border border-zinc-700/50 rounded-3xl p-8 md:p-12">
-                      {/* Image Side */}
-                      <div 
-                        className={`relative group transition-all duration-700 ${
-                          index === currentSlide 
-                            ? 'opacity-100 translate-y-0' 
-                            : 'opacity-0 translate-y-8'
-                        }`}
-                        style={{ transitionDelay: index === currentSlide ? '100ms' : '0ms' }}
-                      >
-                        <div className="absolute inset-0 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-500" />
-                        <img 
-                          src={product.image} 
-                          alt={product.title}
-                          className="relative w-full h-64 md:h-96 object-cover rounded-2xl shadow-2xl transform group-hover:scale-105 transition-transform duration-500"
-                        />
-                      </div>
-
-                      {/* Content Side */}
-                      <div className="space-y-6">
-                        <div>
-                          <h3 
-                            className={`text-3xl md:text-4xl font-bold text-white mb-4 leading-tight transition-all duration-700 ${
-                              index === currentSlide 
-                                ? 'opacity-100 translate-y-0' 
-                                : 'opacity-0 translate-y-8'
-                            }`}
-                            style={{ transitionDelay: index === currentSlide ? '200ms' : '0ms' }}
-                          >
-                            {product.title}
-                          </h3>
-                          <p 
-                            className={`text-xl text-blue-400 font-semibold mb-4 transition-all duration-700 ${
-                              index === currentSlide 
-                                ? 'opacity-100 translate-y-0' 
-                                : 'opacity-0 translate-y-8'
-                            }`}
-                            style={{ transitionDelay: index === currentSlide ? '300ms' : '0ms' }}
-                          >
-                            {product.tagline}
-                          </p>
-                        </div>
-                        <p 
-                          className={`text-zinc-300 text-lg leading-relaxed transition-all duration-700 ${
-                            index === currentSlide 
-                              ? 'opacity-100 translate-y-0' 
-                              : 'opacity-0 translate-y-8'
-                          }`}
-                          style={{ transitionDelay: index === currentSlide ? '400ms' : '0ms' }}
-                        >
-                          {product.description}
-                        </p>
-                      </div>
-                    </div>
+                    <ProductCard product={product} />
                   </div>
                 ))}
               </div>
 
-              {/* Navigation Arrows */}
-              <button 
-                onClick={prevSlide}
-                className="absolute -left-6 md:-left-8 top-1/2 -translate-y-1/2 bg-zinc-800/80 hover:bg-zinc-700 backdrop-blur-sm p-3 md:p-4 rounded-full border border-zinc-600 transition-all duration-300 hover:scale-110 hover:shadow-lg hover:shadow-blue-500/30 z-10"
+              {/* DESKTOP */}
+              <motion.div
+                className="hidden md:flex"
+                animate={{ x: `-${currentSlide * 100}%` }}
+                transition={{ duration: 0.8, ease: "easeInOut" }}
               >
-                <svg className="w-5 h-5 md:w-6 md:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                </svg>
-              </button>
-              <button 
-                onClick={nextSlide}
-                className="absolute -right-6 md:-right-8 top-1/2 -translate-y-1/2 bg-zinc-800/80 hover:bg-zinc-700 backdrop-blur-sm p-3 md:p-4 rounded-full border border-zinc-600 transition-all duration-300 hover:scale-110 hover:shadow-lg hover:shadow-blue-500/30 z-10"
-              >
+                {products.map((product, index) => (
+                  <div key={index} className="w-full flex-shrink-0">
+                    <ProductCard product={product} />
+                  </div>
+                ))}
+              </motion.div>
+            </div>
+
+            {/* RIGHT ARROW */}
+            <button
+              onClick={nextSlide}
+              className="hidden md:flex items-center justify-center
+                w-14 h-14 rounded-full
+                bg-zinc-800/80 text-white text-2xl
+                hover:bg-zinc-700 backdrop-blur-sm active:scale-95
+                shadow-lg transition"
+            >
                 <svg className="w-5 h-5 md:w-6 md:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                 </svg>
-              </button>
-            </div>
+            </button>
+          </div>
 
-            {/* Dots Indicator */}
-            <div className="flex justify-center gap-3 mb-12">
-              {products.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => goToSlide(index)}
-                  className={`transition-all duration-300 rounded-full ${
-                    index === currentSlide 
-                      ? 'w-12 h-3 bg-blue-500' 
-                      : 'w-3 h-3 bg-zinc-600 hover:bg-zinc-500'
-                  }`}
-                />
-              ))}
-            </div>
+          {/* Dots */}
+          <div className="flex justify-center gap-3 mt-8">
+            {products.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => setCurrentSlide(index)}
+                className={`rounded-full transition-all ${
+                  index === currentSlide
+                    ? "w-8 h-3 bg-blue-500"
+                    : "w-3 h-3 bg-zinc-600"
+                }`}
+              />
+            ))}
           </div>
         </div>
       </section>
     </Base>
   );
 }
+  /* Product Card */
+  function ProductCard({ product }: { product: Product }) {
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        viewport={{ once: true }}
+        className="grid md:grid-cols-2 gap-8
+          bg-zinc-800/50 border border-zinc-700/50
+          rounded-3xl p-6 md:p-12"
+      >
+        <img
+          src={product.image}
+          alt={product.title}
+          className="relative w-full h-64 md:h-96 object-cover rounded-2xl shadow-2xl transform group-hover:scale-105 transition-transform duration-500"
+        />
+        <div className="space-y-6 text-center md:text-left flex flex-col justify-center">
+          <h3 className="text-2xl md:text-4xl font-bold text-white mb-4 leading-tight">{product.title}</h3>
+          <p className="text-xl text-blue-400 font-semibold mb-4">{product.tagline}</p>
+          <p className="text-zinc-300 text-lg leading-relaxed text-justify">{product.description}</p>
+        </div>
+      </motion.div>
+    );
+  }

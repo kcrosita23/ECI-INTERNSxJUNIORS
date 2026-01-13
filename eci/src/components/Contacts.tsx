@@ -6,9 +6,13 @@ import {
   parsePhoneNumberFromString,
   getCountries,
   getCountryCallingCode,
-  isValidNumberForRegion,
-  getExampleNumber
 } from "libphonenumber-js";
+<<<<<<< HEAD
+import type { CountryCode } from "libphonenumber-js";
+import { createClient } from "@supabase/supabase-js";
+import process from "process";
+=======
+>>>>>>> d77d734e3b0a86a64f74409a8974c3f0dd6a7622
 
 /* ================= GLOBAL COUNTRIES ================= */
 const COUNTRIES = getCountries().map((c) => ({
@@ -17,14 +21,11 @@ const COUNTRIES = getCountries().map((c) => ({
   code: `+${getCountryCallingCode(c)}`
 }));
 
-/* ================= SERVICES (SYNCED WITH CAROUSEL) ================= */
-const SERVICES = [
-  { id: 1, title: "Back Office Support" },
-  { id: 2, title: "QA & Testing" },
-  { id: 3, title: "App Development" },
-  { id: 4, title: "Technical Helpdesk" },
-  { id: 5, title: "IT Infrastructure" }
-];
+/* ================= SUPABASE CLIENT ================= */
+const supabase = createClient(
+  process.env.REACT_APP_SUPABASE_URL || "",
+  process.env.REACT_APP_SUPABASE_ANON_KEY || ""
+);
 
 const EMAIL_MAX_LENGTH = 254;
 
