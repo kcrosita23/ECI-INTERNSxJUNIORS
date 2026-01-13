@@ -177,7 +177,7 @@ export default function Products() {
                 </div>
               )}
 
-              {/* Mobile*/}
+              {/* Mobile */}
               <div
                 ref={mobileScrollRef}
                 onScroll={handleMobileScroll}
