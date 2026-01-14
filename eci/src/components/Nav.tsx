@@ -20,7 +20,7 @@ const navigation: NavItem[] = [
     ],
   },
   { name: "Partners", href: "#partners" },
-  { name: "Contacts", href: "/contacts" },
+  { name: "Contact Us", href: "/contacts" },
 ];
 
 function classNames(...classes: (string | false | undefined)[]) {
