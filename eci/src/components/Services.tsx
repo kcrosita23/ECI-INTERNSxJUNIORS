@@ -38,12 +38,11 @@ const services = [
 export default function Services() {
   return (
     <section id="services" className="bg-slate-950 text-white relative">
-      {/* Changed: 'flex-col' for mobile, 'lg:grid' for desktop */}
       <div className="flex flex-col lg:grid lg:grid-cols-2 max-w-7xl mx-auto">
         
-        {/* LEFT — Header (Sticky on Desktop, Static on Mobile) */}
-        {/* Changed: Added responsive padding, height, and font sizes */}
-        <div className="relative flex flex-col justify-center px-6 py-12 lg:px-16 lg:sticky lg:top-0 lg:h-screen bg-slate-950 z-10">
+        {/* LEFT — Header */}
+        <div className="relative flex flex-col text-center sm:text-left justify-center px-6 py-12 lg:px-16 lg:sticky lg:top-0 lg:h-screen bg-slate-950 z-10">
+          {/* Fixed typo in className: "t ext" -> "text" */}
           <p className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight">
             We Empower Your Business with Expert Support,{" "}
             <span className="text-blue-500">
@@ -53,25 +52,21 @@ export default function Services() {
         </div>
 
         {/* RIGHT — Scrolling Content */}
-        {/* Changed: Border is top on mobile, left on desktop */}
-        <div className="border-t border-slate-800 lg:border-t-0 lg:border-l">
+        <div>
           {services.map((service) => {
             const Icon = service.icon;
             return (
               <div
                 key={service.id}
-                // Changed: min-h-[50vh] for mobile (so it doesn't take full height if not needed), h-screen for desktop
-                // Changed: px-6 for mobile, px-20 for desktop
-                className="min-h-[60vh] lg:h-screen flex items-center px-6 py-10 lg:px-20 overflow-hidden"
+                // Changed: 'h-auto' for mobile (natural height), 'lg:h-screen' for desktop
+                // Changed: Added 'py-12' for mobile spacing
+                className="h-auto py-12 lg:py-0 lg:h-screen flex items-center px-6 lg:px-20 overflow-hidden"
               >
                 <motion.div
                   initial={{ opacity: 0, y: 100 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.8, ease: "easeOut" }}
-                  // Changed: Lowered threshold slightly so it triggers earlier on mobile
                   viewport={{ once: false, amount: 0.3 }} 
-                  
-                  // Changed: Mobile padding p-6, Desktop p-12
                   className="w-full bg-slate-900 border border-slate-800 rounded-xl p-6 lg:p-12 hover:border-blue-500 transition-colors duration-300"
                 >
                   <div className="flex items-center gap-4 mb-4 lg:mb-6">
