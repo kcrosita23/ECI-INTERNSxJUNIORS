@@ -1,181 +1,95 @@
-import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
-import { 
-  MonitorCheck, 
-  Code2, 
-  Headset, 
-  Server, 
+import {
+  MonitorCheck,
+  Code2,
+  Headset,
   BarChart3,
 } from "lucide-react";
-import { clsx, type ClassValue } from "clsx";
-import { twMerge } from "tailwind-merge";
+import { motion } from "framer-motion";
 
-// --- Utility ---
-function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs));
-}
-
-// --- Data ---
 const services = [
   {
     id: 1,
-    title: "Back Office Support",
+    title: "TECHNICAL SUPPORT",
     icon: BarChart3,
-    description: "Data analysis and administrative workflow optimization.",
+    description: "Programming/Installation Assistance at ECI Office.",
   },
   {
     id: 2,
-    title: "QA & Testing",
+    title: "TRAINING",
     icon: MonitorCheck,
-    description: "Comprehensive automated and manual software testing.",
+    description: "Magic XPA Developer Training 5 days Training at ECI Office.",
   },
   {
     id: 3,
-    title: "App Development",
+    title: "CUSTOM SOFTWARE DEVELOPMENT",
     icon: Code2,
-    description: "Full-cycle mobile and web application engineering.",
+    description:
+      "ECI has the experience to help design, create, deploy, and maintain secure and reliable software applications tailored to specific business needs, on time and within the budget. Our approach integrates cybersecurity best practices throughout the development lifecycle to ensure protection from evolving threats.",
   },
   {
     id: 4,
-    title: "Technical Helpdesk",
+    title: "CYBERSECURITY SERVICES",
     icon: Headset,
-    description: "24/7 technical support and issue resolution.",
-  },
-  {
-    id: 5,
-    title: "IT Infrastructure",
-    icon: Server,
-    description: "Cloud management and server maintenance.",
+    description:
+      "Vulnerability Assessment and Penetration Testing (VAPT) to identify and address security gaps. Cybersecurity Posture Assessment to evaluate and strengthen your organization’s overall security readiness.",
   },
 ];
 
-const OrbitingCarouselDark = () => {
-  const [activeIndex, setActiveIndex] = useState(0);
-
-  // --- Configuration ---
-  const X_RADIUS = 380; 
-  const Y_OFFSET = 60;   // Positive Y_OFFSET makes the front card dip lower
-  const TOTAL = services.length;
-
-  // Auto-rotate
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setActiveIndex((prev) => prev + 1);
-    }, 4000);
-    return () => clearInterval(timer);
-  }, []);
-
-  const handleNext = () => setActiveIndex((prev) => prev + 1);
-  const handlePrev = () => setActiveIndex((prev) => prev - 1);
-
-  // --- 3D Logic ---
-  const getCardStyle = (index: number) => {
-    const theta = ((index - activeIndex) * (2 * Math.PI)) / TOTAL;
-
-    // 1. DEPTH (Cos): -1 (Back) to 1 (Front)
-    const depth = Math.cos(theta);
-    
-    // 2. X POSITION (Sin): -1 (Left) to 1 (Right)
-    const x = Math.sin(theta) * X_RADIUS;
-
-    // 3. Y POSITION (Tilt): 
-    // Positive Depth (Front) * Y_OFFSET = Positive Y (Down)
-    const y = depth * Y_OFFSET;
-
-    // 4. SCALE: Front = 1.0, Back = 0.6
-    const scale = 0.6 + ((depth + 1) / 2) * 0.4;
-
-    // 5. OPACITY: Front = 1, Back = 0.5
-    const opacity = 0.5 + ((depth + 1) / 2) * 0.5;
-
-    // 6. Z-INDEX
-    const zIndex = Math.round((depth + 1) * 20);
-
-    // 7. BLUR
-    const blur = depth < 0.2 ? `blur(${Math.abs(depth - 0.2) * 5}px)` : "blur(0px)";
-
-    return { x, y, scale, opacity, zIndex, filter: blur };
-  };
-
+export default function Services() {
   return (
-    // Main container changed to dark slate background and white text
-    <div id="services" className="w-full min-h-[600px] bg-slate-950 text-white flex flex-col items-center justify-center overflow-hidden py-20 relative">
-      
-      {/* Background Decor - Dark Blue/Cyan blobs */}
-      <div className="absolute top-10 left-10 w-32 h-32 bg-blue-900/30 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-10 right-10 w-64 h-64 bg-cyan-900/20 rounded-full blur-3xl opacity-50 pointer-events-none" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-slate-900/50 to-slate-950 pointer-events-none" />
+    <section id="services" className="bg-slate-950 text-white relative">
+      {/* Changed: 'flex-col' for mobile, 'lg:grid' for desktop */}
+      <div className="flex flex-col lg:grid lg:grid-cols-2 max-w-7xl mx-auto">
+        
+        {/* LEFT — Header (Sticky on Desktop, Static on Mobile) */}
+        {/* Changed: Added responsive padding, height, and font sizes */}
+        <div className="relative flex flex-col justify-center px-6 py-12 lg:px-16 lg:sticky lg:top-0 lg:h-screen bg-slate-950 z-10">
+          <p className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight">
+            We Empower Your Business with Expert Support,{" "}
+            <span className="text-blue-500">
+              Training & Custom Software Solutions!
+            </span>
+          </p>
+        </div>
 
+        {/* RIGHT — Scrolling Content */}
+        {/* Changed: Border is top on mobile, left on desktop */}
+        <div className="border-t border-slate-800 lg:border-t-0 lg:border-l">
+          {services.map((service) => {
+            const Icon = service.icon;
+            return (
+              <div
+                key={service.id}
+                // Changed: min-h-[50vh] for mobile (so it doesn't take full height if not needed), h-screen for desktop
+                // Changed: px-6 for mobile, px-20 for desktop
+                className="min-h-[60vh] lg:h-screen flex items-center px-6 py-10 lg:px-20 overflow-hidden"
+              >
+                <motion.div
+                  initial={{ opacity: 0, y: 100 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8, ease: "easeOut" }}
+                  // Changed: Lowered threshold slightly so it triggers earlier on mobile
+                  viewport={{ once: false, amount: 0.3 }} 
+                  
+                  // Changed: Mobile padding p-6, Desktop p-12
+                  className="w-full bg-slate-900 border border-slate-800 rounded-xl p-6 lg:p-12 hover:border-blue-500 transition-colors duration-300"
+                >
+                  <div className="flex items-center gap-4 mb-4 lg:mb-6">
+                    <Icon className="text-blue-500" size={42} />
+                    <h3 className="text-xl lg:text-2xl font-semibold">
+                      {service.title}
+                    </h3>
+                  </div>
 
-      {/* Heading - White and Blue text */}
-      <div className="mb-20 text-center z-10 relative">
-        <h2 className="text-3xl font-bold text-white tracking-tight">
-          OUR <span className="text-blue-500">SERVICES</span>
-        </h2>
-        <p className="text-gray-400 mt-2">Comprehensive IT Solutions</p>
-      </div>
-
-      {/* 3D Stage */}
-      <div className="relative w-full max-w-5xl h-[400px] mt-[-50px] flex items-center justify-center perspective-1000">
-        {services.map((service, index) => {
-          const style = getCardStyle(index);
-          const isFront = style.zIndex > 80;
-
-          return (
-            <motion.div
-              key={service.id}
-              animate={style}
-              transition={{
-                type: "spring",
-                stiffness: 120,
-                damping: 20,
-                mass: 1,
-              }}
-              // Card Styles - Dark theme colors
-              className={cn(
-                "absolute w-[280px] h-[340px] rounded-2xl p-6 flex flex-col items-center justify-center text-center select-none cursor-pointer transition-colors duration-300",
-                // Base dark card style
-                "bg-slate-900 border shadow-2xl shadow-blue-900/20",
-                // Conditional borders for active vs inactive
-                isFront 
-                  ? "border-blue-500/50 border-b-4 border-b-blue-500" 
-                  : "border-slate-800 border-b-4 border-b-slate-700 hover:border-slate-700",
-                 isFront && "hover:brightness-110"
-              )}
-              onClick={() => {
-                const diff = (index - (activeIndex % TOTAL) + TOTAL) % TOTAL;
-                if (diff === 1) handleNext();
-                if (diff === TOTAL - 1) handlePrev();
-              }}
-            >
-              {/* Icon Area */}
-              <div className="flex-1 flex items-center justify-center w-full relative">
-                {isFront && (
-                  // Blue glow for front item
-                  <div className="absolute inset-0 bg-blue-500/20 rounded-full scale-75 blur-md" />
-                )}
-                
-                <div className={cn("relative z-10 transition-colors duration-300", isFront ? "text-blue-400 drop-shadow-[0_0_10px_rgba(59,130,246,0.5)]" : "text-slate-600")}>
-                   <service.icon size={isFront ? 70 : 50} strokeWidth={1.5} />
-                </div>
+                  <p className="text-gray-400 leading-relaxed text-base lg:text-lg max-w-2xl">
+                    {service.description}
+                  </p>
+                </motion.div>
               </div>
-
-              {/* Text Content */}
-              <div className="mt-4">
-                <h3 className={cn("text-lg font-bold uppercase tracking-wide transition-colors duration-300", isFront ? "text-white" : "text-slate-500")}>
-                  {service.title}
-                </h3>
-                <p className={cn("text-xs mt-2 leading-relaxed transition-opacity duration-300", isFront ? "text-gray-300 opacity-100" : "text-gray-500 opacity-0")}>
-                  {service.description}
-                </p>
-              </div>
-
-            </motion.div>
-          );
-        })}
+            );
+          })}
+        </div>
       </div>
-    </div>
+    </section>
   );
-};
-
-export default OrbitingCarouselDark;
+}
