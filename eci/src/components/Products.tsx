@@ -187,7 +187,7 @@ export default function Products() {
               >
                 {products.map((product, index) => (
                   <div key={index} className="w-full flex-shrink-0 snap-center px-2">
-                    <ProductCard product={product} />
+                    <ProductCard product={product} isMobile={true} />
                   </div>
                 ))}
               </div>
@@ -200,7 +200,7 @@ export default function Products() {
               >
                 {products.map((product, index) => (
                   <div key={index} className="w-full flex-shrink-0">
-                    <ProductCard product={product} />
+                    <ProductCard product={product} isMobile={false} />
                   </div>
                 ))}
               </motion.div>
@@ -238,27 +238,59 @@ export default function Products() {
 }
 
 /* Product Card */
-function ProductCard({ product }: { product: Product }) {
+function ProductCard({ product, isMobile }: { product: Product, isMobile: boolean }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
       viewport={{ once: true }}
-      className="grid md:grid-cols-2 gap-8 bg-zinc-800/50 border border-zinc-700/50 rounded-3xl p-6 md:p-12"
+      className={`
+        bg-gradient-to-br from-zinc-800/80 to-zinc-900/80 
+        backdrop-blur-sm border border-zinc-700/50
+        rounded-3xl overflow-hidden shadow-2xl
+        ${isMobile ? 'flex flex-col h-full' : 'grid md:grid-cols-2 gap-8 p-6 md:p-12'}
+      `}
     >
-      <img
-        src={product.image}
-        alt={product.title}
-        className="w-full h-64 md:h-96 object-cover rounded-2xl shadow-2xl"
-      />
-      <div className="space-y-6 flex flex-col justify-center">
-        <h3 className="text-2xl md:text-4xl font-bold">{product.title}</h3>
-        <p className="text-xl text-blue-400 font-semibold">{product.tagline}</p>
-        <p className="text-zinc-300 text-lg leading-relaxed text-justify">
-          {product.description}
-        </p>
-      </div>
+      {isMobile ? (
+        <>
+          {/* Mobile Layout - Consistent Heights */}
+          <div className="relative w-full h-56 overflow-hidden">
+            <img
+              src={product.image}
+              alt={product.title}
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-zinc-900/90 via-zinc-900/20 to-transparent" />
+          </div>
+          
+          <div className="p-6 space-y-4 flex-1 flex flex-col">
+            <h3 className="text-xl font-bold leading-tight">{product.title}</h3>
+            <p className="text-base text-blue-400 font-semibold">{product.tagline}</p>
+            <p className="text-zinc-300 text-sm leading-relaxed flex-1">
+              {product.description}
+            </p>
+          </div>
+        </>
+      ) : (
+        <>
+          {/* Desktop Layout */}
+          <div className="relative overflow-hidden rounded-2xl">
+            <img
+              src={product.image}
+              alt={product.title}
+              className="w-full h-64 md:h-96 object-cover"
+            />
+          </div>
+          <div className="space-y-6 flex flex-col justify-center">
+            <h3 className="text-2xl md:text-4xl font-bold">{product.title}</h3>
+            <p className="text-xl text-blue-400 font-semibold">{product.tagline}</p>
+            <p className="text-zinc-300 text-lg leading-relaxed">
+              {product.description}
+            </p>
+          </div>
+        </>
+      )}
     </motion.div>
   );
 }
