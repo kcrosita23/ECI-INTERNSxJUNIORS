@@ -2,6 +2,7 @@ import { Send } from "lucide-react";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import {
+  AsYouType,
   parsePhoneNumberFromString,
   getCountries,
   getCountryCallingCode,
@@ -29,17 +30,11 @@ const COUNTRIES = getCountries().map((c) => ({
 
 const EMAIL_MAX_LENGTH = 254;
 
-/* ================= PHONE MAX LENGTHS ================= */
-const COUNTRY_MAX_LENGTH: Record<string, number> = {
-  PH: 10, // Philippines mobile numbers (without country code)
-  US: 10,
-  IN: 10,
-  // add other countries if you want
-};
-
 export default function Contacts() {
   const [countryISO, setCountryISO] = useState<CountryCode>("PH");
-  const [phone, setPhone] = useState(COUNTRIES.find((c) => c.iso === "PH")?.code || "");
+  const [phone, setPhone] = useState(
+    `+${getCountryCallingCode("PH")}`
+  );
   const [phoneError, setPhoneError] = useState("");
 
   const [fullName, setFullName] = useState("");
@@ -61,49 +56,36 @@ export default function Contacts() {
     setFullName(value);
   };
 
- /* ================= PHONE ================= */
-const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  const selectedCountry = COUNTRIES.find((c) => c.iso === countryISO);
-  if (!selectedCountry) return;
+  /* ================= PHONE (ALL COUNTRIES) ================= */
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const raw = e.target.value;
 
-  const code = selectedCountry.code; // e.g., "+63"
-  let raw = e.target.value;
+    // Keep only digits and +
+    const cleaned = raw.replace(/[^\d+]/g, "");
 
-  // Ensure input always starts with country code
-  if (!raw.startsWith(code)) raw = code;
+    // Format per country automatically
+    const formatter = new AsYouType(countryISO);
+    const formatted = formatter.input(cleaned);
 
-  // Remove non-digit characters after the code
-  let numberPart = raw.slice(code.length).replace(/\D/g, "");
+    setPhone(formatted);
 
-  // Limit digits based on country
-  const maxDigits = COUNTRY_MAX_LENGTH[countryISO] || 15;
-  numberPart = numberPart.slice(0, maxDigits);
+    const digitsOnly = cleaned.replace(/\D/g, "");
+    const countryDigits = getCountryCallingCode(countryISO);
 
-  // Add spacing / partition for PH numbers
-  let formattedNumber = numberPart;
-  if (countryISO === "PH") {
-    if (numberPart.length > 3 && numberPart.length <= 6) {
-      formattedNumber = `${numberPart.slice(0,3)} ${numberPart.slice(3)}`;
-    } else if (numberPart.length > 6) {
-      formattedNumber = `${numberPart.slice(0,3)} ${numberPart.slice(3,6)} ${numberPart.slice(6)}`;
+    // 🚫 Do not validate if only country code exists
+    if (digitsOnly === countryDigits) {
+      setPhoneError("");
+      return;
     }
-  } else {
-    // For other countries, just keep as continuous digits
-    formattedNumber = numberPart;
-  }
 
-  const formatted = code + " " + formattedNumber;
-  setPhone(formatted);
+    const parsed = parsePhoneNumberFromString(formatted, countryISO);
 
-  // Validate phone number (remove spaces for validation)
-  const parsed = parsePhoneNumberFromString(code + numberPart, countryISO);
-  if (parsed && parsed.isValid() && isValidNumberForRegion(parsed.number, countryISO)) {
-    setPhoneError("");
-  } else {
-    setPhoneError("Invalid phone number for selected country.");
-  }
-};
-
+    if (parsed && parsed.isValid() && isValidNumberForRegion(parsed.number, countryISO)) {
+      setPhoneError("");
+    } else {
+      setPhoneError("Invalid phone number for selected country.");
+    }
+  };
 
   /* ================= EMAIL ================= */
   const validateEmail = (value: string) =>
@@ -119,28 +101,31 @@ const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 
   /* ================= MESSAGE ================= */
   const handleMessageChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const capitalized = e.target.value.replace(/(^\s*\w|[.!?]\s*\w)/g, (c) =>
-      c.toUpperCase()
+    const capitalized = e.target.value.replace(
+      /(^\s*\w|[.!?]\s*\w)/g,
+      (c) => c.toUpperCase()
     );
     setMessage(capitalized);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
     const emailCheck = validateEmail(email);
     if (emailCheck || phoneError) {
       setEmailError(emailCheck);
       return;
     }
+
     alert("Form submitted!");
   };
 
   const selectedCountry = COUNTRIES.find((c) => c.iso === countryISO);
 
+  /* ================= COUNTRY SEARCH ================= */
   const filteredCountries = COUNTRIES.filter(
     (c) =>
       c.name.toLowerCase().includes(countrySearch.toLowerCase()) ||
-      c.code.includes(countrySearch) ||
       c.shortName.toLowerCase().includes(countrySearch.toLowerCase())
   );
 
@@ -148,18 +133,7 @@ const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     <section className="relative py-20 lg:py-28 overflow-hidden">
       <MagicImageParticles />
 
-      <div className="max-w-7xl mx-auto px-4 relative z-10 flex flex-col gap-10">
-        {/* ABOUT US */}
-        <div className="text-center max-w-3xl mx-auto">
-          <h2 className="text-4xl font-bold text-white mb-4">About Us</h2>
-          <p className="text-white/80 text-lg">
-            Everywhere Consulting Inc. provides top-notch IT services and business solutions
-            to help companies grow efficiently. Our team specializes in back office support,
-            QA & testing, app development, technical helpdesk, and IT infrastructure management.
-          </p>
-        </div>
-
-        {/* CONTACT FORM */}
+      <div className="max-w-7xl mx-auto px-4 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
@@ -168,7 +142,7 @@ const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         >
           <div className="grid grid-cols-1 md:grid-cols-2">
             {/* MAP */}
-            <div className="relative bg-gradient-to-br from-indigo-600 to-purple-700 h-[300px] md:h-auto">
+            <div className="relative h-[300px] md:h-auto">
               <iframe
                 className="absolute inset-0 w-full h-full"
                 src="https://www.google.com/maps?q=Everywhere+Consulting+Inc+Makati&output=embed"
@@ -205,7 +179,7 @@ const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
                   </select>
                 )}
 
-                {/* Full Name */}
+                {/* Name */}
                 <input
                   value={fullName}
                   onChange={handleNameChange}
@@ -213,39 +187,43 @@ const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
                   className="w-full px-4 py-3 bg-slate-800 rounded-xl text-white"
                 />
 
-                {/* Country + Phone */}
+                {/* COUNTRY + PHONE */}
                 <div className="flex gap-3 relative">
-                  {/* Country Dropdown */}
-                  <div className="relative w-32">
+                  <div className="relative w-52">
                     <div
-                      onClick={() => setCountryDropdownOpen(!countryDropdownOpen)}
+                      onClick={() => {
+                        setCountryDropdownOpen(!countryDropdownOpen);
+                        setCountrySearch("");
+                      }}
                       className="px-3 py-3 bg-slate-800 rounded-xl text-white cursor-pointer"
                     >
-                      {selectedCountry?.name} ({selectedCountry?.code})
+                      {selectedCountry?.name}
                     </div>
 
                     {countryDropdownOpen && (
                       <div className="absolute mt-1 w-full bg-slate-800 rounded-xl text-white shadow-lg max-h-60 overflow-auto z-10">
                         <input
-                          type="text"
+                          autoFocus
                           placeholder="Search country..."
-                          className="w-full px-3 py-2 mb-2 rounded bg-slate-700 text-white"
+                          className="w-full px-3 py-2 bg-slate-700 text-white"
                           value={countrySearch}
                           onChange={(e) => setCountrySearch(e.target.value)}
                         />
+
                         <ul>
                           {filteredCountries.map((c) => (
                             <li
                               key={c.iso}
                               onClick={() => {
                                 setCountryISO(c.iso);
-                                setPhone(c.code); // only +63, +1 etc.
+                                setPhone(`+${getCountryCallingCode(c.iso)}`);
+                                setPhoneError("");
                                 setCountryDropdownOpen(false);
                                 setCountrySearch("");
                               }}
                               className="px-3 py-2 cursor-pointer hover:bg-slate-700"
                             >
-                              {c.name} ({c.code})
+                              {c.name}
                             </li>
                           ))}
                         </ul>
@@ -253,7 +231,6 @@ const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
                     )}
                   </div>
 
-                  {/* Phone Input */}
                   <input
                     value={phone}
                     onChange={handlePhoneChange}
@@ -263,7 +240,7 @@ const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
                 </div>
 
                 {phoneError && (
-                  <p className="text-red-400 text-sm mt-1">{phoneError}</p>
+                  <p className="text-red-400 text-sm">{phoneError}</p>
                 )}
 
                 {/* Email */}
@@ -287,7 +264,6 @@ const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
                   className="w-full px-4 py-3 bg-slate-800 rounded-xl text-white"
                 />
 
-                {/* Submit */}
                 <button className="w-full bg-indigo-600 py-4 rounded-xl text-white flex justify-center items-center gap-2">
                   <Send className="w-5 h-5" />
                   Send Message
