@@ -119,7 +119,7 @@ export default function HeroSection() {
             {/* Logo 1 */}
             <motion.div
               {...floatAnimation}
-              className="absolute left-[40%] top-[65%] sm:left-[40%] sm:top-[60%] md:left-[30%] md:top-[20%] xl:left-[30%] xl:top-[10%] -translate-x-1/2 z-10"
+              className="absolute left-[40%] top-[35%] sm:left-[40%] sm:top-[60%] md:left-[30%] md:top-[20%] xl:left-[30%] xl:top-[10%] -translate-x-1/2 z-10"
             >
               <div className="relative opacity-10 md:opacity-100">
                 <div className="absolute inset-0 bg-blue-500/30 rounded-full blur-3xl" />
@@ -140,7 +140,7 @@ export default function HeroSection() {
                 ease: easeInOut,
                 delay: 0.5,
               }}
-              className="absolute left-[70%] top-[85%] sm:left-[65%] sm:top-[85%] md:left-[65%] md:top-[55%] xl:left-[65%] xl:top-[55%] -translate-x-1/2"
+              className="absolute left-[70%] top-[55%] sm:left-[65%] sm:top-[85%] md:left-[65%] md:top-[55%] xl:left-[65%] xl:top-[55%] -translate-x-1/2"
             >
               <div className="relative opacity-10 md:opacity-100">
                 <div className="absolute inset-0 bg-blue-500/30 rounded-full blur-3xl" />
