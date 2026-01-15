@@ -239,6 +239,7 @@ export default function Products() {
 
 /* Product Card */
 function ProductCard({ product, isMobile }: { product: Product, isMobile: boolean }) {
+  const [expanded, setExpanded] = useState(false);
   return (
     <motion.div
       initial={{ opacity: 0, y: 30 }}
@@ -249,12 +250,11 @@ function ProductCard({ product, isMobile }: { product: Product, isMobile: boolea
         bg-gradient-to-br from-zinc-800/80 to-zinc-900/80 
         backdrop-blur-sm border border-zinc-700/50
         rounded-3xl overflow-hidden shadow-2xl
-        ${isMobile ? 'flex flex-col h-full' : 'grid md:grid-cols-2 gap-8 p-6 md:p-12'}
+        ${isMobile ? 'flex flex-col' : 'grid md:grid-cols-2 gap-6 p-6 md:p-12'}
       `}
     >
       {isMobile ? (
         <>
-          {/* Mobile Layout - Consistent Heights */}
           <div className="relative w-full h-56 overflow-hidden">
             <img
               src={product.image}
@@ -263,16 +263,32 @@ function ProductCard({ product, isMobile }: { product: Product, isMobile: boolea
             />
             <div className="absolute inset-0 bg-gradient-to-t from-zinc-900/90 via-zinc-900/20 to-transparent" />
           </div>
-          
-          <div className="p-6 space-y-4 flex-1 flex flex-col">
-            <h3 className="text-xl font-bold leading-tight">{product.title}</h3>
-            <p className="text-base text-blue-400 font-semibold">{product.tagline}</p>
-            <p className="text-zinc-300 text-sm leading-relaxed flex-1">
-              {product.description}
-            </p>
+      
+          <div className="p-6 space-y-3 flex flex-col">
+            <h3 className="text-xl font-bold text-center">{product.title}</h3>
+            <p className="text-blue-400 font-semibold text-center">{product.tagline}</p>
+      
+
+      
+            <div
+              className={`overflow-hidden transition-all duration-500 ease-in-out ${
+                expanded ? "max-h-60 opacity-100 mt-3" : "max-h-0 opacity-0"
+              }`}
+            >
+              <p className="text-zinc-300 text-sm leading-relaxed text-justify">
+                {product.description}
+              </p>
+            </div>
+                        <button
+              onClick={() => setExpanded(!expanded)}
+              className="w-full text-sm font-medium text-blue-400 hover:text-blue-300 transition"
+            >
+              {expanded ? "Hide details ▲" : "View details ▼"}
+            </button>
           </div>
         </>
       ) : (
+      
         <>
           {/* Desktop Layout */}
           <div className="relative overflow-hidden rounded-2xl">
