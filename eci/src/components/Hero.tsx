@@ -77,7 +77,7 @@ export default function HeroSection() {
             </motion.h1>
 
             <motion.p
-              className="mt-6 text-base sm:text-lg text-zinc-300 font-light"
+              className="mt-6 text-base text-lg text-zinc-300 sm:font-light"
               variants={fadeUp}
             >
               Everywhere Consulting Inc. (ECI) is a recognized system integrator and software
