@@ -19,14 +19,14 @@ export default function Products() {
   const products: Product[] = [
     {
       image: "low-code.webp",
-      title: "MAGIC XPA - LOW CODE PLATFORM",
+      title: "MAGIC XPA-LOW CODE PLATFORM",
       tagline: "Single Business Logic, Deploy Everywhere.",
       description:
         "Our Magic XPA solution enables rapid creation of cross-platform business applications for desktop, web and mobile. To take advantage of new business opportunities quickly and on-demand.",
     },
     {
       image: "Magic-xpi.webp",
-      title: "MAGIC XPI - INTEGRATION PLATFORM",
+      title: "MAGIC XPI-INTEGRATION PLATFORM",
       tagline: "Sync. Streamline. Scale.",
       description:
         "Magic XPI offers a new standard in system integration. With a code-free, low maintenance approach, Magic xpi integrates all of your business systems on the cloud, on-premises or in hybrid deployments so your company can maximize its opportunities.",
@@ -120,7 +120,7 @@ export default function Products() {
       <section
         id="products"
         ref={sectionRef}
-        className="relative text-white overflow-hidden"
+        className="relative py-20 text-white overflow-hidden"
       >
         {/* Background */}
         <div className="pointer-events-none absolute inset-0">
@@ -129,7 +129,7 @@ export default function Products() {
           <div className="absolute inset-0 bg-gradient-to-b from-zinc-900 via-transparent to-zinc-900" />
         </div>
 
-        <div className="relative z-10 min-h-screen px-6 py-20 md:px-12 lg:px-20">
+        <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-12 lg:px-20">
           {/* Header */}
           <div className="text-center mb-12">
             <h1 className="text-4xl lg:text-6xl font-bold">
@@ -152,7 +152,7 @@ export default function Products() {
             </button>
 
             {/* Slider */}
-            <div className="flex-1 overflow-hidden rounded-3xl relative">
+            <div className="flex-1 overflow-hidden rounded-3xl">
               {/* Swipe Tutorial */}
               {showSwipeHint && (
                 <div className="md:hidden absolute inset-0 z-20 flex items-center justify-center pointer-events-none">
@@ -181,12 +181,18 @@ export default function Products() {
               <div
                 ref={mobileScrollRef}
                 onScroll={handleMobileScroll}
-                className="flex md:hidden overflow-x-auto snap-x snap-mandatory
-                [-ms-overflow-style:none] [scrollbar-width:none]
-                [&::-webkit-scrollbar]:hidden"
+                className="flex md:hidden
+                  overflow-x-auto overflow-y-hidden
+                  snap-x snap-mandatory
+                  [-ms-overflow-style:none] [scrollbar-width:none]
+                  [&::-webkit-scrollbar]:hidden
+                  touch-pan-x"
               >
                 {products.map((product, index) => (
-                  <div key={index} className="w-full flex-shrink-0 snap-center px-2">
+                  <div
+                    key={index}
+                    className="w-full h-full flex-shrink-0 snap-center px-1"
+                  >
                     <ProductCard product={product} isMobile={true} />
                   </div>
                 ))}
@@ -267,19 +273,17 @@ function ProductCard({ product, isMobile }: { product: Product, isMobile: boolea
           <div className="p-6 space-y-3 flex flex-col">
             <h3 className="text-xl font-bold text-center">{product.title}</h3>
             <p className="text-blue-400 font-semibold text-center">{product.tagline}</p>
-      
 
-      
             <div
               className={`overflow-hidden transition-all duration-500 ease-in-out ${
                 expanded ? "max-h-60 opacity-100 mt-3" : "max-h-0 opacity-0"
               }`}
-            >
-              <p className="text-zinc-300 text-sm leading-relaxed text-justify">
+            > 
+              <p className="text-zinc-300 text-lg leading-relaxed text-justify">
                 {product.description}
               </p>
             </div>
-                        <button
+            <button
               onClick={() => setExpanded(!expanded)}
               className="w-full text-sm font-medium text-blue-400 hover:text-blue-300 transition"
             >
