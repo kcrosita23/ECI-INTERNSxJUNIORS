@@ -94,7 +94,7 @@ export default function About() {
            style={{ backgroundImage: 'radial-gradient(#94a3b8 1px, transparent 1px)', backgroundSize: '24px 24px' }}>
       </div>
 
-      <div className="w-full max-w-[95%] mx-auto relative z-10 flex flex-col">
+      <div className="w-full max-w-7xl mx-auto relative z-10 flex flex-col">
         
         {/* HEADER */}
         <div className="text-center mb-8 md:mb-12">
@@ -148,7 +148,7 @@ export default function About() {
                         : "opacity-80 md:hover:opacity-100 scale-100 grayscale md:hover:grayscale-0"
                     }`}
                 >
-                  <div className={`absolute -top-8 bg-blue-600 text-white text-[10px] md:text-xs px-2 py-1 rounded opacity-0 transition-opacity duration-300 shadow-lg shadow-blue-900/50 whitespace-nowrap ${activeId === member.id ? "opacity-100" : "group-hover:opacity-100"}`}>
+                  <div className={`absolute top-2 bg-blue-600 text-white text-[10px] md:text-xs px-2 py-1 rounded opacity-0 transition-opacity duration-300 shadow-lg shadow-blue-900/50 whitespace-nowrap ${activeId === member.id ? "opacity-100" : "group-hover:opacity-100"}`}>
                     {member.name}
                   </div>
 
