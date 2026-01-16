@@ -9,6 +9,7 @@ import Solutions from "./components/Solutions";
 import Services from "./components/Services";
 import Partners from "./components/Partners";
 import Contacts from "./components/Contacts";
+import About from "./components/about";
 
 function Home() {
   return (
@@ -18,6 +19,7 @@ function Home() {
       <Solutions />
       <Services />
       <Partners />
+      <About />
     </>
   );
 }
