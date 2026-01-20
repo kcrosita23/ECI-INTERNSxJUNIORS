@@ -1,6 +1,7 @@
 import { Send } from "lucide-react";
 import { motion } from "framer-motion";
 import { useState } from "react";
+import emailjs from "@emailjs/browser";
 import {
   AsYouType,
   parsePhoneNumberFromString,
@@ -10,6 +11,11 @@ import {
   type CountryCode,
 } from "libphonenumber-js";
 import MagicImageParticles from "./MagicImageParticles";
+
+/* ================= EMAILJS CONFIG ================= */
+const EMAILJS_SERVICE_ID = "service_3rvqdj9";
+const EMAILJS_TEMPLATE_ID = "template_iisswnz";
+const EMAILJS_PUBLIC_KEY = "sqyS3A3Uv4WnSDvRx";
 
 /* ================= SERVICES ================= */
 const SERVICES = [
@@ -32,9 +38,7 @@ const EMAIL_MAX_LENGTH = 254;
 
 export default function Contacts() {
   const [countryISO, setCountryISO] = useState<CountryCode>("PH");
-  const [phone, setPhone] = useState(
-    `+${getCountryCallingCode("PH")}`
-  );
+  const [phone, setPhone] = useState(`+${getCountryCallingCode("PH")}`);
   const [phoneError, setPhoneError] = useState("");
 
   const [fullName, setFullName] = useState("");
@@ -56,14 +60,9 @@ export default function Contacts() {
     setFullName(value);
   };
 
-  /* ================= PHONE (ALL COUNTRIES) ================= */
+  /* ================= PHONE ================= */
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const raw = e.target.value;
-
-    // Keep only digits and +
-    const cleaned = raw.replace(/[^\d+]/g, "");
-
-    // Format per country automatically
+    const cleaned = e.target.value.replace(/[^\d+]/g, "");
     const formatter = new AsYouType(countryISO);
     const formatted = formatter.input(cleaned);
 
@@ -72,7 +71,6 @@ export default function Contacts() {
     const digitsOnly = cleaned.replace(/\D/g, "");
     const countryDigits = getCountryCallingCode(countryISO);
 
-    // 🚫 Do not validate if only country code exists
     if (digitsOnly === countryDigits) {
       setPhoneError("");
       return;
@@ -108,6 +106,7 @@ export default function Contacts() {
     setMessage(capitalized);
   };
 
+  /* ================= SUBMIT ================= */
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -117,12 +116,37 @@ export default function Contacts() {
       return;
     }
 
-    alert("Form submitted!");
+    const templateParams = {
+      full_name: fullName,
+      email,
+      phone,
+      department,
+      service: service || "N/A",
+      message,
+    };
+
+    emailjs
+      .send(
+        EMAILJS_SERVICE_ID,
+        EMAILJS_TEMPLATE_ID,
+        templateParams,
+        EMAILJS_PUBLIC_KEY
+      )
+      .then(() => {
+        alert("Message sent successfully!");
+        setFullName("");
+        setEmail("");
+        setMessage("");
+        setService("");
+        setPhone(`+${getCountryCallingCode(countryISO)}`);
+      })
+      .catch(() => {
+        alert("Failed to send message. Please try again.");
+      });
   };
 
   const selectedCountry = COUNTRIES.find((c) => c.iso === countryISO);
 
-  /* ================= COUNTRY SEARCH ================= */
   const filteredCountries = COUNTRIES.filter(
     (c) =>
       c.name.toLowerCase().includes(countrySearch.toLowerCase()) ||
@@ -152,7 +176,6 @@ export default function Contacts() {
             {/* FORM */}
             <div className="p-6 sm:p-10 bg-slate-900">
               <form className="space-y-6" onSubmit={handleSubmit}>
-                {/* Department */}
                 <select
                   value={department}
                   onChange={(e) => {
@@ -179,7 +202,6 @@ export default function Contacts() {
                   </select>
                 )}
 
-                {/* Name */}
                 <input
                   value={fullName}
                   onChange={handleNameChange}
@@ -187,7 +209,6 @@ export default function Contacts() {
                   className="w-full px-4 py-3 bg-slate-800 rounded-xl text-white"
                 />
 
-                {/* COUNTRY + PHONE */}
                 <div className="flex gap-3 relative">
                   <div className="relative w-52">
                     <div
@@ -201,32 +222,29 @@ export default function Contacts() {
                     </div>
 
                     {countryDropdownOpen && (
-                      <div className="absolute mt-1 w-full bg-slate-800 rounded-xl text-white shadow-lg max-h-60 overflow-auto z-10">
+                      <div className="absolute mt-1 w-full bg-slate-800 rounded-xl text-white max-h-60 overflow-auto z-10">
                         <input
                           autoFocus
                           placeholder="Search country..."
-                          className="w-full px-3 py-2 bg-slate-700 text-white"
+                          className="w-full px-3 py-2 bg-slate-700"
                           value={countrySearch}
                           onChange={(e) => setCountrySearch(e.target.value)}
                         />
 
-                        <ul>
-                          {filteredCountries.map((c) => (
-                            <li
-                              key={c.iso}
-                              onClick={() => {
-                                setCountryISO(c.iso);
-                                setPhone(`+${getCountryCallingCode(c.iso)}`);
-                                setPhoneError("");
-                                setCountryDropdownOpen(false);
-                                setCountrySearch("");
-                              }}
-                              className="px-3 py-2 cursor-pointer hover:bg-slate-700"
-                            >
-                              {c.name}
-                            </li>
-                          ))}
-                        </ul>
+                        {filteredCountries.map((c) => (
+                          <div
+                            key={c.iso}
+                            onClick={() => {
+                              setCountryISO(c.iso);
+                              setPhone(`+${getCountryCallingCode(c.iso)}`);
+                              setPhoneError("");
+                              setCountryDropdownOpen(false);
+                            }}
+                            className="px-3 py-2 cursor-pointer hover:bg-slate-700"
+                          >
+                            {c.name}
+                          </div>
+                        ))}
                       </div>
                     )}
                   </div>
@@ -239,11 +257,8 @@ export default function Contacts() {
                   />
                 </div>
 
-                {phoneError && (
-                  <p className="text-red-400 text-sm">{phoneError}</p>
-                )}
+                {phoneError && <p className="text-red-400 text-sm">{phoneError}</p>}
 
-                {/* Email */}
                 <input
                   value={email}
                   onChange={handleEmailChange}
@@ -251,11 +266,8 @@ export default function Contacts() {
                   className="w-full px-4 py-3 bg-slate-800 rounded-xl text-white"
                 />
 
-                {emailError && (
-                  <p className="text-red-400 text-sm">{emailError}</p>
-                )}
+                {emailError && <p className="text-red-400 text-sm">{emailError}</p>}
 
-                {/* Message */}
                 <textarea
                   value={message}
                   onChange={handleMessageChange}
@@ -264,7 +276,10 @@ export default function Contacts() {
                   className="w-full px-4 py-3 bg-slate-800 rounded-xl text-white"
                 />
 
-                <button className="w-full bg-indigo-600 py-4 rounded-xl text-white flex justify-center items-center gap-2">
+                <button
+                  type="submit"
+                  className="w-full bg-indigo-600 py-4 rounded-xl text-white flex justify-center items-center gap-2"
+                >
                   <Send className="w-5 h-5" />
                   Send Message
                 </button>
