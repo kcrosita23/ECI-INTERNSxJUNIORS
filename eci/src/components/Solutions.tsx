@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { href } from "react-router-dom";
 
 export default function Solutions() {
   const [expandedCard, setExpandedCard] = useState<number | null>(null);
@@ -43,6 +44,35 @@ export default function Solutions() {
       description:
         "The Loans Management System (LMS) is a loan management solution used by Philippine credit cooperatives to efficiently handle member loans and payments. It includes key features such as a security menu for managing user access, an audit trail for tracking system activities, loan history display, and member ledger inquiry for easy financial monitoring. With its streamlined interface, LMS2000 enhances accuracy and simplifies loan management processes.",
     },
+        {
+      title: "ELECTRIC METER READER",
+      code: "EMR200",
+      video: "https://www.youtube.com/embed/S87qsJZzGR0",
+      description:
+        "The Electric Meter Reader (EMR) is a state-of-the-art mobile application used to capture and store meter readings from electric or water meters. It also collects non-meter-reading information, including meter conditions, hazardous conditions, tamper data, survey responses, and high/low reading checks."
+    },
+    {
+      title: "WAREHOUSING & INVENTORY SYSTEM",
+      code: "WIS2000",
+      video: "https://www.youtube.com/embed/PcrQ8ajVNPw",
+      description:
+        "The Warehousing & Inventory System (WIS) is designed to assist electric utilities in managing materials effectively. It generates essential inventory reports, such as material balances, summaries of releases, received materials (BIN Card), total project costs, and more."
+    },
+    {
+      title: "COMPUTERIZED ACCOUNTING SYSTEM",
+      code: "CAS2000",
+      video: "https://www.youtube.com/embed/1YLbAs1Kgsk",
+      description:
+        "The Computerized Accounting System (CAS) is an ACAM/BSUP-ready solution designed to effectively handle and manage the complex financial processes of Philippine electric utilities, thereby improving their operations and performance."
+    },
+    {
+      title: "CUSTOMER INFORMATION MANAGEMENT SYSTEM",
+      code: "CIMS200",
+      video: "https://www.youtube.com/embed/1GtRT0z4iyg?list=RD1GtRT0z4iyg",
+      description:
+        "The Customer Information Management System (CIMS) seamlessly combines EBS2000 and CMS2000 to enhance billing precision, streamline customer data management, and boost service efficiency for both businesses and their customers."
+    },
+
   ];
 
   return (
