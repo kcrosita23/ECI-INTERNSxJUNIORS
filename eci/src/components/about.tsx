@@ -26,14 +26,25 @@ const team: TeamMember[] = [
 
 /* ================= COMPONENT ================= */
 export default function About() {
+  // DATA PREP: Create 3 sets for infinite illusion
+  // Set 1 (Buffer Left), Set 2 (Main), Set 3 (Buffer Right)
+  const extendedTeam = [...team, ...team, ...team];
+  const singleSetCount = team.length;
+
+  // STATE
+  // We now track activeIndex (0 to 35) separately from activeId (1 to 12)
+  const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [activeId, setActiveId] = useState<number | null>(null);
   
   const roleOrder = ["Sales", "Technical"];
   const [openFolders, setOpenFolders] = useState<string[]>([]); 
 
   // REFS
+  // Map stores DOM nodes by INDEX now, not ID
   const itemsRef = useRef<Map<number, HTMLDivElement> | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const lastInteraction = useRef<"image" | "list" | null>(null);
+  const isResettingRef = useRef(false); // To prevent animation loops
 
   const getMap = () => {
     if (!itemsRef.current) {
@@ -42,22 +53,64 @@ export default function About() {
     return itemsRef.current;
   };
 
-  // EFFECT 1: Auto-Scroll Image into View
+  // EFFECT 0: Initial Mount - Start in the Middle Set
   useEffect(() => {
-    if (activeId && lastInteraction.current === "list") {
+    // Start at the first item of the middle set (index 12)
+    const middleStartIndex = singleSetCount;
+    setActiveIndex(middleStartIndex);
+    
+    // Immediate scroll without animation
+    const map = getMap();
+    const node = map.get(middleStartIndex);
+    if (node) {
+      node.scrollIntoView({ behavior: "auto", inline: "center", block: "nearest" });
+    }
+  }, [singleSetCount]);
+
+  // EFFECT 1: Auto-Scroll & Infinite Loop Logic
+  useEffect(() => {
+    if (activeIndex !== null) {
       const map = getMap();
-      const node = map.get(activeId);
-      if (node) {
+      const node = map.get(activeIndex);
+
+      if (node && !isResettingRef.current) {
+        // 1. Scroll the selected item into view
         node.scrollIntoView({
-          behavior: "smooth",
-          block: "nearest", // changed to nearest for better mobile behavior
+          behavior: isResettingRef.current ? "auto" : "smooth", // Instant if resetting
+          block: "nearest",
           inline: "center", 
         });
+
+        // 2. CHECK BOUNDARIES (The Infinite Loop Magic)
+        // If we are in Set 1 (Left Buffer) or Set 3 (Right Buffer),
+        // we need to jump back to Set 2 (Middle) after the animation.
+        const timeout = setTimeout(() => {
+            if (activeIndex < singleSetCount) {
+                // Too far left -> Jump to Middle
+                isResettingRef.current = true;
+                const newIndex = activeIndex + singleSetCount;
+                setActiveIndex(newIndex);
+            } else if (activeIndex >= singleSetCount * 2) {
+                // Too far right -> Jump to Middle
+                isResettingRef.current = true;
+                const newIndex = activeIndex - singleSetCount;
+                setActiveIndex(newIndex);
+            } else {
+                isResettingRef.current = false;
+            }
+        }, 500); // Wait for smooth scroll to finish (approx 500ms)
+
+        return () => clearTimeout(timeout);
+      }
+      
+      // Reset flag if we just performed a jump
+      if (isResettingRef.current) {
+          isResettingRef.current = false;
       }
     }
-  }, [activeId]);
+  }, [activeIndex, singleSetCount]);
 
-  // EFFECT 2: Auto-expand folder
+  // EFFECT 2: Auto-expand folder based on activeId
   useEffect(() => {
     if (activeId && lastInteraction.current === "image") {
       const member = team.find((m) => m.id === activeId);
@@ -73,6 +126,29 @@ export default function About() {
         ? prev.filter((r) => r !== role)
         : [...prev, role]
     );
+  };
+
+  // HELPER: Handle hovering an image
+  const handleImageHover = (index: number, id: number) => {
+    if (window.matchMedia('(hover: hover)').matches) {
+        lastInteraction.current = "image";
+        setActiveIndex(index); // Visual position
+        setActiveId(id);       // Data lookup
+    }
+  };
+
+  // HELPER: Handle clicking a list item (IDE)
+  const handleListClick = (id: number) => {
+    lastInteraction.current = "list";
+    
+    // Find the equivalent index in the MIDDLE set
+    // (This ensures when we click the list, the carousel jumps to the center set, not the buffers)
+    const middleSetOffset = singleSetCount;
+    const memberIndex = team.findIndex(m => m.id === id);
+    const targetIndex = middleSetOffset + memberIndex;
+
+    setActiveId(id === activeId ? null : id);
+    setActiveIndex(targetIndex);
   };
 
   return (
@@ -110,45 +186,51 @@ export default function About() {
         </div>
 
         {/* IMAGES PREVIEW PANE - MOBILE STICKY */}
-        {/* Added sticky positioning and z-index for mobile friendliness */}
         <div className="sticky top-2 z-30 mb-6 -mx-4 px-4 md:static md:mb-8 md:mx-0">
           <div className="bg-slate-950/80 backdrop-blur-md rounded-xl border border-slate-800/50 shadow-2xl">
-            <div className="flex gap-4 overflow-x-auto py-4 px-4 no-scrollbar items-end h-[180px] md:h-[240px] scroll-smooth snap-x snap-mandatory">
-              {team.map((member) => (
+            {/* NOTE: We map 'extendedTeam' here (3x the data).
+                We use index for the key to handle duplicates.
+            */}
+            <div 
+                ref={containerRef}
+                className="flex gap-4 overflow-x-auto py-4 px-4 no-scrollbar items-end h-[200px] md:h-[280px] scroll-smooth snap-x snap-mandatory"
+            >
+              {extendedTeam.map((member, index) => {
+              
+                // Only "highlight" if the IDs match, regardless of which copy it is
+                const isVisualActive = activeId === member.id;
+
+                return (
                 <div
-                  key={member.id}
+                  key={`${member.id}-${index}`}
                   ref={(node) => {
                     const map = getMap();
-                    if (node) map.set(member.id, node);
-                    else map.delete(member.id);
+                    if (node) map.set(index, node);
+                    else map.delete(index);
                   }}
                   // Tap/Click handler for mobile to select image
                   onClick={() => {
                       lastInteraction.current = "image";
+                      setActiveIndex(index);
                       setActiveId(member.id === activeId ? null : member.id);
                   }}
-                  onMouseEnter={() => {
-                    // Only use hover on devices that support it to prevent sticky hover states on mobile
-                    if (window.matchMedia('(hover: hover)').matches) {
-                        lastInteraction.current = "image";
-                        setActiveId(member.id);
-                    }
-                  }}
+                  onMouseEnter={() => handleImageHover(index, member.id)}
                   onMouseLeave={() => {
                      if (window.matchMedia('(hover: hover)').matches) {
-                        setActiveId(null);
+                       // Optional: reset on leave, or stay centered
+                       // setActiveId(null); 
                      }
                   }}
-                  className={`snap-center min-w-[120px] md:min-w-[140px] scroll-m-20 sm:scroll-m-5 relative transition-all duration-300 ease-out flex items-end justify-center cursor-pointer group
+                  className={`snap-center min-w-[120px] md:min-w-[140px] scroll-m-20 sm:scroll-m-5 relative transition-all duration-500 ease-out flex items-end justify-center cursor-pointer group
                     ${
-                      activeId === member.id
-                        ? "scale-105 -translate-y-2 opacity-100 z-20"
-                        : activeId
-                        ? "opacity-30 grayscale scale-90 blur-[1px]"
+                      isVisualActive
+                        ? "scale-110 md:scale-125 -translate-y-2 opacity-100 z-50"
+                        : isVisualActive
+                        ? "opacity-30 grayscale scale-90 blur-[1px] z-0"
                         : "opacity-80 md:hover:opacity-100 scale-100 grayscale md:hover:grayscale-0"
                     }`}
                 >
-                  <div className={`absolute top-2 bg-blue-600 text-white text-[10px] md:text-xs px-2 py-1 rounded opacity-0 transition-opacity duration-300 shadow-lg shadow-blue-900/50 whitespace-nowrap ${activeId === member.id ? "opacity-100" : "group-hover:opacity-100"}`}>
+                  <div className={`absolute top-2 bg-blue-600 text-white text-[10px] md:text-xs px-2 py-1 rounded opacity-0 transition-opacity duration-300 shadow-lg shadow-blue-900/50 whitespace-nowrap ${isVisualActive ? "opacity-100" : "group-hover:opacity-100"}`}>
                     {member.name}
                   </div>
 
@@ -156,12 +238,11 @@ export default function About() {
                     src={member.image}
                     alt={member.name}
                     className={`w-full h-36 md:h-48 object-contain transition-all duration-500 
-                      ${activeId === member.id ? "drop-shadow-[0_0_15px_rgba(59,130,246,0.6)]" : "drop-shadow-none"}`}
+                      ${isVisualActive ? "drop-shadow-[0_0_15px_rgba(59,130,246,0.6)]" : "drop-shadow-none"}`}
                   />
                 </div>
-              ))}
+              )})}
             </div>
-            {/* Mobile Helper Text */}
             <div className="text-center text-[10px] text-slate-500 pb-2 md:hidden uppercase tracking-widest">
                 Swipe to browse • Tap to select
             </div>
@@ -211,7 +292,7 @@ export default function About() {
                     return (
                         <div key={role} className="relative group w-full">
                             
-                            {/* CLICKABLE ROLE FOLDER HEADER - Increased Touch Target */}
+                            {/* CLICKABLE ROLE FOLDER HEADER */}
                             <div 
                                 onClick={() => toggleFolder(role)}
                                 className="flex items-center mb-2 pb-2 pt-2 border-b border-slate-800 cursor-pointer active:bg-slate-800 md:hover:bg-slate-800 rounded px-2 transition-colors select-none"
@@ -241,20 +322,22 @@ export default function About() {
                                         return (
                                             <div
                                                 key={member.id}
-                                                // Handle Interaction: Tap on mobile, Hover on desktop
-                                                onClick={() => {
-                                                    lastInteraction.current = "list";
-                                                    setActiveId(isActive ? null : member.id);
-                                                }}
+                                                // Handle Interaction
+                                                onClick={() => handleListClick(member.id)}
                                                 onMouseEnter={() => {
-                                                   if (window.matchMedia('(hover: hover)').matches) {
-                                                      lastInteraction.current = "list";
-                                                      setActiveId(member.id);
-                                                   }
+                                                    // Find the middle-set index for this ID to ensure we scroll to the center block
+                                                    const middleSetOffset = singleSetCount;
+                                                    const memberIndex = team.findIndex(m => m.id === member.id);
+                                                    if (window.matchMedia('(hover: hover)').matches) {
+                                                        lastInteraction.current = "list";
+                                                        setActiveIndex(middleSetOffset + memberIndex);
+                                                        setActiveId(member.id);
+                                                    }
                                                 }}
                                                 onMouseLeave={() => {
                                                    if (window.matchMedia('(hover: hover)').matches) {
-                                                      setActiveId(null);
+                                                      // Optional: keep selection or clear
+                                                      // setActiveId(null);
                                                    }
                                                 }}
                                                 className={`
@@ -301,14 +384,14 @@ export default function About() {
           </div>
 
           <div className="bg-slate-950 text-slate-500 border-t border-slate-800 px-4 py-2 flex justify-between text-[9px] md:text-[10px] uppercase tracking-wider select-none">
-             <div className="flex space-x-4">
+              <div className="flex space-x-4">
                <span className="flex items-center"><span className="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5 shadow-[0_0_5px_rgba(16,185,129,0.5)]"></span>
                   {activeId ? "Target Acquired" : "System Online"}
                </span>
-             </div>
-             <div>
-                {activeId ? `ID: ${activeId}` : "Waiting..."}
-             </div>
+              </div>
+              <div>
+                 {activeId ? `ID: ${activeId}` : "Waiting..."}
+              </div>
           </div>
 
         </div>
