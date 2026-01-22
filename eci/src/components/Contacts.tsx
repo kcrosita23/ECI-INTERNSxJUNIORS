@@ -154,7 +154,7 @@ export default function Contacts() {
   );
 
   return (
-    <section className="relative py-20 lg:py-28 overflow-hidden">
+    <section id="contacts" className="relative py-20 lg:py-28 overflow-hidden">
       <MagicImageParticles />
 
       <div className="max-w-7xl mx-auto px-4 relative z-10">

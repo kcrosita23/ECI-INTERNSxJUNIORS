@@ -78,25 +78,101 @@ const partners_pub = [
 ];
 
 const partners_util = [
-  { name: "CAGELCO", logo: "/partners/utility/cagelco.webp", website: "https://www.cagelco1.org.ph/" },
-  { name: "CANORECO", logo: "/partners/utility/canereco.webp", website: "https://canoreco.com.ph/pms/" },
-  { name: "COTELCO", logo: "/partners/utility/catelco.webp", website: "https://cotelco.com.ph/" },
-  { name: "CEPALCO", logo: "/partners/utility/cepalcooo.webp", website: "https://www.cepalco.com.ph" },
-  { name: "DANECO", logo: "/partners/utility/daneco.webp", website: "https://legacy.doe.gov.ph/ducsp/profile/daneco" },
-  { name: "ESMELCO", logo: "/partners/utility/esmelco.webp", website: "https://www.esamelco.com/" },
-  { name: "FIBECO", logo: "/partners/utility/fibeco.webp", website: "https://www.fibeco.ph" },
-  { name: "LUELCO", logo: "/partners/utility/la union.webp", website: "https://www.luelco.com.ph" },
-  { name: "LANECO", logo: "/partners/utility/laneco.webp", website: "https://laneco.co/" },
-  { name: "NEECO", logo: "/partners/utility/neeco.webp", website: "https://www.neeco2area1.com/" },
-  { name: "OEDC", logo: "/partners/utility/oedc.webp", website: "https://www.oedc.com.ph" },
-  { name: "ORMECO", logo: "/partners/utility/ormeco.webp", website: "https://www.ormeco-inc.com/" },
-  { name: "PANELCO", logo: "/partners/utility/panelco.webp", website: "https://www.panelco3.com.ph/" },
-  { name: "PELCO", logo: "/partners/utility/pelco.webp", website: "https://pelco2.com/" },
-  { name: "SAMELCO", logo: "/partners/utility/samelco.webp", website: "https://samelco1.com/" },
-  { name: "SATELCO", logo: "/partners/utility/satelco.webp", website: "https://www.sukelco.com.ph/" },
-  { name: "SURNECO", logo: "/partners/utility/surneco.webp", website: "https://www.surneco.com.ph" },
-  { name: "TARELCO", logo: "/partners/utility/tarelco.webp", website: "https://www.tarelco2.com/" },
-  { name: "ZAMBECO", logo: "/partners/utility/zambeco.webp", website: "https://www.zamsureco1.com/" },
+  {
+    name: "CAGELCO",
+    logo: "/partners/utility/cagelco.webp",
+    website: "https://www.cagelco1.org.ph/",
+  },
+  {
+    name: "CANORECO",
+    logo: "/partners/utility/canereco.webp",
+    website: "https://canoreco.com.ph/pms/",
+  },
+  {
+    name: "COTELCO",
+    logo: "/partners/utility/catelco.webp",
+    website: "https://cotelco.com.ph/",
+  },
+  {
+    name: "CEPALCO",
+    logo: "/partners/utility/cepalcooo.webp",
+    website: "https://www.cepalco.com.ph",
+  },
+  {
+    name: "DANECO",
+    logo: "/partners/utility/daneco.webp",
+    website: "https://legacy.doe.gov.ph/ducsp/profile/daneco",
+  },
+  {
+    name: "ESMELCO",
+    logo: "/partners/utility/esmelco.webp",
+    website: "https://www.esamelco.com/",
+  },
+  {
+    name: "FIBECO",
+    logo: "/partners/utility/fibeco.webp",
+    website: "https://www.fibeco.ph",
+  },
+  {
+    name: "LUELCO",
+    logo: "/partners/utility/la union.webp",
+    website: "https://www.luelco.com.ph",
+  },
+  {
+    name: "LANECO",
+    logo: "/partners/utility/laneco.webp",
+    website: "https://laneco.co/",
+  },
+  {
+    name: "NEECO",
+    logo: "/partners/utility/neeco.webp",
+    website: "https://www.neeco2area1.com/",
+  },
+  {
+    name: "OEDC",
+    logo: "/partners/utility/oedc.webp",
+    website: "https://www.oedc.com.ph",
+  },
+  {
+    name: "ORMECO",
+    logo: "/partners/utility/ormeco.webp",
+    website: "https://www.ormeco-inc.com/",
+  },
+  {
+    name: "PANELCO",
+    logo: "/partners/utility/panelco.webp",
+    website: "https://www.panelco3.com.ph/",
+  },
+  {
+    name: "PELCO",
+    logo: "/partners/utility/pelco.webp",
+    website: "https://pelco2.com/",
+  },
+  {
+    name: "SAMELCO",
+    logo: "/partners/utility/samelco.webp",
+    website: "https://samelco1.com/",
+  },
+  {
+    name: "SATELCO",
+    logo: "/partners/utility/satelco.webp",
+    website: "https://www.sukelco.com.ph/",
+  },
+  {
+    name: "SURNECO",
+    logo: "/partners/utility/surneco.webp",
+    website: "https://www.surneco.com.ph",
+  },
+  {
+    name: "TARELCO",
+    logo: "/partners/utility/tarelco.webp",
+    website: "https://www.tarelco2.com/",
+  },
+  {
+    name: "ZAMBECO",
+    logo: "/partners/utility/zambeco.webp",
+    website: "https://www.zamsureco1.com/",
+  },
 ];
 
 // --- Reusable Component ---
@@ -162,7 +238,8 @@ const Partners: React.FC = () => {
             Our Trusted <span className="text-blue-500">Partners</span>
           </h2>
           <p className="mt-4 text-lg text-zinc-400 leading-relaxed">
-            We collaborate with industry leaders to deliver exceptional solutions nationwide.
+            We collaborate with industry leaders to deliver exceptional
+            solutions nationwide.
           </p>
         </div>
 

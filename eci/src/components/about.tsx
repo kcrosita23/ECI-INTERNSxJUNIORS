@@ -152,7 +152,7 @@ export default function About() {
   };
 
   return (
-    <section className="relative w-full min-h-screen py-12 md:py-24 px-4 md:px-6 bg-slate-950 overflow-x-hidden text-slate-200 font-sans">
+    <section id="contacts" className="relative w-full min-h-screen py-12 md:py-24 px-4 md:px-6 bg-slate-950 overflow-x-hidden text-slate-200 font-sans">
       
       {/* INJECTED STYLES to hide scrollbar */}
       <style>{`

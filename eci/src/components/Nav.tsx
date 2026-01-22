@@ -11,11 +11,20 @@ type NavItem =
 
 const navigation: NavItem[] = [
   { name: "Home", href: "#home" },
+  {
+    name: "About",
+    href: "/about",
+    children: [
+      { name: "Our Team", href: "/about" },
+      { name: "Our Company", href: "/about" },
+    ],
+  },
+
   { name: "Products", href: "#products" },
   { name: "Solutions", href: "#solutions" },
   { name: "Services", href: "#services" },
   { name: "Partners", href: "#partners" },
-  { name: "Contact Us", href: "/contacts" },
+  { name: "Contact Us", href: "#contacts" },
 ];
 
 function classNames(...classes: (string | false | undefined)[]) {
@@ -26,7 +35,7 @@ export default function Nav() {
   const [projectsOpen, setProjectsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement | null>(null);
   const location = useLocation();
-  
+
   // Helper: If we are NOT on home, prepend '/' to hash links (e.g., "#products" -> "/#products")
   const resolveHref = (href: string) => {
     if (href.startsWith("#") && location.pathname !== "/") {
@@ -37,17 +46,24 @@ export default function Nav() {
 
   // Helper: Check if a link is active
   const isCurrent = (href: string) => {
-     if (href === "/contacts" && location.pathname === "/contacts") return true;
-     if (href === "#home" && location.pathname === "/") return true;
-     return false;
+    if (href === "/contacts" && location.pathname === "/contacts") return true;
+    if (href === "#home" && location.pathname === "/") return true;
+    return false;
   };
 
   return (
-    <Disclosure as="nav" className="fixed inset-x-0 top-0 z-50 bg-white/5 backdrop-blur-md">
+    <Disclosure
+      as="nav"
+      className="fixed inset-x-0 top-0 z-50 bg-white/5 backdrop-blur-md"
+    >
       {({ open, close }) => {
         useEffect(() => {
           function handleClickOutside(event: MouseEvent) {
-            if (open && menuRef.current && !menuRef.current.contains(event.target as Node)) {
+            if (
+              open &&
+              menuRef.current &&
+              !menuRef.current.contains(event.target as Node)
+            ) {
               close();
             }
           }
@@ -101,23 +117,27 @@ export default function Nav() {
                         key={item.name}
                         to={resolveHref(item.href)}
                         // If it's a hash link on the same page, we use standard a tag behavior via 'to'
-                        // logic in React Router usually handles this, but for simple hashes 
+                        // logic in React Router usually handles this, but for simple hashes
                         // sometimes native anchors are smoother. However, Link is safer for routing.
                         className={classNames(
                           "text-gray-300 hover:text-white",
-                          isCurrent(item.href) ? "text-blue-400" : false
+                          isCurrent(item.href) ? "text-blue-400" : false,
                         )}
                       >
                         {item.name}
                       </Link>
-                    )
+                    ),
                   )}
                 </div>
 
                 {/* HAMBURGER */}
                 <div className="sm:hidden">
                   <DisclosureButton className="p-2 text-gray-300 hover:text-white">
-                    {open ? <X className="size-6" /> : <MenuIcon className="size-6" />}
+                    {open ? (
+                      <X className="size-6" />
+                    ) : (
+                      <MenuIcon className="size-6" />
+                    )}
                   </DisclosureButton>
                 </div>
               </div>
@@ -144,7 +164,7 @@ export default function Nav() {
                     className="fixed right-0 top-16 z-50 h-[calc(100vh-4rem)] w-[70%] bg-gray-900/95 backdrop-blur sm:hidden"
                   >
                     <div className="flex flex-col p-6 space-y-4">
-                         <span className="text-white font-semibold text-lg mb-4">
+                      <span className="text-white font-semibold text-lg mb-4">
                         EVERYWHERE CONSULTING INC.
                       </span>
                       {navigation.map((item) =>
@@ -158,7 +178,7 @@ export default function Nav() {
                               <ChevronDown
                                 className={classNames(
                                   projectsOpen && "rotate-180",
-                                  "size-4 transition-transform"
+                                  "size-4 transition-transform",
                                 )}
                               />
                             </button>
@@ -185,12 +205,12 @@ export default function Nav() {
                             onClick={() => close()}
                             className={classNames(
                               "text-lg text-gray-300 hover:text-white block",
-                              isCurrent(item.href) ? "text-blue-400" : false
+                              isCurrent(item.href) ? "text-blue-400" : false,
                             )}
                           >
                             {item.name}
                           </Link>
-                        )
+                        ),
                       )}
                     </div>
                   </motion.aside>
