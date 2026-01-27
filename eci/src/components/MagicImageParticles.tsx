@@ -2,8 +2,9 @@ import { useEffect, useMemo } from "react";
 import Particles, { initParticlesEngine } from "@tsparticles/react";
 import { loadSlim } from "@tsparticles/slim";
 import type { ISourceOptions } from "@tsparticles/engine";
+import { memo } from "react";
 
-export default function MagicImageParticles() {
+export default memo(function MagicImageParticles() {
   useEffect(() => {
     initParticlesEngine(async (engine) => {
       await loadSlim(engine);
@@ -76,4 +77,5 @@ export default function MagicImageParticles() {
       // If you want to interact with particles (repulse/click), remove 'pointer-events-none'.
     />
   );
-}
+
+});
