@@ -11,20 +11,20 @@ type TeamMember = {
 
 /* ================= DATA ================= */
 const team: TeamMember[] = [
-  { id: 1, name: "John Rafael B. Piñero", flname: "John Rafael B. Piñero", role: "System Engineer", image: "/team_eci_nobg/ab.png" },
-  { id: 2, name: "Don Ricardo Jose M. Roces", flname: "Don Ricardo Jose M. Roces", role: "System Engineer", image: "/team_eci_nobg/donn.png" },
-  { id: 3, name: "Mark Jayson C. Gonzales", flname: "Mark Jayson C. Gonzales", role: "System Engineer", image: "/team_eci_nobg/jaysonn.png" },
-  { id: 4, name: "Karl Joseph P. Ramirez", flname: "Karl Joseph P. Ramirez", role: "System Engineer", image: "/team_eci_nobg/Karll.png" },
-  { id: 5, name: "Rudy B. Andrade", flname: "Rudy B. Andrade", role: "Liason Officer", image: "/team_eci_nobg/koya rudy.png" },
-  { id: 6, name: "Alexander P. Alonzo", flname:"Alexander P. Alonzo", role: "Sr. System Engr. / TSG. Supervisor", image: "/team_eci_nobg/sir_AA.png" },
-  { id: 7, name: "Joseph D. Rullan", flname: "Joseph D. Rullan", role: "OIC-General Manager", image: "/team_eci_nobg/sir.Jo.png" },
-  { id: 8, name: "Shirley F. Santos", flname: "Shirley F. Santos", role: "Admin & Finance Officer", image: "/team_eci_nobg/madama sherrr.png" },
-  { id: 9, name: "Oscar A. Sabanal", flname: "Oscar A. Sabanal", role: "System Engineer", image: "/team_eci_nobg/Oassss.png" },
-  { id: 10, name: "Kim Carlo S. Rosita", flname:"Kim Carlo S. Rosita", role: "System Engineer", image: "/team_eci_nobg/kimm.png" },
-  { id: 11, name: "Rachelle M. Bautista", flname:"Rachelle M. Bautista", role: "Sr. System Engr./Q.A and DA Head", image: "/team_eci_nobg/cheche.png" },
-  { id: 12, name: "Jaimier Paul Ranara", flname:"Jaimier Paul Ranara", role: "System Engineer", image: "/team_eci_nobg/jaymirr.png" },
-  { id: 13, name: "Daniel D. Robleza", flname:"Daniel D. Robleza", role: "Sr. System Engineer", image: "/team_eci_nobg/daniel.png" }, 
-  {id: 14, name: "Philip S. Taguba", flname:"Philip S. Taguba", role: "Channels Account Manager", image: "/team_eci_nobg/philip.png" },
+  { id: 1, name: "John Rafael B. Piñero", flname: "John Rafael B. Piñero", role: "Technical", image: "/team_eci_nobg/ab.png" },
+  { id: 2, name: "Don Ricardo Jose M. Roces", flname: "Don Ricardo Jose M. Roces", role: "Technical", image: "/team_eci_nobg/donn.png" },
+  { id: 3, name: "Mark Jayson C. Gonzales", flname: "Mark Jayson C. Gonzales", role: "Technical", image: "/team_eci_nobg/jaysonn.png" },
+  { id: 4, name: "Karl Joseph P. Ramirez", flname: "Karl Joseph P. Ramirez", role: "Technical", image: "/team_eci_nobg/Karll.png" },
+  { id: 5, name: "Rudy B. Andrade", flname: "Rudy B. Andrade", role: "Technical", image: "/team_eci_nobg/koya rudy.png" },
+  { id: 6, name: "Alexander P. Alonzo", flname:"Alexander P. Alonzo", role: "Technical", image: "/team_eci_nobg/sir_AA.png" },
+  { id: 7, name: "Joseph D. Rullan", flname: "Joseph D. Rullan", role: "Sales", image: "/team_eci_nobg/sir.Jo.png" },
+  { id: 8, name: "Shirley F. Santos", flname: "Shirley F. Santos", role: "Sales", image: "/team_eci_nobg/madama sherrr.png" },
+  { id: 9, name: "Oscar A. Sabanal", flname: "Oscar A. Sabanal", role: "Sales", image: "/team_eci_nobg/Oassss.png" },
+  { id: 10, name: "Kim Carlo S. Rosita", flname:"Kim Carlo S. Rosita", role: "Technical", image: "/team_eci_nobg/kimm.png" },
+  { id: 11, name: "Rachelle M. Bautista", flname:"Rachelle M. Bautista", role: "Sales", image: "/team_eci_nobg/cheche.png" },
+  { id: 12, name: "Jaimier Paul Ranara", flname:"Jaimier Paul Ranara", role: "Technical", image: "/team_eci_nobg/jaymirr.png" },
+  { id: 13, name: "Daniel D. Robleza", flname:"Daniel D. Robleza", role: "Sales", image: "/team_eci_nobg/daniel.png" }, 
+  {id: 14, name: "Philip S. Taguba", flname:"Philip S. Taguba", role: "Sales", image: "/team_eci_nobg/philip.png" },
 ];
 
 
