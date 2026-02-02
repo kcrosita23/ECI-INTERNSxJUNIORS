@@ -12,20 +12,20 @@ type TeamMember = {
 
 /* ================= DATA ================= */
 const team: TeamMember[] = [
-  { id: 1, name: "John Rafael B. Piñero", flname: "John Rafael B. Piñero", position: "System Engineer", role:"Technical", image: "/team_eci_nobg/ab.png" },
-  { id: 2, name: "Don Ricardo Jose M. Roces", flname: "Don Ricardo Jose M. Roces", position: "System Engineer",role:"Technical", image: "/team_eci_nobg/donn.png" },
-  { id: 3, name: "Mark Jayson C. Gonzales", flname: "Mark Jayson C. Gonzales", position: "System Engineer", role:"Technical", image: "/team_eci_nobg/jaysonn.png" },
-  { id: 4, name: "Karl Joseph P. Ramirez", flname: "Karl Joseph P. Ramirez", position: "System Engineer",role:"Technical", image: "/team_eci_nobg/Karll.png" },
-  { id: 5, name: "Rudy B. Andrade", flname: "Rudy B. Andrade", position: "Liason Officer",role:"Technical", image: "/team_eci_nobg/koya rudy.png" },
-  { id: 6, name: "Alexander P. Alonzo", flname:"Alexander P. Alonzo", position: "Sr. System Engr. / TSG. Supervisor", role:"Technical", image: "/team_eci_nobg/sir_AA.png" },
-  { id: 7, name: "Joseph D. Rullan", flname: "Joseph D. Rullan", position: "OIC-General Manager", role:"Sales", image: "/team_eci_nobg/sir.Jo.png" },
-  { id: 8, name: "Shirley F. Santos", flname: "Shirley F. Santos", position: "Admin & Finance Officer", role:"Sales", image: "/team_eci_nobg/madama sherrr.png" },
-  { id: 9, name: "Oscar A. Sabanal", flname: "Oscar A. Sabanal", position: "System Engineer", role:"Technical", image: "/team_eci_nobg/Oassss.png" },
-  { id: 10, name: "Kim Carlo S. Rosita", flname:"Kim Carlo S. Rosita", position: "System Engineer", role:"Technical", image: "/team_eci_nobg/kimm.png" },
-  { id: 11, name: "Rachelle M. Bautista", flname:"Rachelle M. Bautista", position: "Sr. System Engr./Q.A and DA Head", role:"Sales", image: "/team_eci_nobg/cheche.png" },
-  { id: 12, name: "Jaimier Paul Ranara", flname:"Jaimier Paul Ranara", position: "System Engineer", role:"Technical", image: "/team_eci_nobg/jaymirr.png" },
-  { id: 13, name: "Daniel D. Robleza", flname:"Daniel D. Robleza", position: "Sr. System Engineer", role:"Technical", image: "/team_eci_nobg/daniel.png" }, 
-  {id: 14, name: "Philip S. Taguba", flname:"Philip S. Taguba", position: "Channels Account Manager", role:"Sales", image: "/team_eci_nobg/philip.png" },
+  { id: 1, name: "John Rafael", flname: "John Rafael B. Piñero", position: "System Engineer", role:"Technical", image: "/team_eci_nobg/ab.png" },
+  { id: 2, name: "Don Ricardo Jose", flname: "Don Ricardo Jose M. Roces", position: "System Engineer",role:"Technical", image: "/team_eci_nobg/donn.png" },
+  { id: 3, name: "Mark Jayson", flname: "Mark Jayson C. Gonzales", position: "System Engineer", role:"Technical", image: "/team_eci_nobg/jaysonn.png" },
+  { id: 4, name: "Karl Joseph", flname: "Karl Joseph P. Ramirez", position: "System Engineer",role:"Technical", image: "/team_eci_nobg/Karll.png" },
+  { id: 5, name: "Rudy", flname: "Rudy B. Andrade", position: "Liason Officer",role:"Technical", image: "/team_eci_nobg/koya rudy.png" },
+  { id: 6, name: "Alexander", flname:"Alexander P. Alonzo", position: "Sr. System Engr. / TSG. Supervisor", role:"Technical", image: "/team_eci_nobg/sir_AA.png" },
+  { id: 7, name: "Joseph", flname: "Joseph D. Rullan", position: "OIC-General Manager", role:"Sales", image: "/team_eci_nobg/sir.Jo.png" },
+  { id: 8, name: "Shirley", flname: "Shirley F. Santos", position: "Admin & Finance Officer", role:"Sales", image: "/team_eci_nobg/madama sherrr.png" },
+  { id: 9, name: "Oscar", flname: "Oscar A. Sabanal", position: "System Engineer", role:"Technical", image: "/team_eci_nobg/Oassss.png" },
+  { id: 10, name: "Kim Carlo", flname:"Kim Carlo S. Rosita", position: "System Engineer", role:"Technical", image: "/team_eci_nobg/kimm.png" },
+  { id: 11, name: "Rachelle", flname:"Rachelle M. Bautista", position: "Sr. System Engr./Q.A and DA Head", role:"Sales", image: "/team_eci_nobg/cheche.png" },
+  { id: 12, name: "Jaimier Paul", flname:"Jaimier Paul Ranara", position: "System Engineer", role:"Technical", image: "/team_eci_nobg/jaymirr.png" },
+  { id: 13, name: "Daniel", flname:"Daniel D. Robleza", position: "Sr. System Engineer", role:"Technical", image: "/team_eci_nobg/daniel.png" }, 
+  {id: 14, name: "Philip", flname:"Philip S. Taguba", position: "Channels Account Manager", role:"Sales", image: "/team_eci_nobg/philip.png" },
 ];
 
 
