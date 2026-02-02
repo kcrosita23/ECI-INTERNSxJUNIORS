@@ -22,6 +22,7 @@ const team: TeamMember[] = [
   { id: 10, name: "kimm", role: "Technical", image: "/team_eci_nobg/kimm.png" },
   { id: 11, name: "cheche", role: "Sales", image: "/team_eci_nobg/cheche.png" },
   { id: 12, name: "jaymir", role: "Technical", image: "/team_eci_nobg/jaymirr.png" },
+  { id: 13, name: "angkol", role: "Sales", image: "/team_eci_nobg/angkel philip.png" },
 ];
 
 /* ================= COMPONENT ================= */
