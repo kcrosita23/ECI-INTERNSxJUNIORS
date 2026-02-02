@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 type TeamMember = {
   id: number;
   name: string;   // Nickname / Handle
-  flname: string; // Full Name (Added)
+  flname: string; // Full Name
   role: string;
   position: string;
   image: string;
@@ -25,9 +25,8 @@ const team: TeamMember[] = [
   { id: 11, name: "Rachelle", flname:"Rachelle M. Bautista", position: "Sr. System Engr./Q.A and DA Head", role:"Sales", image: "/team_eci_nobg/cheche.png" },
   { id: 12, name: "Jaimier Paul", flname:"Jaimier Paul Ranara", position: "System Engineer", role:"Technical", image: "/team_eci_nobg/jaymirr.png" },
   { id: 13, name: "Daniel", flname:"Daniel D. Robleza", position: "Sr. System Engineer", role:"Technical", image: "/team_eci_nobg/daniel.png" }, 
-  {id: 14, name: "Philip", flname:"Philip S. Taguba", position: "Channels Account Manager", role:"Sales", image: "/team_eci_nobg/philip.png" },
+  { id: 14, name: "Philip", flname:"Philip S. Taguba", position: "Channels Account Manager", role:"Sales", image: "/team_eci_nobg/philip.png" },
 ];
-
 
 /* ================= COMPONENT ================= */
 export default function About() {
@@ -54,51 +53,64 @@ export default function About() {
     return itemsRef.current;
   };
 
-  // EFFECT 0: Initial Mount - Start in the Middle Set
+  /**
+   * HELPER: Safe Scroll
+   * Calculates the exact center position inside the container and scrolls ONLY the container.
+   * This prevents the main browser window from jumping up and down.
+   */
+  const scrollToItem = (index: number, instant: boolean = false) => {
+    const map = getMap();
+    const node = map.get(index);
+    const container = containerRef.current;
+
+    if (node && container) {
+      // Calculate position to center the image within the container
+      const scrollLeft = node.offsetLeft - (container.clientWidth / 2) + (node.clientWidth / 2);
+      
+      container.scrollTo({
+        left: scrollLeft,
+        behavior: instant ? "auto" : "smooth"
+      });
+    }
+  };
+
+  // EFFECT 0: Initial Mount - Start in the Middle Set (Instant jump, no animation)
   useEffect(() => {
     const middleStartIndex = singleSetCount;
     setActiveIndex(middleStartIndex);
-    
-    const map = getMap();
-    const node = map.get(middleStartIndex);
-    if (node) {
-      node.scrollIntoView({ behavior: "auto", inline: "center", block: "nearest" });
-    }
+    // Use instant scroll on mount
+    scrollToItem(middleStartIndex, true); 
   }, [singleSetCount]);
 
-  // EFFECT 1: Auto-Scroll Logic
+  // EFFECT 1: Auto-Scroll Logic (Triggered by activeIndex change)
   useEffect(() => {
-    if (activeIndex !== null) {
-      const map = getMap();
-      const node = map.get(activeIndex);
+    if (activeIndex !== null && !isResettingRef.current) {
+      // 1. Smooth scroll to the selected item
+      scrollToItem(activeIndex, false);
 
-      if (node && !isResettingRef.current) {
-        node.scrollIntoView({
-          behavior: isResettingRef.current ? "auto" : "smooth",
-          block: "nearest",
-          inline: "center", 
-        });
+      // 2. Infinite Loop Check
+      const timeout = setTimeout(() => {
+          if (activeIndex < singleSetCount) {
+              // Too far left -> Jump to Middle
+              isResettingRef.current = true;
+              const newIndex = activeIndex + singleSetCount;
+              setActiveIndex(newIndex);
+              scrollToItem(newIndex, true); // Instant jump
+          } else if (activeIndex >= singleSetCount * 2) {
+              // Too far right -> Jump to Middle
+              isResettingRef.current = true;
+              const newIndex = activeIndex - singleSetCount;
+              setActiveIndex(newIndex);
+              scrollToItem(newIndex, true); // Instant jump
+          }
+      }, 500); // Wait for smooth scroll to finish
 
-        const timeout = setTimeout(() => {
-            if (activeIndex < singleSetCount) {
-                isResettingRef.current = true;
-                const newIndex = activeIndex + singleSetCount;
-                setActiveIndex(newIndex);
-            } else if (activeIndex >= singleSetCount * 2) {
-                isResettingRef.current = true;
-                const newIndex = activeIndex - singleSetCount;
-                setActiveIndex(newIndex);
-            } else {
-                isResettingRef.current = false;
-            }
-        }, 500); 
-
-        return () => clearTimeout(timeout);
-      }
-      
-      if (isResettingRef.current) {
-          isResettingRef.current = false;
-      }
+      return () => clearTimeout(timeout);
+    }
+    
+    // Reset flag after a jump
+    if (isResettingRef.current) {
+        isResettingRef.current = false;
     }
   }, [activeIndex, singleSetCount]);
 
@@ -121,7 +133,7 @@ export default function About() {
   };
 
   return (
-    <section id="contacts" className="relative w-full min-h-screen py-12 md:py-24 px-4 md:px-6 bg-slate-950 overflow-x-hidden text-slate-200 font-sans">
+    <section id="about" className="relative w-full min-h-screen py-12 md:py-24 px-4 md:px-6 bg-slate-950 overflow-x-hidden text-slate-200 font-sans">
       
       {/* INJECTED STYLES */}
       <style>{`
@@ -141,14 +153,78 @@ export default function About() {
 
       <div className="w-full max-w-7xl mx-auto relative z-10 flex flex-col">
         
+        {/* ================= COMPANY INFO SECTION ================= */}
+        <div className="mb-24 space-y-12 animate-in fade-in slide-in-from-bottom-8 duration-700">
+            
+            {/* COMPANY HEADER */}
+            <div className="text-center space-y-4">
+                <div className="inline-block px-3 py-1 rounded-full bg-blue-900/30 border border-blue-500/20 text-blue-300 text-[10px] md:text-xs font-bold tracking-widest uppercase backdrop-blur-sm">
+                   Trusted System Integrator
+                </div>
+                <h1 className="text-4xl md:text-7xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-slate-200 to-blue-400 tracking-tight pb-2">
+                    Everywhere Consulting
+                </h1>
+                <p className="text-slate-400 max-w-3xl mx-auto text-base md:text-xl leading-relaxed">
+                   We are a recognized system integrator and software solutions provider in the IT industry, offering comprehensive Cybersecurity services and exclusive distribution of Magic Software and Actian Zen.
+                </p>
+                <p className="text-blue-400 font-mono text-xs md:text-sm tracking-widest uppercase mt-2">
+                   Build. Connect. Manage with Ease.
+                </p>
+            </div>
+
+            {/* MISSION & VISION GRID */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+                
+                {/* MISSION CARD */}
+                <div className="group relative bg-slate-900/50 border border-slate-800 rounded-2xl p-6 md:p-10 hover:bg-slate-900 hover:border-blue-500/30 transition-all duration-300 overflow-hidden">
+                    <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-24 h-24 text-blue-500">
+                            <path fillRule="evenodd" d="M9.315 7.584C12.195 3.883 16.695 1.5 21.75 1.5a.75.75 0 01.75.75c0 5.056-2.383 9.555-6.084 12.436h.001c-3.7 2.881-8.199 5.264-13.254 5.264a.75.75 0 01-.75-.75c0-5.055 2.383-9.554 6.084-12.435zm.895 5.763c-1.6 1.244-3.517 2.268-5.652 2.964.787-2.008 1.956-3.793 3.374-5.212l2.278 2.248z" clipRule="evenodd" />
+                            <path d="M11.25 12a.75.75 0 00-1.5 0v3c0 .414.336.75.75.75h3a.75.75 0 000-1.5h-2.25V12z" />
+                            <path d="M4.646 12.306l-1.952 1.951a.75.75 0 001.06 1.061l1.952-1.952a.75.75 0 00-1.06-1.06zM7.25 15.75a.75.75 0 000 1.5h2.25a.75.75 0 000-1.5H7.25z" />
+                         </svg>
+                    </div>
+                    <div className="relative z-10">
+                        <div className="flex items-center space-x-3 mb-4">
+                            <span className="w-8 h-1 bg-blue-500 rounded-full"></span>
+                            <h2 className="text-2xl font-bold text-slate-100 uppercase tracking-wider">Our Mission</h2>
+                        </div>
+                        <p className="text-slate-400 leading-relaxed text-sm md:text-base">
+                            To empower businesses with expert support, training, and custom software solutions. We aim to share the knowledge and skills necessary for clients to pursue their goals in developing and securing information technology.
+                        </p>
+                    </div>
+                </div>
+
+                {/* VISION CARD */}
+                <div className="group relative bg-slate-900/50 border border-slate-800 rounded-2xl p-6 md:p-10 hover:bg-slate-900 hover:border-amber-500/30 transition-all duration-300 overflow-hidden">
+                    <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-24 h-24 text-amber-500">
+                            <path d="M12 15a3 3 0 100-6 3 3 0 000 6z" />
+                            <path fillRule="evenodd" d="M1.323 11.447C2.811 6.976 7.028 3.75 12.001 3.75c4.97 0 9.185 3.223 10.675 7.69.12.362.12.752 0 1.113-1.487 4.471-5.705 7.697-10.677 7.697-4.97 0-9.186-3.223-10.675-7.69a1.762 1.762 0 010-1.113zM17.25 12a5.25 5.25 0 11-10.5 0 5.25 5.25 0 0110.5 0z" clipRule="evenodd" />
+                        </svg>
+                    </div>
+                    <div className="relative z-10">
+                        <div className="flex items-center space-x-3 mb-4">
+                            <span className="w-8 h-1 bg-amber-500 rounded-full"></span>
+                            <h2 className="text-2xl font-bold text-slate-100 uppercase tracking-wider">Our Vision</h2>
+                        </div>
+                        <p className="text-slate-400 leading-relaxed text-sm md:text-base">
+                            To serve as a trusted partner that understands client requirements exactly, delivering solutions that work to streamline operations, drive growth, and protect critical assets from evolving threats.
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
         {/* HEADER */}
         <div className="text-center mb-8 md:mb-12">
-          <div className="inline-block mb-3 px-3 py-1 rounded-full bg-blue-900/30 border border-blue-500/20 text-blue-300 text-[10px] md:text-xs font-bold tracking-widest uppercase backdrop-blur-sm">
-            Everywhere Consulting
+          <div className="inline-block mb-3 px-3 py-1 rounded-full bg-slate-800 border border-slate-700 text-slate-400 text-[10px] md:text-xs font-bold tracking-widest uppercase">
+            Personnel Directory
           </div>
-          <h1 className="text-3xl md:text-6xl font-extrabold text-white mb-4 tracking-tight drop-shadow-sm">
+          <h2 className="text-3xl md:text-5xl font-bold text-white mb-4 tracking-tight">
             Meet the Team
-          </h1>
+          </h2>
           <p className="text-slate-400 max-w-2xl mx-auto text-sm md:text-lg">
             The core processors behind our operations.
           </p>
@@ -298,6 +374,15 @@ export default function About() {
                                                               {member.flname}
                                                           </p>
                                                         </div>
+                                                        <div className="flex justify-between items-center mt-0.5">
+                                                           {/* Display Handle/Nickname */}
+                                                           <p className="text-[10px] text-slate-500 font-mono truncate">
+                                                              const {member.name}
+                                                           </p>
+                                                           <p className="text-[9px] text-slate-600 truncate ml-2">
+                                                              ID: {member.id.toString().padStart(4, '0')}
+                                                           </p>
+                                                        </div>
 
                                                         {/* MODIFIED: Directory Image Reveal */}
                                                         {isActive && (
@@ -311,8 +396,8 @@ export default function About() {
                                                             </div>
                                                             <div className="mt-2 text-[12px] text-center text-slate-400 font-mono">
                                                               <p className="font-bold">
-                                                              {member.position}
-                                                            </p>
+                                                                {member.position}
+                                                              </p>
                                                             </div>
                                                           </div>
                                                         )}
