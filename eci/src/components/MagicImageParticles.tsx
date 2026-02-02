@@ -2,8 +2,9 @@ import { useEffect, useMemo } from "react";
 import Particles, { initParticlesEngine } from "@tsparticles/react";
 import { loadSlim } from "@tsparticles/slim";
 import type { ISourceOptions } from "@tsparticles/engine";
+import { memo } from "react";
 
-export default function MagicImageParticles() {
+export default memo(function MagicImageParticles() {
   useEffect(() => {
     initParticlesEngine(async (engine) => {
       await loadSlim(engine);
@@ -12,7 +13,7 @@ export default function MagicImageParticles() {
 
   const options = useMemo<ISourceOptions>(
     () => ({
-      fullScreen: { enable: false }, // Keep false so we control it via CSS below
+      fullScreen: { enable: false },
       background: { color: "transparent" },
       fpsLimit: 60,
       particles: {
@@ -50,7 +51,7 @@ export default function MagicImageParticles() {
         },
       },
       interactivity: {
-        detectsOn: "window", // Changed to window for better fixed detection
+        detectsOn: "window",
         events: {
           onHover: { enable: true, mode: "repulse" },
           onClick: { enable: true, mode: "push" },
@@ -69,11 +70,8 @@ export default function MagicImageParticles() {
     <Particles
       id="magicParticles"
       options={options}
-      // Changed 'absolute' to 'fixed' so it stays on screen while scrolling
-      // Ensure z-index is low (z-0 or -1) so it doesn't block content
       className="fixed inset-0 z-0 pointer-events-none" 
-      // Note: Added pointer-events-none so you can click buttons UNDER the particles. 
-      // If you want to interact with particles (repulse/click), remove 'pointer-events-none'.
     />
   );
-}
+
+});

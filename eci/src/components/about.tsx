@@ -26,13 +26,11 @@ const team: TeamMember[] = [
 
 /* ================= COMPONENT ================= */
 export default function About() {
-  // DATA PREP: Create 3 sets for infinite illusion
-  // Set 1 (Buffer Left), Set 2 (Main), Set 3 (Buffer Right)
+  // DATA PREP
   const extendedTeam = [...team, ...team, ...team];
   const singleSetCount = team.length;
 
   // STATE
-  // We now track activeIndex (0 to 35) separately from activeId (1 to 12)
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [activeId, setActiveId] = useState<number | null>(null);
   
@@ -40,11 +38,9 @@ export default function About() {
   const [openFolders, setOpenFolders] = useState<string[]>([]); 
 
   // REFS
-  // Map stores DOM nodes by INDEX now, not ID
   const itemsRef = useRef<Map<number, HTMLDivElement> | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const lastInteraction = useRef<"image" | "list" | null>(null);
-  const isResettingRef = useRef(false); // To prevent animation loops
+  const isResettingRef = useRef(false);
 
   const getMap = () => {
     if (!itemsRef.current) {
@@ -55,11 +51,9 @@ export default function About() {
 
   // EFFECT 0: Initial Mount - Start in the Middle Set
   useEffect(() => {
-    // Start at the first item of the middle set (index 12)
     const middleStartIndex = singleSetCount;
     setActiveIndex(middleStartIndex);
     
-    // Immediate scroll without animation
     const map = getMap();
     const node = map.get(middleStartIndex);
     if (node) {
@@ -67,58 +61,41 @@ export default function About() {
     }
   }, [singleSetCount]);
 
-  // EFFECT 1: Auto-Scroll & Infinite Loop Logic
+  // EFFECT 1: Auto-Scroll Logic
   useEffect(() => {
     if (activeIndex !== null) {
       const map = getMap();
       const node = map.get(activeIndex);
 
       if (node && !isResettingRef.current) {
-        // 1. Scroll the selected item into view
         node.scrollIntoView({
-          behavior: isResettingRef.current ? "auto" : "smooth", // Instant if resetting
+          behavior: isResettingRef.current ? "auto" : "smooth",
           block: "nearest",
           inline: "center", 
         });
 
-        // 2. CHECK BOUNDARIES (The Infinite Loop Magic)
-        // If we are in Set 1 (Left Buffer) or Set 3 (Right Buffer),
-        // we need to jump back to Set 2 (Middle) after the animation.
         const timeout = setTimeout(() => {
             if (activeIndex < singleSetCount) {
-                // Too far left -> Jump to Middle
                 isResettingRef.current = true;
                 const newIndex = activeIndex + singleSetCount;
                 setActiveIndex(newIndex);
             } else if (activeIndex >= singleSetCount * 2) {
-                // Too far right -> Jump to Middle
                 isResettingRef.current = true;
                 const newIndex = activeIndex - singleSetCount;
                 setActiveIndex(newIndex);
             } else {
                 isResettingRef.current = false;
             }
-        }, 500); // Wait for smooth scroll to finish (approx 500ms)
+        }, 500); 
 
         return () => clearTimeout(timeout);
       }
       
-      // Reset flag if we just performed a jump
       if (isResettingRef.current) {
           isResettingRef.current = false;
       }
     }
   }, [activeIndex, singleSetCount]);
-
-  // EFFECT 2: Auto-expand folder based on activeId
-  useEffect(() => {
-    if (activeId && lastInteraction.current === "image") {
-      const member = team.find((m) => m.id === activeId);
-      if (member && !openFolders.includes(member.role)) {
-        setOpenFolders((prev) => [...prev, member.role]);
-      }
-    }
-  }, [activeId, openFolders]);
 
   const toggleFolder = (role: string) => {
     setOpenFolders((prev) => 
@@ -128,33 +105,20 @@ export default function About() {
     );
   };
 
-  // HELPER: Handle hovering an image
-  const handleImageHover = (index: number, id: number) => {
-    if (window.matchMedia('(hover: hover)').matches) {
-        lastInteraction.current = "image";
-        setActiveIndex(index); // Visual position
-        setActiveId(id);       // Data lookup
-    }
-  };
-
   // HELPER: Handle clicking a list item (IDE)
   const handleListClick = (id: number) => {
-    lastInteraction.current = "list";
-    
-    // Find the equivalent index in the MIDDLE set
-    // (This ensures when we click the list, the carousel jumps to the center set, not the buffers)
-    const middleSetOffset = singleSetCount;
-    const memberIndex = team.findIndex(m => m.id === id);
-    const targetIndex = middleSetOffset + memberIndex;
-
     setActiveId(id === activeId ? null : id);
-    setActiveIndex(targetIndex);
+  };
+
+  // HELPER: Handle Carousel Interaction (Click Only)
+  const handleCarouselInteract = (index: number) => {
+    setActiveIndex(index);
   };
 
   return (
     <section id="contacts" className="relative w-full min-h-screen py-12 md:py-24 px-4 md:px-6 bg-slate-950 overflow-x-hidden text-slate-200 font-sans">
       
-      {/* INJECTED STYLES to hide scrollbar */}
+      {/* INJECTED STYLES */}
       <style>{`
         .no-scrollbar::-webkit-scrollbar {
           display: none;
@@ -185,20 +149,17 @@ export default function About() {
           </p>
         </div>
 
-        {/* IMAGES PREVIEW PANE - MOBILE STICKY */}
+        {/* IMAGES PREVIEW PANE */}
         <div className="sticky top-2 z-30 mb-6 -mx-4 px-4 md:static md:mb-8 md:mx-0">
           <div className="bg-slate-950/80 backdrop-blur-md rounded-xl border border-slate-800/50 shadow-2xl">
-            {/* NOTE: We map 'extendedTeam' here (3x the data).
-                We use index for the key to handle duplicates.
-            */}
             <div 
                 ref={containerRef}
                 className="flex gap-4 overflow-x-auto py-4 px-4 no-scrollbar items-end h-[200px] md:h-[280px] scroll-smooth snap-x snap-mandatory"
             >
               {extendedTeam.map((member, index) => {
-              
-                // Only "highlight" if the IDs match, regardless of which copy it is
-                const isVisualActive = activeId === member.id;
+                
+                // Determine if this specific item is the "centered" one based on activeIndex
+                const isCentered = activeIndex === index;
 
                 return (
                 <div
@@ -208,29 +169,17 @@ export default function About() {
                     if (node) map.set(index, node);
                     else map.delete(index);
                   }}
-                  // Tap/Click handler for mobile to select image
-                  onClick={() => {
-                      lastInteraction.current = "image";
-                      setActiveIndex(index);
-                      setActiveId(member.id === activeId ? null : member.id);
-                  }}
-                  onMouseEnter={() => handleImageHover(index, member.id)}
-                  onMouseLeave={() => {
-                     if (window.matchMedia('(hover: hover)').matches) {
-                       // Optional: reset on leave, or stay centered
-                       // setActiveId(null); 
-                     }
-                  }}
+                  // MODIFIED: Removed onMouseEnter, kept onClick
+                  onClick={() => handleCarouselInteract(index)}
                   className={`snap-center min-w-[120px] md:min-w-[140px] scroll-m-20 sm:scroll-m-5 relative transition-all duration-500 ease-out flex items-end justify-center cursor-pointer group
-                    ${
-                      isVisualActive
-                        ? "scale-110 md:scale-125 -translate-y-2 opacity-100 z-50"
-                        : isVisualActive
-                        ? "opacity-30 grayscale scale-90 blur-[1px] z-0"
-                        : "opacity-80 md:hover:opacity-100 scale-100 grayscale md:hover:grayscale-0"
-                    }`}
+                    ${isCentered 
+                        ? "opacity-100 scale-110 md:scale-125 z-10 grayscale-0 -translate-y-2" 
+                        : "opacity-60 scale-90 grayscale hover:opacity-100 hover:grayscale-0"
+                    }
+                  `}
                 >
-                  <div className={`absolute top-2 bg-blue-600 text-white text-[10px] md:text-xs px-2 py-1 rounded opacity-0 transition-opacity duration-300 shadow-lg shadow-blue-900/50 whitespace-nowrap ${isVisualActive ? "opacity-100" : "group-hover:opacity-100"}`}>
+                  <div className={`absolute top-2 bg-blue-600 text-white text-[10px] md:text-xs px-2 py-1 rounded transition-opacity duration-300 shadow-lg shadow-blue-900/50 whitespace-nowrap 
+                    ${isCentered ? "opacity-100" : "opacity-0 group-hover:opacity-100"}`}>
                     {member.name}
                   </div>
 
@@ -238,13 +187,13 @@ export default function About() {
                     src={member.image}
                     alt={member.name}
                     className={`w-full h-36 md:h-48 object-contain transition-all duration-500 
-                      ${isVisualActive ? "drop-shadow-[0_0_15px_rgba(59,130,246,0.6)]" : "drop-shadow-none"}`}
+                      ${isCentered ? "drop-shadow-[0_0_15px_rgba(59,130,246,0.5)]" : "drop-shadow-none"}`}
                   />
                 </div>
               )})}
             </div>
             <div className="text-center text-[10px] text-slate-500 pb-2 md:hidden uppercase tracking-widest">
-                Swipe to browse • Tap to select
+                Tap to scroll
             </div>
           </div>
         </div>
@@ -273,8 +222,8 @@ export default function About() {
               </svg>
               <span className="font-bold text-slate-300">./root/</span>
               {activeId && (
-                 <span className="ml-2 text-blue-400 bg-blue-500/10 border border-blue-500/20 px-2 rounded animate-pulse truncate max-w-[150px]">
-                   -- locating id: {activeId}...
+                 <span className="ml-2 text-blue-400 bg-blue-500/10 border border-blue-500/20 px-2 rounded truncate max-w-[150px]">
+                   -- accessing id: {activeId}
                  </span>
               )}
             </div>
@@ -322,47 +271,46 @@ export default function About() {
                                         return (
                                             <div
                                                 key={member.id}
-                                                // Handle Interaction
+                                                // MODIFIED: Only sets ID, doesn't scroll carousel
                                                 onClick={() => handleListClick(member.id)}
-                                                onMouseEnter={() => {
-                                                    // Find the middle-set index for this ID to ensure we scroll to the center block
-                                                    const middleSetOffset = singleSetCount;
-                                                    const memberIndex = team.findIndex(m => m.id === member.id);
-                                                    if (window.matchMedia('(hover: hover)').matches) {
-                                                        lastInteraction.current = "list";
-                                                        setActiveIndex(middleSetOffset + memberIndex);
-                                                        setActiveId(member.id);
-                                                    }
-                                                }}
-                                                onMouseLeave={() => {
-                                                   if (window.matchMedia('(hover: hover)').matches) {
-                                                      // Optional: keep selection or clear
-                                                      // setActiveId(null);
-                                                   }
-                                                }}
                                                 className={`
                                                     relative cursor-pointer p-3 rounded-lg border transition-all duration-200
                                                     ${isActive 
-                                                        ? "bg-blue-500/10 border-blue-500/50 shadow-[0_0_15px_rgba(59,130,246,0.15)] ring-1 ring-blue-500/30 scale-[1.02] md:scale-105 z-10" 
-                                                        : "bg-slate-800/40 border-slate-800 active:bg-slate-800 md:hover:border-slate-600 md:hover:bg-slate-800 md:hover:shadow-md"
+                                                        ? "bg-slate-800/80 border-blue-500/50 ring-1 ring-blue-500/30 col-span-1 md:col-span-2 row-span-2" 
+                                                        : "bg-slate-800/40 border-slate-800 active:bg-slate-800 md:hover:border-slate-600 md:hover:bg-slate-800"
                                                     }
                                                 `}
                                             >
-                                                <div className="flex items-center space-x-3">
-                                                    <div className={`w-2 h-2 rounded-full flex-shrink-0 ${isActive ? "bg-blue-400 animate-pulse shadow-[0_0_8px_rgba(96,165,250,0.8)]" : "bg-slate-600"}`} />
+                                                <div className="flex items-start space-x-3">
+                                                    {/* Status Dot */}
+                                                    <div className={`mt-1.5 w-2 h-2 rounded-full flex-shrink-0 ${isActive ? "bg-green-400 shadow-[0_0_8px_rgba(74,222,128,0.8)]" : "bg-slate-600"}`} />
+                                                    
                                                     <div className="min-w-0 flex-1">
-                                                        <p className={`text-sm font-semibold truncate ${isActive ? "text-blue-300" : "text-slate-300"}`}>
-                                                            {member.name}
-                                                        </p>
-                                                        <p className="text-[10px] text-slate-500 truncate">
+                                                        <div className="flex justify-between items-center">
+                                                          <p className={`text-sm font-semibold truncate ${isActive ? "text-blue-300" : "text-slate-300"}`}>
+                                                              {member.name}
+                                                          </p>
+                                                        </div>
+                                                        <p className="text-[10px] text-slate-500 truncate mb-2">
                                                             ID: {member.id.toString().padStart(4, '0')}
                                                         </p>
+
+                                                        {/* MODIFIED: Directory Image Reveal */}
+                                                        {isActive && (
+                                                          <div className="mt-2 pt-2 border-t border-slate-700/50 animate-in zoom-in-95 duration-300">
+                                                            <div className="bg-slate-950/50 rounded p-2 flex justify-center">
+                                                              <img 
+                                                                src={member.image} 
+                                                                alt={member.name} 
+                                                                className="h-32 w-auto object-contain drop-shadow-[0_4px_6px_rgba(0,0,0,0.5)]"
+                                                              />
+                                                            </div>
+                                                            <div className="mt-2 text-[10px] text-center text-slate-400 font-mono">
+                                                              [Preview Mode Active]
+                                                            </div>
+                                                          </div>
+                                                        )}
                                                     </div>
-                                                    {isActive && (
-                                                        <div className="text-[10px] font-bold text-blue-300 bg-blue-500/20 border border-blue-500/20 px-1.5 py-0.5 rounded animate-bounce">
-                                                            FOUND
-                                                        </div>
-                                                    )}
                                                 </div>
                                             </div>
                                         );
@@ -370,7 +318,6 @@ export default function About() {
                                 </div>
                             )}
 
-                            {/* COLLAPSED STATE PLACEHOLDER */}
                             {!isOpen && (
                                 <div className="ml-4 h-8 bg-slate-900 border border-dashed border-slate-700 rounded flex items-center justify-center text-[10px] text-slate-600 italic">
                                     ... contents hidden ...
@@ -386,11 +333,11 @@ export default function About() {
           <div className="bg-slate-950 text-slate-500 border-t border-slate-800 px-4 py-2 flex justify-between text-[9px] md:text-[10px] uppercase tracking-wider select-none">
               <div className="flex space-x-4">
                <span className="flex items-center"><span className="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5 shadow-[0_0_5px_rgba(16,185,129,0.5)]"></span>
-                  {activeId ? "Target Acquired" : "System Online"}
+                  {activeId ? "File Open" : "System Ready"}
                </span>
               </div>
               <div>
-                 {activeId ? `ID: ${activeId}` : "Waiting..."}
+                 {activeId ? `Reading: ${activeId}` : "Idle"}
               </div>
           </div>
 
