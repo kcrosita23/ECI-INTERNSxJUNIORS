@@ -3,25 +3,27 @@ import { useState, useEffect, useRef } from "react";
 /* ================= TYPES ================= */
 type TeamMember = {
   id: number;
-  name: string;
+  name: string;   // Nickname / Handle
+  flname: string; // Full Name (Added)
   role: string;
   image: string;
 };
 
 /* ================= DATA ================= */
 const team: TeamMember[] = [
-  { id: 1, name: "Abdul", role: "Technical", image: "/team_eci_nobg/ab.png" },
-  { id: 2, name: "don", role: "Technical", image: "/team_eci_nobg/donn.png" },
-  { id: 3, name: "jayson", role: "Technical", image: "/team_eci_nobg/jaysonn.png" },
-  { id: 4, name: "karl", role: "Technical", image: "/team_eci_nobg/Karll.png" },
-  { id: 5, name: "koya rudy", role: "Sales", image: "/team_eci_nobg/koya rudy.png" },
-  { id: 6, name: "sirAA", role: "Technical", image: "/team_eci_nobg/sir_AA.png" },
-  { id: 7, name: "sirJo", role: "Sales", image: "/team_eci_nobg/sir.Jo.png" },
-  { id: 8, name: "madamsher", role: "Technical", image: "/team_eci_nobg/madama sherrr.png" },
-  { id: 9, name: "oasss", role: "Technical", image: "/team_eci_nobg/Oassss.png" },
-  { id: 10, name: "kimm", role: "Technical", image: "/team_eci_nobg/kimm.png" },
-  { id: 11, name: "cheche", role: "Sales", image: "/team_eci_nobg/cheche.png" },
-  { id: 12, name: "jaymir", role: "Technical", image: "/team_eci_nobg/jaymirr.png" },
+  { id: 1, name: "Abdul", flname: "Abdul S.", role: "Technical", image: "/team_eci_nobg/ab.png" },
+  { id: 2, name: "don", flname: "Don M.", role: "Technical", image: "/team_eci_nobg/donn.png" },
+  { id: 3, name: "jayson", flname: "Jayson B.", role: "Technical", image: "/team_eci_nobg/jaysonn.png" },
+  { id: 4, name: "karl", flname: "Karl D.", role: "Technical", image: "/team_eci_nobg/Karll.png" },
+  { id: 5, name: "koya rudy", flname: "Rudy G.", role: "Sales", image: "/team_eci_nobg/koya rudy.png" },
+  { id: 6, name: "sirAA", flname: "Aaron A.", role: "Technical", image: "/team_eci_nobg/sir_AA.png" },
+  { id: 7, name: "sirJo", flname: "Joemar V.", role: "Sales", image: "/team_eci_nobg/sir.Jo.png" },
+  { id: 8, name: "madamsher", flname: "Sheryl L.", role: "Technical", image: "/team_eci_nobg/madama sherrr.png" },
+  { id: 9, name: "oasss", flname: "Oas P.", role: "Technical", image: "/team_eci_nobg/Oassss.png" },
+  { id: 10, name: "kimm", flname: "Kim T.", role: "Technical", image: "/team_eci_nobg/kimm.png" },
+  { id: 11, name: "cheche", flname: "Cheryl C.", role: "Sales", image: "/team_eci_nobg/cheche.png" },
+  { id: 12, name: "jaymir", flname: "Jaymir R.", role: "Technical", image: "/team_eci_nobg/jaymirr.png" },
+  { id: 13, name: "Philip", flname: "Philip E.", role: "Sales", image: "/team_eci_nobg/angkel philip.png" },
 ];
 
 /* ================= COMPONENT ================= */
@@ -180,6 +182,7 @@ export default function About() {
                 >
                   <div className={`absolute top-2 bg-blue-600 text-white text-[10px] md:text-xs px-2 py-1 rounded transition-opacity duration-300 shadow-lg shadow-blue-900/50 whitespace-nowrap 
                     ${isCentered ? "opacity-100" : "opacity-0 group-hover:opacity-100"}`}>
+                    {/* Display Handle/Name in Carousel Tooltip */}
                     {member.name}
                   </div>
 
@@ -287,13 +290,11 @@ export default function About() {
                                                     
                                                     <div className="min-w-0 flex-1">
                                                         <div className="flex justify-between items-center">
+                                                          {/* MODIFIED: Display FLNAME (Full Name) here */}
                                                           <p className={`text-sm font-semibold truncate ${isActive ? "text-blue-300" : "text-slate-300"}`}>
-                                                              {member.name}
+                                                              {member.flname}
                                                           </p>
                                                         </div>
-                                                        <p className="text-[10px] text-slate-500 truncate mb-2">
-                                                            ID: {member.id.toString().padStart(4, '0')}
-                                                        </p>
 
                                                         {/* MODIFIED: Directory Image Reveal */}
                                                         {isActive && (
