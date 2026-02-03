@@ -42,11 +42,11 @@ export default function Contacts() {
   const [phoneError, setPhoneError] = useState("");
 
   const [fullName, setFullName] = useState("");
+  const [CompanyName, setCompanyName] = useState("");
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState("");
   const [message, setMessage] = useState("");
 
-  const [department, setDepartment] = useState("Sales Management Group");
   const [service, setService] = useState("");
 
   const [countryDropdownOpen, setCountryDropdownOpen] = useState(false);
@@ -59,6 +59,12 @@ export default function Contacts() {
       .replace(/\b\w/g, (c) => c.toUpperCase());
     setFullName(value);
   };
+  const handleCompanyNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value
+      .toLowerCase()
+      .replace(/\b\w/g, (c) => c.toUpperCase());
+    setCompanyName(value);
+  }
 
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const cleaned = e.target.value.replace(/[^\d+]/g, "");
@@ -108,7 +114,7 @@ export default function Contacts() {
           full_name: fullName,
           email,
           phone,
-          department,
+          company_name: CompanyName,
           service: service || "N/A",
           message,
         },
@@ -174,36 +180,17 @@ export default function Contacts() {
             {/* FORM */}
             <div className="p-6 sm:p-10 bg-slate-900">
               <form className="space-y-6" onSubmit={handleSubmit}>
-                <select
-                  value={department}
-                  onChange={(e) => {
-                    setDepartment(e.target.value);
-                    setService("");
-                  }}
-                  className="w-full px-4 py-3 bg-slate-800 rounded-xl text-white"
-                >
-                  <option>Sales Management Group</option>
-                  <option>Technical Support Group</option>
-                  <option>Other</option>
-                </select>
-
-                {department === "Other" && (
-                  <select
-                    value={service}
-                    onChange={(e) => setService(e.target.value)}
-                    className="w-full px-4 py-3 bg-slate-800 rounded-xl text-white"
-                  >
-                    <option value="">--- Services ---</option>
-                    {SERVICES.map((s) => (
-                      <option key={s.id}>{s.title}</option>
-                    ))}
-                  </select>
-                )}
-
                 <input
                   value={fullName}
                   onChange={handleNameChange}
                   placeholder="Full Name"
+                  className="w-full px-4 py-3 bg-slate-800 rounded-xl text-white"
+                />
+
+                <input
+                  value={CompanyName}
+                  onChange={handleCompanyNameChange}
+                  placeholder="Company Name"
                   className="w-full px-4 py-3 bg-slate-800 rounded-xl text-white"
                 />
 

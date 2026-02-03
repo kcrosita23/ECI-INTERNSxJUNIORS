@@ -93,7 +93,7 @@ export default function HeroSection() {
               <motion.button
                 className="px-6 py-3 rounded-xl bg-blue-500 hover:bg-blue-600 transition shadow-lg"
               >
-                About Us
+                About ECI
               </motion.button>
               </Link>
               
