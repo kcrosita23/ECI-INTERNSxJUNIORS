@@ -47,28 +47,28 @@ export default function Solutions() {
     {
       title: "ELECTRIC METER READER",
       code: "EMR200",
-      video: "https://www.youtube.com/embed/S87qsJZzGR0",
+      video: "https://www.youtube.com/embed/9iNsJb6YdLk?si=GtRphcDmMhmGlX2Q",
       description:
         "The Electric Meter Reader (EMR) is a state-of-the-art mobile application used to capture and store meter readings from electric or water meters. It also collects non-meter-reading information, including meter conditions, hazardous conditions, tamper data, survey responses, and high/low reading checks.",
     },
     {
       title: "WAREHOUSING & INVENTORY SYSTEM",
       code: "WIS2000",
-      video: "https://www.youtube.com/embed/PcrQ8ajVNPw",
+      video: "https://www.youtube.com/embed/9iNsJb6YdLk?si=GtRphcDmMhmGlX2Q",
       description:
         "The Warehousing & Inventory System (WIS) is designed to assist electric utilities in managing materials effectively. It generates essential inventory reports, such as material balances, summaries of releases, received materials (BIN Card), total project costs, and more.",
     },
     {
       title: "COMPUTERIZED ACCOUNTING SYSTEM",
       code: "CAS2000",
-      video: "https://www.youtube.com/embed/1YLbAs1Kgsk",
+      video: "https://www.youtube.com/embed/9iNsJb6YdLk?si=GtRphcDmMhmGlX2Q",
       description:
         "The Computerized Accounting System (CAS) is an ACAM/BSUP-ready solution designed to effectively handle and manage the complex financial processes of Philippine electric utilities, thereby improving their operations and performance.",
     },
     {
       title: "CUSTOMER INFORMATION MANAGEMENT SYSTEM",
       code: "CIMS200",
-      video: "https://www.youtube.com/embed/1GtRT0z4iyg",
+      video: "https://www.youtube.com/embed/9iNsJb6YdLk?si=GtRphcDmMhmGlX2Q",
       description:
         "The Customer Information Management System (CIMS) seamlessly combines EBS2000 and CMS2000 to enhance billing precision, streamline customer data management, and boost service efficiency for both businesses and their customers.",
     },
