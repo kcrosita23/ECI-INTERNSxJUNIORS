@@ -42,50 +42,42 @@ export default function Contacts() {
   const [phoneError, setPhoneError] = useState("");
 
   const [fullName, setFullName] = useState("");
+  const [CompanyName, setCompanyName] = useState("");
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState("");
   const [message, setMessage] = useState("");
 
-  const [department, setDepartment] = useState("Sales Management Group");
   const [service, setService] = useState("");
 
   const [countryDropdownOpen, setCountryDropdownOpen] = useState(false);
   const [countrySearch, setCountrySearch] = useState("");
 
-  /* ================= NAME ================= */
+  /* ================= HANDLERS ================= */
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
       .toLowerCase()
       .replace(/\b\w/g, (c) => c.toUpperCase());
     setFullName(value);
   };
+  const handleCompanyNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value
+      .toLowerCase()
+      .replace(/\b\w/g, (c) => c.toUpperCase());
+    setCompanyName(value);
+  }
 
-  /* ================= PHONE ================= */
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const cleaned = e.target.value.replace(/[^\d+]/g, "");
     const formatter = new AsYouType(countryISO);
     const formatted = formatter.input(cleaned);
-
     setPhone(formatted);
 
-    const digitsOnly = cleaned.replace(/\D/g, "");
-    const countryDigits = getCountryCallingCode(countryISO);
-
-    if (digitsOnly === countryDigits) {
-      setPhoneError("");
-      return;
-    }
-
     const parsed = parsePhoneNumberFromString(formatted, countryISO);
-
-    if (parsed && parsed.isValid() && isValidNumberForRegion(parsed.number, countryISO)) {
-      setPhoneError("");
-    } else {
-      setPhoneError("Invalid phone number for selected country.");
-    }
+    parsed && parsed.isValid()
+      ? setPhoneError("")
+      : setPhoneError("Invalid phone number for selected country.");
   };
 
-  /* ================= EMAIL ================= */
   const validateEmail = (value: string) =>
     /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(value)
       ? ""
@@ -97,7 +89,6 @@ export default function Contacts() {
     setEmailError(value ? validateEmail(value) : "");
   };
 
-  /* ================= MESSAGE ================= */
   const handleMessageChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const capitalized = e.target.value.replace(
       /(^\s*\w|[.!?]\s*\w)/g,
@@ -106,7 +97,6 @@ export default function Contacts() {
     setMessage(capitalized);
   };
 
-  /* ================= SUBMIT ================= */
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -116,20 +106,18 @@ export default function Contacts() {
       return;
     }
 
-    const templateParams = {
-      full_name: fullName,
-      email,
-      phone,
-      department,
-      service: service || "N/A",
-      message,
-    };
-
     emailjs
       .send(
         EMAILJS_SERVICE_ID,
         EMAILJS_TEMPLATE_ID,
-        templateParams,
+        {
+          full_name: fullName,
+          email,
+          phone,
+          company_name: CompanyName,
+          service: service || "N/A",
+          message,
+        },
         EMAILJS_PUBLIC_KEY
       )
       .then(() => {
@@ -139,9 +127,6 @@ export default function Contacts() {
         setMessage("");
         setService("");
         setPhone(`+${getCountryCallingCode(countryISO)}`);
-      })
-      .catch(() => {
-        alert("Failed to send message. Please try again.");
       });
   };
 
@@ -158,9 +143,28 @@ export default function Contacts() {
       <MagicImageParticles />
 
       <div className="max-w-7xl mx-auto px-4 relative z-10">
+        {/* ================= SECTION HEADER ================= */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7 }}
+          className="text-center mb-14"
+        >
+          <h2 className="text-4xl font-bold text-white">
+            Connect to <span className="text-indigo-400">ECI</span>
+          </h2>
+          <p className="text-gray-400 mt-3 max-w-2xl mx-auto">
+            Let’s talk about how we can support your business and build something
+            great together.
+          </p>
+        </motion.div>
+
+        {/* ================= CARD ================= */}
         <motion.div
           initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
           transition={{ duration: 0.8 }}
           className="w-full max-w-6xl mx-auto bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl shadow-2xl overflow-hidden"
         >
@@ -176,32 +180,6 @@ export default function Contacts() {
             {/* FORM */}
             <div className="p-6 sm:p-10 bg-slate-900">
               <form className="space-y-6" onSubmit={handleSubmit}>
-                <select
-                  value={department}
-                  onChange={(e) => {
-                    setDepartment(e.target.value);
-                    setService("");
-                  }}
-                  className="w-full px-4 py-3 bg-slate-800 rounded-xl text-white"
-                >
-                  <option>Sales Management Group</option>
-                  <option>Technical Support Group</option>
-                  <option>Other</option>
-                </select>
-
-                {department === "Other" && (
-                  <select
-                    value={service}
-                    onChange={(e) => setService(e.target.value)}
-                    className="w-full px-4 py-3 bg-slate-800 rounded-xl text-white"
-                  >
-                    <option value="">--- Services ---</option>
-                    {SERVICES.map((s) => (
-                      <option key={s.id}>{s.title}</option>
-                    ))}
-                  </select>
-                )}
-
                 <input
                   value={fullName}
                   onChange={handleNameChange}
@@ -209,7 +187,14 @@ export default function Contacts() {
                   className="w-full px-4 py-3 bg-slate-800 rounded-xl text-white"
                 />
 
-                <div className="flex gap-3 relative">
+                <input
+                  value={CompanyName}
+                  onChange={handleCompanyNameChange}
+                  placeholder="Company Name"
+                  className="w-full px-4 py-3 bg-slate-800 rounded-xl text-white"
+                />
+
+                <div className="flex gap-3">
                   <div className="relative w-52">
                     <div
                       onClick={() => {
@@ -222,7 +207,7 @@ export default function Contacts() {
                     </div>
 
                     {countryDropdownOpen && (
-                      <div className="absolute mt-1 w-full bg-slate-800 rounded-xl text-white max-h-60 overflow-auto z-10">
+                      <div className="absolute mt-1 w-full bg-slate-800 rounded-xl max-h-60 overflow-auto z-10">
                         <input
                           autoFocus
                           placeholder="Search country..."
@@ -240,7 +225,7 @@ export default function Contacts() {
                               setPhoneError("");
                               setCountryDropdownOpen(false);
                             }}
-                            className="px-3 py-2 cursor-pointer hover:bg-slate-700"
+                            className="px-3 py-2 hover:bg-slate-700 cursor-pointer"
                           >
                             {c.name}
                           </div>
@@ -257,7 +242,9 @@ export default function Contacts() {
                   />
                 </div>
 
-                {phoneError && <p className="text-red-400 text-sm">{phoneError}</p>}
+                {phoneError && (
+                  <p className="text-red-400 text-sm">{phoneError}</p>
+                )}
 
                 <input
                   value={email}
@@ -266,7 +253,9 @@ export default function Contacts() {
                   className="w-full px-4 py-3 bg-slate-800 rounded-xl text-white"
                 />
 
-                {emailError && <p className="text-red-400 text-sm">{emailError}</p>}
+                {emailError && (
+                  <p className="text-red-400 text-sm">{emailError}</p>
+                )}
 
                 <textarea
                   value={message}
