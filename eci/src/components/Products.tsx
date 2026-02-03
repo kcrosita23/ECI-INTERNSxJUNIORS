@@ -205,7 +205,7 @@ export default function Products() {
             <div
               ref={mobileScrollRef}
               onScroll={handleMobileScroll}
-              className="flex md:hidden h-full overflow-x-auto overflow-y-hidden snap-x snap-mandatory [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden touch-pan-x"
+              className="flex md:hidden h-full overflow-x-auto overflow-y-hidden snap-x snap-mandatory [-ms-overflow-style:none] [scrollbar-width:none]"
             >
               {products.map((product, index) => (
                 <div key={index} className="w-full h-full flex-shrink-0 snap-center">
