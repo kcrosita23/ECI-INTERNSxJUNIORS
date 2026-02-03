@@ -24,7 +24,6 @@ function classNames(...classes: (string | false | undefined)[]) {
 }
 
 export default function Nav() {
-  const [projectsOpen, setProjectsOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("home");
   const menuRef = useRef<HTMLDivElement | null>(null);
   const location = useLocation();
