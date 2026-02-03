@@ -178,92 +178,123 @@ export default function Contacts() {
             </div>
 
             {/* FORM */}
-            <div className="p-6 sm:p-10 bg-slate-900">
-              <form className="space-y-6" onSubmit={handleSubmit}>
-                <input
-                  value={fullName}
-                  onChange={handleNameChange}
-                  placeholder="Full Name"
-                  className="w-full px-4 py-3 bg-slate-800 rounded-xl text-white"
-                />
+           <div className="p-6 sm:p-10 bg-slate-900">
+  <form className="space-y-6" onSubmit={handleSubmit}>
 
-                <input
-                  value={CompanyName}
-                  onChange={handleCompanyNameChange}
-                  placeholder="Company Name"
-                  className="w-full px-4 py-3 bg-slate-800 rounded-xl text-white"
-                />
+    {/* Full Name */}
+    <div className="relative">
+      <input
+        value={fullName}
+        onChange={handleNameChange}
+        placeholder=" "
+        className="peer w-full px-4 py-3 bg-slate-800 rounded-xl text-white
+                   focus:outline-none focus:ring-2 focus:ring-indigo-500"
+      />
+      <label className="floating-label">Full Name</label>
+    </div>
 
-                <div className="flex gap-3">
-                  <div className="relative w-52">
-                    <div
-                      onClick={() => {
-                        setCountryDropdownOpen(!countryDropdownOpen);
-                        setCountrySearch("");
-                      }}
-                      className="px-3 py-3 bg-slate-800 rounded-xl text-white cursor-pointer"
-                    >
-                      {selectedCountry?.name}
-                    </div>
+    {/* Company Name */}
+    <div className="relative">
+      <input
+        value={CompanyName}
+        onChange={handleCompanyNameChange}
+        placeholder=" "
+        className="peer w-full px-4 py-3 bg-slate-800 rounded-xl text-white
+                   focus:outline-none focus:ring-2 focus:ring-indigo-500"
+      />
+      <label className="floating-label">Company Name</label>
+    </div>
 
-                    {countryDropdownOpen && (
-                      <div className="absolute mt-1 w-full bg-slate-800 rounded-xl max-h-60 overflow-auto z-10">
-                        <input
-                          autoFocus
-                          placeholder="Search country..."
-                          className="w-full px-3 py-2 bg-slate-700"
-                          value={countrySearch}
-                          onChange={(e) => setCountrySearch(e.target.value)}
-                        />
+    {/* Country + Phone */}
+    <div className="flex gap-3">
+      {/* Country Selector */}
+      <div className="relative w-52">
+        <div
+          onClick={() => {
+            setCountryDropdownOpen(!countryDropdownOpen);
+            setCountrySearch("");
+          }}
+          className="px-4 py-3 bg-slate-800 rounded-xl text-white cursor-pointer"
+        >
+          {selectedCountry?.name}
+        </div>
 
-                        {filteredCountries.map((c) => (
-                          <div
-                            key={c.iso}
-                            onClick={() => {
-                              setCountryISO(c.iso);
-                              setPhone(`+${getCountryCallingCode(c.iso)}`);
-                              setPhoneError("");
-                              setCountryDropdownOpen(false);
-                            }}
-                            className="px-3 py-2 hover:bg-slate-700 cursor-pointer"
-                          >
-                            {c.name}
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
+        {countryDropdownOpen && (
+          <div className="absolute mt-1 w-full bg-slate-800 rounded-xl max-h-60 overflow-auto z-10">
+            <input
+              autoFocus
+              placeholder="Search country..."
+              className="w-full px-3 py-2 bg-slate-700 text-white outline-none"
+              value={countrySearch}
+              onChange={(e) => setCountrySearch(e.target.value)}
+            />
 
-                  <input
-                    value={phone}
-                    onChange={handlePhoneChange}
-                    placeholder="Phone"
-                    className="flex-1 px-4 py-3 bg-slate-800 rounded-xl text-white"
-                  />
-                </div>
+            {filteredCountries.map((c) => (
+              <div
+                key={c.iso}
+                onClick={() => {
+                  setCountryISO(c.iso);
+                  setPhone(`+${getCountryCallingCode(c.iso)}`);
+                  setPhoneError("");
+                  setCountryDropdownOpen(false);
+                }}
+                className="px-3 py-2 hover:bg-slate-700 cursor-pointer"
+              >
+                {c.name}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
 
-                {phoneError && (
-                  <p className="text-red-400 text-sm">{phoneError}</p>
-                )}
+      {/* Phone */}
+      <div className="relative flex-1">
+        <input
+          value={phone}
+          onChange={handlePhoneChange}
+          placeholder=" "
+          className="peer w-full px-4 py-3 bg-slate-800 rounded-xl text-white
+                     focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        />
+        <label className="floating-label">Phone Number</label>
+      </div>
+    </div>
 
-                <input
-                  value={email}
-                  onChange={handleEmailChange}
-                  placeholder="Email"
-                  className="w-full px-4 py-3 bg-slate-800 rounded-xl text-white"
-                />
+    {phoneError && (
+      <p className="text-red-400 text-sm">{phoneError}</p>
+    )}
 
-                {emailError && (
-                  <p className="text-red-400 text-sm">{emailError}</p>
-                )}
+    {/* Email */}
+    <div className="relative">
+      <input
+        value={email}
+        onChange={handleEmailChange}
+        placeholder=" "
+        className="peer w-full px-4 py-3 bg-slate-800 rounded-xl text-white
+                   focus:outline-none focus:ring-2 focus:ring-indigo-500"
+      />
+      <label className="floating-label">Email</label>
+    </div>
 
-                <textarea
-                  value={message}
-                  onChange={handleMessageChange}
-                  rows={4}
-                  placeholder="Message"
-                  className="w-full px-4 py-3 bg-slate-800 rounded-xl text-white"
-                />
+    {emailError && (
+      <p className="text-red-400 text-sm">{emailError}</p>
+    )}
+
+    {/* Message */}
+    <div className="relative">
+      <textarea
+        value={message}
+        onChange={handleMessageChange}
+        rows={4}
+        placeholder=" "
+        className="peer w-full px-4 py-3 bg-slate-800 rounded-xl text-white resize-none
+                   focus:outline-none focus:ring-2 focus:ring-indigo-500"
+      />
+      <label className="floating-label">Message</label>
+    </div>
+
+
+
 
                 <button
                   type="submit"
