@@ -7,7 +7,6 @@ import {
   parsePhoneNumberFromString,
   getCountries,
   getCountryCallingCode,
-  isValidNumberForRegion,
   type CountryCode,
 } from "libphonenumber-js";
 import MagicImageParticles from "./MagicImageParticles";
@@ -18,13 +17,7 @@ const EMAILJS_TEMPLATE_ID = "template_iisswnz";
 const EMAILJS_PUBLIC_KEY = "sqyS3A3Uv4WnSDvRx";
 
 /* ================= SERVICES ================= */
-const SERVICES = [
-  { id: 1, title: "Back Office Support" },
-  { id: 2, title: "QA & Testing" },
-  { id: 3, title: "App Development" },
-  { id: 4, title: "Technical Helpdesk" },
-  { id: 5, title: "IT Infrastructure" },
-];
+
 
 /* ================= COUNTRIES ================= */
 const COUNTRIES = getCountries().map((c) => ({
