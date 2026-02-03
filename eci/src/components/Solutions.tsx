@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function Solutions() {
   const [expandedCard, setExpandedCard] = useState<number | null>(null);
@@ -43,35 +44,34 @@ export default function Solutions() {
       description:
         "The Loans Management System (LMS) is a loan management solution used by Philippine credit cooperatives to efficiently handle member loans and payments. It includes key features such as a security menu for managing user access, an audit trail for tracking system activities, loan history display, and member ledger inquiry for easy financial monitoring. With its streamlined interface, LMS2000 enhances accuracy and simplifies loan management processes.",
     },
-        {
+    {
       title: "ELECTRIC METER READER",
       code: "EMR200",
       video: "https://www.youtube.com/embed/S87qsJZzGR0",
       description:
-        "The Electric Meter Reader (EMR) is a state-of-the-art mobile application used to capture and store meter readings from electric or water meters. It also collects non-meter-reading information, including meter conditions, hazardous conditions, tamper data, survey responses, and high/low reading checks."
+        "The Electric Meter Reader (EMR) is a state-of-the-art mobile application used to capture and store meter readings from electric or water meters. It also collects non-meter-reading information, including meter conditions, hazardous conditions, tamper data, survey responses, and high/low reading checks.",
     },
     {
       title: "WAREHOUSING & INVENTORY SYSTEM",
       code: "WIS2000",
       video: "https://www.youtube.com/embed/PcrQ8ajVNPw",
       description:
-        "The Warehousing & Inventory System (WIS) is designed to assist electric utilities in managing materials effectively. It generates essential inventory reports, such as material balances, summaries of releases, received materials (BIN Card), total project costs, and more."
+        "The Warehousing & Inventory System (WIS) is designed to assist electric utilities in managing materials effectively. It generates essential inventory reports, such as material balances, summaries of releases, received materials (BIN Card), total project costs, and more.",
     },
     {
       title: "COMPUTERIZED ACCOUNTING SYSTEM",
       code: "CAS2000",
       video: "https://www.youtube.com/embed/1YLbAs1Kgsk",
       description:
-        "The Computerized Accounting System (CAS) is an ACAM/BSUP-ready solution designed to effectively handle and manage the complex financial processes of Philippine electric utilities, thereby improving their operations and performance."
+        "The Computerized Accounting System (CAS) is an ACAM/BSUP-ready solution designed to effectively handle and manage the complex financial processes of Philippine electric utilities, thereby improving their operations and performance.",
     },
     {
       title: "CUSTOMER INFORMATION MANAGEMENT SYSTEM",
       code: "CIMS200",
-      video: "https://www.youtube.com/embed/1GtRT0z4iyg?list=RD1GtRT0z4iyg",
+      video: "https://www.youtube.com/embed/1GtRT0z4iyg",
       description:
-        "The Customer Information Management System (CIMS) seamlessly combines EBS2000 and CMS2000 to enhance billing precision, streamline customer data management, and boost service efficiency for both businesses and their customers."
+        "The Customer Information Management System (CIMS) seamlessly combines EBS2000 and CMS2000 to enhance billing precision, streamline customer data management, and boost service efficiency for both businesses and their customers.",
     },
-
   ];
 
   return (
@@ -94,12 +94,17 @@ export default function Solutions() {
           </p>
         </div>
 
-        {/* Video Cards (2 per row) */}
+        {/* Video Cards */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
           {videoSolutions.map((item, index) => (
-            <div
+            <motion.div
               key={index}
-              className="bg-zinc-800/50 backdrop-blur-sm border border-zinc-700/50 rounded-3xl p-6 shadow-2xl transition-all hover:shadow-blue-500/10"
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, ease: "easeOut", delay: index * 0.1 }}
+              whileHover={{ scale: 1.02 }}
+              className="bg-zinc-800/50 backdrop-blur-sm border border-zinc-700/50 rounded-3xl p-6 shadow-2xl hover:shadow-blue-500/10"
             >
               {/* Video */}
               <div className="w-full aspect-video rounded-2xl overflow-hidden">
@@ -121,24 +126,34 @@ export default function Solutions() {
               {/* Toggle Button */}
               <button
                 onClick={() => toggleCard(index)}
-                className="mt-4 w-full text-sm font-medium text-blue-400 hover:text-blue-300 transition"
+                className="mt-4 w-full text-sm font-medium text-blue-400 hover:text-blue-300 transition flex items-center justify-center gap-2"
               >
-                {expandedCard === index ? "Hide details ▲" : "View details ▼"}
+                {expandedCard === index ? "Hide details" : "View details"}
+                <motion.span
+                  animate={{ rotate: expandedCard === index ? 180 : 0 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  ▼
+                </motion.span>
               </button>
 
-              {/* Collapsible Description */}
-              <div
-                className={`overflow-hidden transition-all duration-500 ease-in-out ${
-                  expandedCard === index
-                    ? "max-h-96 opacity-100 mt-4"
-                    : "max-h-0 opacity-0"
-                }`}
-              >
-                <p className="text-zinc-300 text-lg text-justify leading-relaxed">
-                  {item.description}
-                </p>
-              </div>
-            </div>
+              {/* Animated Description */}
+              <AnimatePresence>
+                {expandedCard === index && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.4, ease: "easeInOut" }}
+                    className="mt-4 overflow-hidden"
+                  >
+                    <p className="text-zinc-300 text-lg text-justify leading-relaxed">
+                      {item.description}
+                    </p>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.div>
           ))}
         </div>
       </div>

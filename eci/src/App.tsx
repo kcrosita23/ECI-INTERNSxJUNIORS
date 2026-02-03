@@ -19,7 +19,7 @@ function Home() {
       <Solutions />
       <Services />
       <Partners />
-      <About />
+      <Contacts />
     </>
   );
 }
@@ -47,7 +47,7 @@ export default function App() {
       <Nav />
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/contacts" element={<Contacts />} />
+        <Route path="/about" element={<About />} />
       </Routes>
       <Footer />
     </>

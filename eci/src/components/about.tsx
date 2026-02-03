@@ -3,158 +3,112 @@ import { useState, useEffect, useRef } from "react";
 /* ================= TYPES ================= */
 type TeamMember = {
   id: number;
-  name: string;
+  name: string;   // Nickname / Handle
+  flname: string; // Full Name
   role: string;
+  position: string;
   image: string;
 };
 
 /* ================= DATA ================= */
 const team: TeamMember[] = [
-  { id: 1, name: "Abdul", role: "Technical", image: "/team_eci_nobg/ab.png" },
-  { id: 2, name: "don", role: "Technical", image: "/team_eci_nobg/donn.png" },
-  { id: 3, name: "jayson", role: "Technical", image: "/team_eci_nobg/jaysonn.png" },
-  { id: 4, name: "karl", role: "Technical", image: "/team_eci_nobg/Karll.png" },
-  { id: 5, name: "koya rudy", role: "Sales", image: "/team_eci_nobg/koya rudy.png" },
-  { id: 6, name: "sirAA", role: "Technical", image: "/team_eci_nobg/sir_AA.png" },
-  { id: 7, name: "sirJo", role: "Sales", image: "/team_eci_nobg/sir.Jo.png" },
-  { id: 8, name: "madamsher", role: "Technical", image: "/team_eci_nobg/madama sherrr.png" },
-  { id: 9, name: "oasss", role: "Technical", image: "/team_eci_nobg/Oassss.png" },
-  { id: 10, name: "kimm", role: "Technical", image: "/team_eci_nobg/kimm.png" },
-  { id: 11, name: "cheche", role: "Sales", image: "/team_eci_nobg/cheche.png" },
-  { id: 12, name: "jaymir", role: "Technical", image: "/team_eci_nobg/jaymirr.png" },
+  { id: 1, name: "John Rafael", flname: "John Rafael B. Piñero", position: "System Engineer", role:"Technical", image: "/team_eci_nobg/ab.png" },
+  { id: 2, name: "Don Ricardo Jose", flname: "Don Ricardo Jose M. Roces", position: "System Engineer",role:"Technical", image: "/team_eci_nobg/donn.png" },
+  { id: 3, name: "Mark Jayson", flname: "Mark Jayson C. Gonzales", position: "System Engineer", role:"Technical", image: "/team_eci_nobg/jaysonn.png" },
+  { id: 4, name: "Karl Joseph", flname: "Karl Joseph P. Ramirez", position: "System Engineer",role:"Technical", image: "/team_eci_nobg/Karll.png" },
+  { id: 5, name: "Rudy", flname: "Rudy B. Andrade", position: "Liason Officer",role:"Technical", image: "/team_eci_nobg/koya rudy.png" },
+  { id: 6, name: "Alexander", flname:"Alexander P. Alonzo", position: "Sr. System Engr. / TSG. Supervisor", role:"Technical", image: "/team_eci_nobg/sir_AA.png" },
+  { id: 7, name: "Joseph", flname: "Joseph D. Rullan", position: "OIC-General Manager", role:"Sales", image: "/team_eci_nobg/sir.Jo.png" },
+  { id: 8, name: "Shirley", flname: "Shirley F. Santos", position: "Admin & Finance Officer", role:"Sales", image: "/team_eci_nobg/madama sherrr.png" },
+  { id: 9, name: "Oscar", flname: "Oscar A. Sabanal", position: "System Engineer", role:"Technical", image: "/team_eci_nobg/Oassss.png" },
+  { id: 10, name: "Kim Carlo", flname:"Kim Carlo S. Rosita", position: "System Engineer", role:"Technical", image: "/team_eci_nobg/kimm.png" },
+  { id: 11, name: "Rachelle", flname:"Rachelle M. Bautista", position: "Sr. System Engr./Q.A and DA Head", role:"Sales", image: "/team_eci_nobg/cheche.png" },
+  { id: 12, name: "Jaimier Paul", flname:"Jaimier Paul Ranara", position: "System Engineer", role:"Technical", image: "/team_eci_nobg/jaymirr.png" },
+  { id: 13, name: "Daniel", flname:"Daniel D. Robleza", position: "Sr. System Engineer", role:"Technical", image: "/team_eci_nobg/daniel.png" }, 
+  { id: 14, name: "Philip", flname:"Philip S. Taguba", position: "Channels Account Manager", role:"Sales", image: "/team_eci_nobg/philip.png" },
 ];
 
 /* ================= COMPONENT ================= */
 export default function About() {
-  // DATA PREP: Create 3 sets for infinite illusion
-  // Set 1 (Buffer Left), Set 2 (Main), Set 3 (Buffer Right)
   const extendedTeam = [...team, ...team, ...team];
-  const singleSetCount = team.length;
 
-  // STATE
-  // We now track activeIndex (0 to 35) separately from activeId (1 to 12)
-  const [activeIndex, setActiveIndex] = useState<number | null>(null);
-  const [activeId, setActiveId] = useState<number | null>(null);
   
   const roleOrder = ["Sales", "Technical"];
-  const [openFolders, setOpenFolders] = useState<string[]>([]); 
 
-  // REFS
-  // Map stores DOM nodes by INDEX now, not ID
-  const itemsRef = useRef<Map<number, HTMLDivElement> | null>(null);
+  const [activeIndex, setActiveIndex] = useState<number | null>(null);
+  const [activeId, setActiveId] = useState<number | null>(null);
+  const [openFolders, setOpenFolders] = useState<string[]>(["Sales", "Technical"]); 
+
+  // REFS - Initialized as a Map to avoid "null" checks
+  const itemsRef = useRef<Map<number, HTMLDivElement>>(new Map());
   const containerRef = useRef<HTMLDivElement>(null);
-  const lastInteraction = useRef<"image" | "list" | null>(null);
-  const isResettingRef = useRef(false); // To prevent animation loops
+  const isJumpingRef = useRef(false);
 
-  const getMap = () => {
-    if (!itemsRef.current) {
-      itemsRef.current = new Map();
+  // 1. INFINITE SCROLL LOGIC
+// 1. THE INFINITE ENGINE
+  const handleScroll = () => {
+    const container = containerRef.current;
+    if (!container || isJumpingRef.current) return;
+
+    const { scrollLeft, scrollWidth, clientWidth } = container;
+    const singleSetWidth = scrollWidth / 3;
+
+    // JUMP RIGHT: If we scroll into the beginning of the 3rd set
+    if (scrollLeft >= singleSetWidth * 2) {
+      isJumpingRef.current = true;
+      container.scrollLeft = scrollLeft - singleSetWidth;
+      // We use a small timeout to let the browser process the scroll position
+      // before allowing the next scroll event to be handled.
+      setTimeout(() => { isJumpingRef.current = false; }, 10);
+    } 
+    // JUMP LEFT: If we scroll back into the 1st set
+    else if (scrollLeft <= singleSetWidth - clientWidth) {
+      isJumpingRef.current = true;
+      container.scrollLeft = scrollLeft + singleSetWidth;
+      setTimeout(() => { isJumpingRef.current = false; }, 10);
     }
-    return itemsRef.current;
   };
 
-  // EFFECT 0: Initial Mount - Start in the Middle Set
-  useEffect(() => {
-    // Start at the first item of the middle set (index 12)
-    const middleStartIndex = singleSetCount;
-    setActiveIndex(middleStartIndex);
-    
-    // Immediate scroll without animation
-    const map = getMap();
-    const node = map.get(middleStartIndex);
-    if (node) {
-      node.scrollIntoView({ behavior: "auto", inline: "center", block: "nearest" });
+  // 2. SMOOTH CLICK LOGIC
+  // We handle the "smooth" part here only, so the main container 
+  // doesn't have "scroll-smooth" which breaks the infinite jump.
+  const handleCarouselInteract = (index: number) => {
+    setActiveIndex(index);
+    const node = itemsRef.current.get(index);
+    const container = containerRef.current;
+
+    if (node && container) {
+      const scrollLeft = node.offsetLeft - (container.clientWidth / 2) + (node.clientWidth / 2);
+      // Explicitly use "smooth" here
+      container.scrollTo({ left: scrollLeft, behavior: "smooth" });
     }
-  }, [singleSetCount]);
+  };
 
-  // EFFECT 1: Auto-Scroll & Infinite Loop Logic
+  // 2. INITIAL CENTERING
   useEffect(() => {
-    if (activeIndex !== null) {
-      const map = getMap();
-      const node = map.get(activeIndex);
-
-      if (node && !isResettingRef.current) {
-        // 1. Scroll the selected item into view
-        node.scrollIntoView({
-          behavior: isResettingRef.current ? "auto" : "smooth", // Instant if resetting
-          block: "nearest",
-          inline: "center", 
-        });
-
-        // 2. CHECK BOUNDARIES (The Infinite Loop Magic)
-        // If we are in Set 1 (Left Buffer) or Set 3 (Right Buffer),
-        // we need to jump back to Set 2 (Middle) after the animation.
-        const timeout = setTimeout(() => {
-            if (activeIndex < singleSetCount) {
-                // Too far left -> Jump to Middle
-                isResettingRef.current = true;
-                const newIndex = activeIndex + singleSetCount;
-                setActiveIndex(newIndex);
-            } else if (activeIndex >= singleSetCount * 2) {
-                // Too far right -> Jump to Middle
-                isResettingRef.current = true;
-                const newIndex = activeIndex - singleSetCount;
-                setActiveIndex(newIndex);
-            } else {
-                isResettingRef.current = false;
-            }
-        }, 500); // Wait for smooth scroll to finish (approx 500ms)
-
-        return () => clearTimeout(timeout);
-      }
-      
-      // Reset flag if we just performed a jump
-      if (isResettingRef.current) {
-          isResettingRef.current = false;
-      }
+    const container = containerRef.current;
+    if (container) {
+      const singleSetWidth = container.scrollWidth / 3;
+      // Start at the beginning of the middle set
+      container.scrollLeft = singleSetWidth;
     }
-  }, [activeIndex, singleSetCount]);
+  }, []);
 
-  // EFFECT 2: Auto-expand folder based on activeId
-  useEffect(() => {
-    if (activeId && lastInteraction.current === "image") {
-      const member = team.find((m) => m.id === activeId);
-      if (member && !openFolders.includes(member.role)) {
-        setOpenFolders((prev) => [...prev, member.role]);
-      }
-    }
-  }, [activeId, openFolders]);
 
   const toggleFolder = (role: string) => {
     setOpenFolders((prev) => 
-      prev.includes(role) 
-        ? prev.filter((r) => r !== role)
-        : [...prev, role]
+      prev.includes(role) ? prev.filter((r) => r !== role) : [...prev, role]
     );
   };
 
-  // HELPER: Handle hovering an image
-  const handleImageHover = (index: number, id: number) => {
-    if (window.matchMedia('(hover: hover)').matches) {
-        lastInteraction.current = "image";
-        setActiveIndex(index); // Visual position
-        setActiveId(id);       // Data lookup
-    }
-  };
-
-  // HELPER: Handle clicking a list item (IDE)
   const handleListClick = (id: number) => {
-    lastInteraction.current = "list";
-    
-    // Find the equivalent index in the MIDDLE set
-    // (This ensures when we click the list, the carousel jumps to the center set, not the buffers)
-    const middleSetOffset = singleSetCount;
-    const memberIndex = team.findIndex(m => m.id === id);
-    const targetIndex = middleSetOffset + memberIndex;
-
     setActiveId(id === activeId ? null : id);
-    setActiveIndex(targetIndex);
   };
 
   return (
-    <section className="relative w-full min-h-screen py-12 md:py-24 px-4 md:px-6 bg-slate-950 overflow-x-hidden text-slate-200 font-sans">
+    <section id="about" className="relative w-full min-h-screen py-12 md:py-24 px-4 md:px-6 bg-slate-950 overflow-x-hidden text-slate-200 font-sans">
       
-      {/* INJECTED STYLES to hide scrollbar */}
+      {/* INJECTED STYLES */}
       <style>{`
         .no-scrollbar::-webkit-scrollbar {
           display: none;
@@ -172,112 +126,137 @@ export default function About() {
 
       <div className="w-full max-w-7xl mx-auto relative z-10 flex flex-col">
         
+        {/* ================= COMPANY INFO SECTION ================= */}
+        <div className="mb-24 space-y-12 animate-in fade-in slide-in-from-bottom-8 duration-700">
+            
+            {/* COMPANY HEADER */}
+            <div className="text-center space-y-4">
+                <div className="inline-block px-3 py-1 rounded-full bg-blue-900/30 border border-blue-500/20 text-blue-300 text-[10px] md:text-xs font-bold tracking-widest uppercase backdrop-blur-sm">
+                   Trusted System Integrator
+                </div>
+                <h1 className="text-4xl md:text-7xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-slate-200 to-blue-400 tracking-tight pb-2">
+                    Everywhere Consulting
+                </h1>
+                <p className="text-slate-400 max-w-3xl mx-auto text-base md:text-xl leading-relaxed">
+                   We are a recognized system integrator and software solutions provider in the IT industry, offering comprehensive Cybersecurity services and exclusive distribution of Magic Software and Actian Zen.
+                </p>
+                <p className="text-blue-400 font-mono text-xs md:text-sm tracking-widest uppercase mt-2">
+                   Build. Connect. Manage with Ease.
+                </p>
+            </div>
+
+            {/* MISSION & VISION GRID */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+                
+                {/* MISSION CARD */}
+                <div className="group relative bg-slate-900/50 border border-slate-800 rounded-2xl p-6 md:p-10 hover:bg-slate-900 hover:border-blue-500/30 transition-all duration-300 overflow-hidden">
+                    <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-24 h-24 text-blue-500">
+                            <path fillRule="evenodd" d="M9.315 7.584C12.195 3.883 16.695 1.5 21.75 1.5a.75.75 0 01.75.75c0 5.056-2.383 9.555-6.084 12.436h.001c-3.7 2.881-8.199 5.264-13.254 5.264a.75.75 0 01-.75-.75c0-5.055 2.383-9.554 6.084-12.435zm.895 5.763c-1.6 1.244-3.517 2.268-5.652 2.964.787-2.008 1.956-3.793 3.374-5.212l2.278 2.248z" clipRule="evenodd" />
+                            <path d="M11.25 12a.75.75 0 00-1.5 0v3c0 .414.336.75.75.75h3a.75.75 0 000-1.5h-2.25V12z" />
+                            <path d="M4.646 12.306l-1.952 1.951a.75.75 0 001.06 1.061l1.952-1.952a.75.75 0 00-1.06-1.06zM7.25 15.75a.75.75 0 000 1.5h2.25a.75.75 0 000-1.5H7.25z" />
+                         </svg>
+                    </div>
+                    <div className="relative z-10">
+                        <div className="flex items-center space-x-3 mb-4">
+                            <span className="w-8 h-1 bg-blue-500 rounded-full"></span>
+                            <h2 className="text-2xl font-bold text-slate-100 uppercase tracking-wider">Our Mission</h2>
+                        </div>
+                        <p className="text-slate-400 leading-relaxed text-sm md:text-base">
+                            To empower businesses with expert support, training, and custom software solutions. We aim to share the knowledge and skills necessary for clients to pursue their goals in developing and securing information technology.
+                        </p>
+                    </div>
+                </div>
+
+                {/* VISION CARD */}
+                <div className="group relative bg-slate-900/50 border border-slate-800 rounded-2xl p-6 md:p-10 hover:bg-slate-900 hover:border-amber-500/30 transition-all duration-300 overflow-hidden">
+                    <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-24 h-24 text-amber-500">
+                            <path d="M12 15a3 3 0 100-6 3 3 0 000 6z" />
+                            <path fillRule="evenodd" d="M1.323 11.447C2.811 6.976 7.028 3.75 12.001 3.75c4.97 0 9.185 3.223 10.675 7.69.12.362.12.752 0 1.113-1.487 4.471-5.705 7.697-10.677 7.697-4.97 0-9.186-3.223-10.675-7.69a1.762 1.762 0 010-1.113zM17.25 12a5.25 5.25 0 11-10.5 0 5.25 5.25 0 0110.5 0z" clipRule="evenodd" />
+                        </svg>
+                    </div>
+                    <div className="relative z-10">
+                        <div className="flex items-center space-x-3 mb-4">
+                            <span className="w-8 h-1 bg-amber-500 rounded-full"></span>
+                            <h2 className="text-2xl font-bold text-slate-100 uppercase tracking-wider">Our Vision</h2>
+                        </div>
+                        <p className="text-slate-400 leading-relaxed text-sm md:text-base">
+                            To serve as a trusted partner that understands client requirements exactly, delivering solutions that work to streamline operations, drive growth, and protect critical assets from evolving threats.
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
         {/* HEADER */}
         <div className="text-center mb-8 md:mb-12">
-          <div className="inline-block mb-3 px-3 py-1 rounded-full bg-blue-900/30 border border-blue-500/20 text-blue-300 text-[10px] md:text-xs font-bold tracking-widest uppercase backdrop-blur-sm">
-            Everywhere Consulting
+          <div className="inline-block mb-3 px-3 py-1 rounded-full bg-slate-800 border border-slate-700 text-slate-400 text-[10px] md:text-xs font-bold tracking-widest uppercase">
+            Personnel Directory
           </div>
-          <h1 className="text-3xl md:text-6xl font-extrabold text-white mb-4 tracking-tight drop-shadow-sm">
+          <h2 className="text-3xl md:text-5xl font-bold text-white mb-4 tracking-tight">
             Meet the Team
-          </h1>
+          </h2>
           <p className="text-slate-400 max-w-2xl mx-auto text-sm md:text-lg">
             The core processors behind our operations.
           </p>
         </div>
 
-        {/* IMAGES PREVIEW PANE - MOBILE STICKY */}
-        <div className="sticky top-2 z-30 mb-6 -mx-4 px-4 md:static md:mb-8 md:mx-0">
+        {/* IMAGES PREVIEW PANE */}
+      <div className="sticky top-2 z-30 mb-6">
           <div className="bg-slate-950/80 backdrop-blur-md rounded-xl border border-slate-800/50 shadow-2xl">
-            {/* NOTE: We map 'extendedTeam' here (3x the data).
-                We use index for the key to handle duplicates.
-            */}
             <div 
-                ref={containerRef}
-                className="flex gap-4 overflow-x-auto py-4 px-4 no-scrollbar items-end h-[200px] md:h-[280px] scroll-smooth snap-x snap-mandatory"
+              ref={containerRef}
+              onScroll={handleScroll}
+             className="flex gap-4 overflow-x-auto py-4 px-4 no-scrollbar items-end h-[200px] md:h-[280px] select-none"
             >
               {extendedTeam.map((member, index) => {
-              
-                // Only "highlight" if the IDs match, regardless of which copy it is
-                const isVisualActive = activeId === member.id;
-
+                const isCentered = activeIndex === index;
                 return (
-                <div
-                  key={`${member.id}-${index}`}
-                  ref={(node) => {
-                    const map = getMap();
-                    if (node) map.set(index, node);
-                    else map.delete(index);
-                  }}
-                  // Tap/Click handler for mobile to select image
-                  onClick={() => {
-                      lastInteraction.current = "image";
-                      setActiveIndex(index);
-                      setActiveId(member.id === activeId ? null : member.id);
-                  }}
-                  onMouseEnter={() => handleImageHover(index, member.id)}
-                  onMouseLeave={() => {
-                     if (window.matchMedia('(hover: hover)').matches) {
-                       // Optional: reset on leave, or stay centered
-                       // setActiveId(null); 
-                     }
-                  }}
-                  className={`snap-center min-w-[120px] md:min-w-[140px] scroll-m-20 sm:scroll-m-5 relative transition-all duration-500 ease-out flex items-end justify-center cursor-pointer group
-                    ${
-                      isVisualActive
-                        ? "scale-110 md:scale-125 -translate-y-2 opacity-100 z-50"
-                        : isVisualActive
-                        ? "opacity-30 grayscale scale-90 blur-[1px] z-0"
-                        : "opacity-80 md:hover:opacity-100 scale-100 grayscale md:hover:grayscale-0"
-                    }`}
-                >
-                  <div className={`absolute top-2 bg-blue-600 text-white text-[10px] md:text-xs px-2 py-1 rounded opacity-0 transition-opacity duration-300 shadow-lg shadow-blue-900/50 whitespace-nowrap ${isVisualActive ? "opacity-100" : "group-hover:opacity-100"}`}>
-                    {member.name}
-                  </div>
+                  <div
+                    key={`${member.id}-${index}`}
+                    ref={(node) => {
+                      if (node) itemsRef.current.set(index, node);
+                      else itemsRef.current.delete(index);
+                    }}
+                    onClick={() => handleCarouselInteract(index)}
+                    className={`min-w-[120px] md:min-w-[140px] relative transition-all duration-500 ease-out flex items-end justify-center cursor-pointer group
+                      ${isCentered 
+                        ? "opacity-100 scale-110 md:scale-125 z-10 grayscale-0 -translate-y-2" 
+                        : "opacity-60 scale-90 grayscale hover:opacity-100 hover:grayscale-0"
+                      }
+                    `}
+                  >
+                    <div className={`absolute top-2 bg-blue-600 text-white text-[10px] md:text-xs px-2 py-1 rounded transition-opacity duration-300 shadow-lg whitespace-nowrap 
+                      ${isCentered ? "opacity-100" : "opacity-0 group-hover:opacity-100"}`}>
+                      {member.name}
+                    </div>
 
-                  <img
-                    src={member.image}
-                    alt={member.name}
-                    className={`w-full h-36 md:h-48 object-contain transition-all duration-500 
-                      ${isVisualActive ? "drop-shadow-[0_0_15px_rgba(59,130,246,0.6)]" : "drop-shadow-none"}`}
-                  />
-                </div>
-              )})}
-            </div>
-            <div className="text-center text-[10px] text-slate-500 pb-2 md:hidden uppercase tracking-widest">
-                Swipe to browse • Tap to select
+                    <img
+                      src={member.image}
+                      alt={member.name}
+                      className={`w-full h-36 md:h-48 object-contain transition-all duration-500 
+                        ${isCentered ? "drop-shadow-[0_0_15px_rgba(59,130,246,0.5)]" : ""}`}
+                    />
+                  </div>
+                )})}
             </div>
           </div>
         </div>
 
         {/* IDE WINDOW CONTAINER */}
-        <div className="w-full mx-auto bg-slate-900 rounded-xl shadow-2xl shadow-black/50 border border-slate-800 overflow-hidden font-mono text-sm mb-12">
-          
-          {/* WINDOW TITLE BAR */}
-          <div className="bg-slate-950 border-b border-slate-800 px-4 py-3 flex items-center justify-between select-none">
+        <div className="w-full mx-auto bg-slate-900 rounded-xl shadow-2xl border border-slate-800 overflow-hidden font-mono text-sm mb-12">
+          {/* Title Bar */}
+          <div className="bg-slate-950 border-b border-slate-800 px-4 py-3 flex items-center justify-between">
             <div className="flex items-center space-x-2">
-              <div className="w-2.5 h-2.5 md:w-3 md:h-3 rounded-full bg-red-500/80 border border-red-500/20"></div>
-              <div className="w-2.5 h-2.5 md:w-3 md:h-3 rounded-full bg-amber-500/80 border border-amber-500/20"></div>
-              <div className="w-2.5 h-2.5 md:w-3 md:h-3 rounded-full bg-green-500/80 border border-green-500/20"></div>
+              <div className="w-3 h-3 rounded-full bg-red-500/80"></div>
+              <div className="w-3 h-3 rounded-full bg-amber-500/80"></div>
+              <div className="w-3 h-3 rounded-full bg-green-500/80"></div>
             </div>
-            <div className="text-slate-500 text-[10px] md:text-xs font-medium tracking-wide truncate ml-2">team_structure.tsx</div>
+            <div className="text-slate-500 text-xs">team_structure.tsx</div>
             <div className="w-4"></div>
           </div>
-
-          {/* MAIN CONTENT AREA */}
-          <div className="p-4 md:p-8 bg-slate-900 relative min-h-[400px]">
-            
-            {/* ROOT BREADCRUMB */}
-            <div className="flex flex-wrap items-center text-slate-500 mb-6 select-none border-b border-slate-800 pb-4 text-xs md:text-sm">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4 md:w-5 md:h-5 mr-2 text-blue-500">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3" />
-              </svg>
-              <span className="font-bold text-slate-300">./root/</span>
-              {activeId && (
-                 <span className="ml-2 text-blue-400 bg-blue-500/10 border border-blue-500/20 px-2 rounded animate-pulse truncate max-w-[150px]">
-                   -- locating id: {activeId}...
-                 </span>
-              )}
-            </div>
 
             {/* --- LAYOUT: VERTICAL STACK --- */}
             <div className="flex flex-col space-y-6">
@@ -322,47 +301,55 @@ export default function About() {
                                         return (
                                             <div
                                                 key={member.id}
-                                                // Handle Interaction
+                                                // MODIFIED: Only sets ID, doesn't scroll carousel
                                                 onClick={() => handleListClick(member.id)}
-                                                onMouseEnter={() => {
-                                                    // Find the middle-set index for this ID to ensure we scroll to the center block
-                                                    const middleSetOffset = singleSetCount;
-                                                    const memberIndex = team.findIndex(m => m.id === member.id);
-                                                    if (window.matchMedia('(hover: hover)').matches) {
-                                                        lastInteraction.current = "list";
-                                                        setActiveIndex(middleSetOffset + memberIndex);
-                                                        setActiveId(member.id);
-                                                    }
-                                                }}
-                                                onMouseLeave={() => {
-                                                   if (window.matchMedia('(hover: hover)').matches) {
-                                                      // Optional: keep selection or clear
-                                                      // setActiveId(null);
-                                                   }
-                                                }}
                                                 className={`
                                                     relative cursor-pointer p-3 rounded-lg border transition-all duration-200
                                                     ${isActive 
-                                                        ? "bg-blue-500/10 border-blue-500/50 shadow-[0_0_15px_rgba(59,130,246,0.15)] ring-1 ring-blue-500/30 scale-[1.02] md:scale-105 z-10" 
-                                                        : "bg-slate-800/40 border-slate-800 active:bg-slate-800 md:hover:border-slate-600 md:hover:bg-slate-800 md:hover:shadow-md"
+                                                        ? "bg-slate-800/80 border-blue-500/50 ring-1 ring-blue-500/30 col-span-1 md:col-span-2 row-span-2" 
+                                                        : "bg-slate-800/40 border-slate-800 active:bg-slate-800 md:hover:border-slate-600 md:hover:bg-slate-800"
                                                     }
                                                 `}
                                             >
-                                                <div className="flex items-center space-x-3">
-                                                    <div className={`w-2 h-2 rounded-full flex-shrink-0 ${isActive ? "bg-blue-400 animate-pulse shadow-[0_0_8px_rgba(96,165,250,0.8)]" : "bg-slate-600"}`} />
+                                                <div className="flex items-start space-x-3">
+                                                    {/* Status Dot */}
+                                                    <div className={`mt-1.5 w-2 h-2 rounded-full flex-shrink-0 ${isActive ? "bg-green-400 shadow-[0_0_8px_rgba(74,222,128,0.8)]" : "bg-slate-600"}`} />
+                                                    
                                                     <div className="min-w-0 flex-1">
-                                                        <p className={`text-sm font-semibold truncate ${isActive ? "text-blue-300" : "text-slate-300"}`}>
-                                                            {member.name}
-                                                        </p>
-                                                        <p className="text-[10px] text-slate-500 truncate">
-                                                            ID: {member.id.toString().padStart(4, '0')}
-                                                        </p>
-                                                    </div>
-                                                    {isActive && (
-                                                        <div className="text-[10px] font-bold text-blue-300 bg-blue-500/20 border border-blue-500/20 px-1.5 py-0.5 rounded animate-bounce">
-                                                            FOUND
+                                                        <div className="flex justify-between items-center">
+                                                          {/* MODIFIED: Display FLNAME (Full Name) here */}
+                                                          <p className={`text-sm font-semibold truncate ${isActive ? "text-blue-300" : "text-slate-300"}`}>
+                                                              {member.flname}
+                                                          </p>
                                                         </div>
-                                                    )}
+                                                        <div className="flex justify-between items-center mt-0.5">
+                                                           {/* Display Handle/Nickname */}
+                                                           <p className="text-[10px] text-slate-500 font-mono truncate">
+                                                              const {member.name}
+                                                           </p>
+                                                           <p className="text-[9px] text-slate-600 truncate ml-2">
+                                                              ID: {member.id.toString().padStart(4, '0')}
+                                                           </p>
+                                                        </div>
+
+                                                        {/* MODIFIED: Directory Image Reveal */}
+                                                        {isActive && (
+                                                          <div className="mt-2 pt-2 border-t border-slate-700/50 animate-in zoom-in-95 duration-300">
+                                                            <div className="bg-slate-950/50 rounded p-2 flex justify-center">
+                                                              <img 
+                                                                src={member.image} 
+                                                                alt={member.name} 
+                                                                className="h-32 w-auto object-contain drop-shadow-[0_4px_6px_rgba(0,0,0,0.5)]"
+                                                              />
+                                                            </div>
+                                                            <div className="mt-2 text-[12px] text-center text-slate-400 font-mono">
+                                                              <p className="font-bold">
+                                                                {member.position}
+                                                              </p>
+                                                            </div>
+                                                          </div>
+                                                        )}
+                                                    </div>
                                                 </div>
                                             </div>
                                         );
@@ -370,7 +357,6 @@ export default function About() {
                                 </div>
                             )}
 
-                            {/* COLLAPSED STATE PLACEHOLDER */}
                             {!isOpen && (
                                 <div className="ml-4 h-8 bg-slate-900 border border-dashed border-slate-700 rounded flex items-center justify-center text-[10px] text-slate-600 italic">
                                     ... contents hidden ...
@@ -386,16 +372,16 @@ export default function About() {
           <div className="bg-slate-950 text-slate-500 border-t border-slate-800 px-4 py-2 flex justify-between text-[9px] md:text-[10px] uppercase tracking-wider select-none">
               <div className="flex space-x-4">
                <span className="flex items-center"><span className="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5 shadow-[0_0_5px_rgba(16,185,129,0.5)]"></span>
-                  {activeId ? "Target Acquired" : "System Online"}
+                  {activeId ? "File Open" : "System Ready"}
                </span>
               </div>
               <div>
-                 {activeId ? `ID: ${activeId}` : "Waiting..."}
+                 {activeId ? `Reading: ${activeId}` : "Idle"}
               </div>
           </div>
 
         </div>
-      </div>
+      
     </section>
   );
 }

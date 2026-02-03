@@ -3,3 +3,19 @@
 html, body {
   background-color: black;
 }
+.floating-label {
+  @apply absolute left-4 pointer-events-none
+         bg-slate-900 px-1
+         transition-all duration-200
+         text-slate-400
+
+         /* DEFAULT (inside input) */
+         top-3 text-base
+
+         /* FLOATING STATE */
+         peer-focus:-top-2 peer-focus:text-xs peer-focus:text-indigo-400
+         peer-not-placeholder-shown:-top-2
+         peer-not-placeholder-shown:text-xs;
+}
+
+
