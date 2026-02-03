@@ -30,106 +30,79 @@ const team: TeamMember[] = [
 
 /* ================= COMPONENT ================= */
 export default function About() {
-  // DATA PREP
   const extendedTeam = [...team, ...team, ...team];
-  const singleSetCount = team.length;
 
-  // STATE
-  const [activeIndex, setActiveIndex] = useState<number | null>(null);
-  const [activeId, setActiveId] = useState<number | null>(null);
   
   const roleOrder = ["Sales", "Technical"];
-  const [openFolders, setOpenFolders] = useState<string[]>([]); 
 
-  // REFS
-  const itemsRef = useRef<Map<number, HTMLDivElement> | null>(null);
+  const [activeIndex, setActiveIndex] = useState<number | null>(null);
+  const [activeId, setActiveId] = useState<number | null>(null);
+  const [openFolders, setOpenFolders] = useState<string[]>(["Sales", "Technical"]); 
+
+  // REFS - Initialized as a Map to avoid "null" checks
+  const itemsRef = useRef<Map<number, HTMLDivElement>>(new Map());
   const containerRef = useRef<HTMLDivElement>(null);
-  const isResettingRef = useRef(false);
+  const isJumpingRef = useRef(false);
 
-  const getMap = () => {
-    if (!itemsRef.current) {
-      itemsRef.current = new Map();
+  // 1. INFINITE SCROLL LOGIC
+// 1. THE INFINITE ENGINE
+  const handleScroll = () => {
+    const container = containerRef.current;
+    if (!container || isJumpingRef.current) return;
+
+    const { scrollLeft, scrollWidth, clientWidth } = container;
+    const singleSetWidth = scrollWidth / 3;
+
+    // JUMP RIGHT: If we scroll into the beginning of the 3rd set
+    if (scrollLeft >= singleSetWidth * 2) {
+      isJumpingRef.current = true;
+      container.scrollLeft = scrollLeft - singleSetWidth;
+      // We use a small timeout to let the browser process the scroll position
+      // before allowing the next scroll event to be handled.
+      setTimeout(() => { isJumpingRef.current = false; }, 10);
+    } 
+    // JUMP LEFT: If we scroll back into the 1st set
+    else if (scrollLeft <= singleSetWidth - clientWidth) {
+      isJumpingRef.current = true;
+      container.scrollLeft = scrollLeft + singleSetWidth;
+      setTimeout(() => { isJumpingRef.current = false; }, 10);
     }
-    return itemsRef.current;
   };
 
-  /**
-   * HELPER: Safe Scroll
-   * Calculates the exact center position inside the container and scrolls ONLY the container.
-   * This prevents the main browser window from jumping up and down.
-   */
-  const scrollToItem = (index: number, instant: boolean = false) => {
-    const map = getMap();
-    const node = map.get(index);
+  // 2. SMOOTH CLICK LOGIC
+  // We handle the "smooth" part here only, so the main container 
+  // doesn't have "scroll-smooth" which breaks the infinite jump.
+  const handleCarouselInteract = (index: number) => {
+    setActiveIndex(index);
+    const node = itemsRef.current.get(index);
     const container = containerRef.current;
 
     if (node && container) {
-      // Calculate position to center the image within the container
       const scrollLeft = node.offsetLeft - (container.clientWidth / 2) + (node.clientWidth / 2);
-      
-      container.scrollTo({
-        left: scrollLeft,
-        behavior: instant ? "auto" : "smooth"
-      });
+      // Explicitly use "smooth" here
+      container.scrollTo({ left: scrollLeft, behavior: "smooth" });
     }
   };
 
-  // EFFECT 0: Initial Mount - Start in the Middle Set (Instant jump, no animation)
+  // 2. INITIAL CENTERING
   useEffect(() => {
-    const middleStartIndex = singleSetCount;
-    setActiveIndex(middleStartIndex);
-    // Use instant scroll on mount
-    scrollToItem(middleStartIndex, true); 
-  }, [singleSetCount]);
-
-  // EFFECT 1: Auto-Scroll Logic (Triggered by activeIndex change)
-  useEffect(() => {
-    if (activeIndex !== null && !isResettingRef.current) {
-      // 1. Smooth scroll to the selected item
-      scrollToItem(activeIndex, false);
-
-      // 2. Infinite Loop Check
-      const timeout = setTimeout(() => {
-          if (activeIndex < singleSetCount) {
-              // Too far left -> Jump to Middle
-              isResettingRef.current = true;
-              const newIndex = activeIndex + singleSetCount;
-              setActiveIndex(newIndex);
-              scrollToItem(newIndex, true); // Instant jump
-          } else if (activeIndex >= singleSetCount * 2) {
-              // Too far right -> Jump to Middle
-              isResettingRef.current = true;
-              const newIndex = activeIndex - singleSetCount;
-              setActiveIndex(newIndex);
-              scrollToItem(newIndex, true); // Instant jump
-          }
-      }, 500); // Wait for smooth scroll to finish
-
-      return () => clearTimeout(timeout);
+    const container = containerRef.current;
+    if (container) {
+      const singleSetWidth = container.scrollWidth / 3;
+      // Start at the beginning of the middle set
+      container.scrollLeft = singleSetWidth;
     }
-    
-    // Reset flag after a jump
-    if (isResettingRef.current) {
-        isResettingRef.current = false;
-    }
-  }, [activeIndex, singleSetCount]);
+  }, []);
+
 
   const toggleFolder = (role: string) => {
     setOpenFolders((prev) => 
-      prev.includes(role) 
-        ? prev.filter((r) => r !== role)
-        : [...prev, role]
+      prev.includes(role) ? prev.filter((r) => r !== role) : [...prev, role]
     );
   };
 
-  // HELPER: Handle clicking a list item (IDE)
   const handleListClick = (id: number) => {
     setActiveId(id === activeId ? null : id);
-  };
-
-  // HELPER: Handle Carousel Interaction (Click Only)
-  const handleCarouselInteract = (index: number) => {
-    setActiveIndex(index);
   };
 
   return (
@@ -231,84 +204,59 @@ export default function About() {
         </div>
 
         {/* IMAGES PREVIEW PANE */}
-        <div className="sticky top-2 z-30 mb-6 -mx-4 px-4 md:static md:mb-8 md:mx-0">
+      <div className="sticky top-2 z-30 mb-6">
           <div className="bg-slate-950/80 backdrop-blur-md rounded-xl border border-slate-800/50 shadow-2xl">
             <div 
-                ref={containerRef}
-                className="flex gap-4 overflow-x-auto py-4 px-4 no-scrollbar items-end h-[200px] md:h-[280px] scroll-smooth snap-x snap-mandatory"
+              ref={containerRef}
+              onScroll={handleScroll}
+             className="flex gap-4 overflow-x-auto py-4 px-4 no-scrollbar items-end h-[200px] md:h-[280px] select-none"
             >
               {extendedTeam.map((member, index) => {
-                
-                // Determine if this specific item is the "centered" one based on activeIndex
                 const isCentered = activeIndex === index;
-
                 return (
-                <div
-                  key={`${member.id}-${index}`}
-                  ref={(node) => {
-                    const map = getMap();
-                    if (node) map.set(index, node);
-                    else map.delete(index);
-                  }}
-                  // MODIFIED: Removed onMouseEnter, kept onClick
-                  onClick={() => handleCarouselInteract(index)}
-                  className={`snap-center min-w-[120px] md:min-w-[140px] scroll-m-20 sm:scroll-m-5 relative transition-all duration-500 ease-out flex items-end justify-center cursor-pointer group
-                    ${isCentered 
+                  <div
+                    key={`${member.id}-${index}`}
+                    ref={(node) => {
+                      if (node) itemsRef.current.set(index, node);
+                      else itemsRef.current.delete(index);
+                    }}
+                    onClick={() => handleCarouselInteract(index)}
+                    className={`min-w-[120px] md:min-w-[140px] relative transition-all duration-500 ease-out flex items-end justify-center cursor-pointer group
+                      ${isCentered 
                         ? "opacity-100 scale-110 md:scale-125 z-10 grayscale-0 -translate-y-2" 
                         : "opacity-60 scale-90 grayscale hover:opacity-100 hover:grayscale-0"
-                    }
-                  `}
-                >
-                  <div className={`absolute top-2 bg-blue-600 text-white text-[10px] md:text-xs px-2 py-1 rounded transition-opacity duration-300 shadow-lg shadow-blue-900/50 whitespace-nowrap 
-                    ${isCentered ? "opacity-100" : "opacity-0 group-hover:opacity-100"}`}>
-                    {/* Display Handle/Name in Carousel Tooltip */}
-                    {member.name}
-                  </div>
+                      }
+                    `}
+                  >
+                    <div className={`absolute top-2 bg-blue-600 text-white text-[10px] md:text-xs px-2 py-1 rounded transition-opacity duration-300 shadow-lg whitespace-nowrap 
+                      ${isCentered ? "opacity-100" : "opacity-0 group-hover:opacity-100"}`}>
+                      {member.name}
+                    </div>
 
-                  <img
-                    src={member.image}
-                    alt={member.name}
-                    className={`w-full h-36 md:h-48 object-contain transition-all duration-500 
-                      ${isCentered ? "drop-shadow-[0_0_15px_rgba(59,130,246,0.5)]" : "drop-shadow-none"}`}
-                  />
-                </div>
-              )})}
-            </div>
-            <div className="text-center text-[10px] text-slate-500 pb-2 md:hidden uppercase tracking-widest">
-                Tap to scroll
+                    <img
+                      src={member.image}
+                      alt={member.name}
+                      className={`w-full h-36 md:h-48 object-contain transition-all duration-500 
+                        ${isCentered ? "drop-shadow-[0_0_15px_rgba(59,130,246,0.5)]" : ""}`}
+                    />
+                  </div>
+                )})}
             </div>
           </div>
         </div>
 
         {/* IDE WINDOW CONTAINER */}
-        <div className="w-full mx-auto bg-slate-900 rounded-xl shadow-2xl shadow-black/50 border border-slate-800 overflow-hidden font-mono text-sm mb-12">
-          
-          {/* WINDOW TITLE BAR */}
-          <div className="bg-slate-950 border-b border-slate-800 px-4 py-3 flex items-center justify-between select-none">
+        <div className="w-full mx-auto bg-slate-900 rounded-xl shadow-2xl border border-slate-800 overflow-hidden font-mono text-sm mb-12">
+          {/* Title Bar */}
+          <div className="bg-slate-950 border-b border-slate-800 px-4 py-3 flex items-center justify-between">
             <div className="flex items-center space-x-2">
-              <div className="w-2.5 h-2.5 md:w-3 md:h-3 rounded-full bg-red-500/80 border border-red-500/20"></div>
-              <div className="w-2.5 h-2.5 md:w-3 md:h-3 rounded-full bg-amber-500/80 border border-amber-500/20"></div>
-              <div className="w-2.5 h-2.5 md:w-3 md:h-3 rounded-full bg-green-500/80 border border-green-500/20"></div>
+              <div className="w-3 h-3 rounded-full bg-red-500/80"></div>
+              <div className="w-3 h-3 rounded-full bg-amber-500/80"></div>
+              <div className="w-3 h-3 rounded-full bg-green-500/80"></div>
             </div>
-            <div className="text-slate-500 text-[10px] md:text-xs font-medium tracking-wide truncate ml-2">team_structure.tsx</div>
+            <div className="text-slate-500 text-xs">team_structure.tsx</div>
             <div className="w-4"></div>
           </div>
-
-          {/* MAIN CONTENT AREA */}
-          <div className="p-4 md:p-8 bg-slate-900 relative min-h-[400px]">
-            
-            {/* ROOT BREADCRUMB */}
-            <div className="flex flex-wrap items-center text-slate-500 mb-6 select-none border-b border-slate-800 pb-4 text-xs md:text-sm">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4 md:w-5 md:h-5 mr-2 text-blue-500">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3" />
-              </svg>
-              <span className="font-bold text-slate-300">./root/</span>
-              {activeId && (
-                 <span className="ml-2 text-blue-400 bg-blue-500/10 border border-blue-500/20 px-2 rounded truncate max-w-[150px]">
-                   -- accessing id: {activeId}
-                 </span>
-              )}
-            </div>
 
             {/* --- LAYOUT: VERTICAL STACK --- */}
             <div className="flex flex-col space-y-6">
@@ -433,7 +381,7 @@ export default function About() {
           </div>
 
         </div>
-      </div>
+      
     </section>
   );
 }
